@@ -1,32 +1,24 @@
-// AppRouter.tsx — Define todas las rutas/pantallas de la app
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "../pages/Login";
-import Dashboard from "../pages/Dashboard";
-import FormPresupuesto from "../pages/FormPresupuesto";
-import Historial from "../pages/Historial";
-import VistaPrevia from "../pages/VistaPrevia";
+import { AuthProvider } from "../context/AuthContext.tsx";
+import ProtectedRoute from "../components/auth/ProtectedRoute.tsx";
+import Login from "../pages/Login.tsx";
+import Dashboard from "../pages/Dashboard.tsx";
+import FormPresupuesto from "../pages/FormPresupuesto.tsx";
+import Historial from "../pages/Historial.tsx";
+import VistaPrevia from "../pages/VistaPrevia.tsx";
 
-const AppRouter = () => {
+export default function AppRouter() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Pantalla de inicio de sesión */}
-        <Route path="/" element={<Login />} />
-
-        {/* Panel principal con listado de presupuestos */}
-        <Route path="/dashboard" element={<Dashboard />} />
-
-        {/* Formulario para crear un presupuesto */}
-        <Route path="/nuevo-presupuesto" element={<FormPresupuesto />} />
-
-        {/* Historial de presupuestos enviados */}
-        <Route path="/historial" element={<Historial />} />
-
-        {/* Vista previa del presupuesto en PDF */}
-        <Route path="/vista-previa" element={<VistaPrevia />} />
-      </Routes>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/nuevo-presupuesto" element={<ProtectedRoute><FormPresupuesto /></ProtectedRoute>} />
+          <Route path="/historial" element={<ProtectedRoute><Historial /></ProtectedRoute>} />
+          <Route path="/vista-previa/:id" element={<ProtectedRoute><VistaPrevia /></ProtectedRoute>} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
-};
-
-export default AppRouter;
+}
