@@ -3,6 +3,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth.ts";
 import { login } from "../services/auth.service.ts";
+import Input from "../components/ui/Input.tsx";
+import Button from "../components/ui/Button.tsx";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -36,37 +38,36 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-80">
+    <div className="min-h-screen flex items-center justify-center px-4">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-4 w-full max-w-sm"
+      >
         <h1 className="text-xl font-semibold">Iniciar sesión</h1>
 
-        <input
+        <Input
           name="email"
           type="email"
-          placeholder="Email"
+          placeholder="Correo electrónico"
           value={form.email}
           onChange={handleChange}
-          className="border rounded px-3 py-2 text-sm"
+          label="Correo electrónico"
         />
 
-        <input
+        <Input
           name="password"
           type="password"
           placeholder="Contraseña"
           value={form.password}
           onChange={handleChange}
-          className="border rounded px-3 py-2 text-sm"
+          label="Contraseña"
         />
 
         {error && <p className="text-red-500 text-sm">{error}</p>}
 
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="bg-black text-white rounded px-3 py-2 text-sm disabled:opacity-50"
-        >
-          {isLoading ? "Cargando..." : "Ingresar"}
-        </button>
+        <Button type="submit" isLoading={isLoading} fullWidth>
+          Ingresar
+        </Button>
       </form>
     </div>
   );
