@@ -1,10 +1,18 @@
 import express from "express"
 import middlewares from "./src/middlewares.js"
+import cors from "cors"
 
 import rutasAuth from "./src/rutas/auth.rutas.js"
 
 const app = express()
+const corsOptions = {
+    origin: "http://localhost:5173/",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true
+}
 
+app.use(cors(corsOptions))
 app.use(express.json())
 app.use("/auth", rutasAuth)
 app.use(middlewares.manejar404)
