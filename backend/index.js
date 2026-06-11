@@ -14,7 +14,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions))
 app.use(express.json())
-app.use("/auth", rutasAuth)
+app.use("/api/auth", rutasAuth)
 app.use(middlewares.manejar404)
 
 const puerto = 3001
