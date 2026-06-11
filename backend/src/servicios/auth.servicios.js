@@ -9,7 +9,7 @@ async function login(email, password) {
     if (resultado !== null) {
         const token = generarToken({email: email, password: password, id: resultado[0].id})
         console.log(token)
-        return {token, usuario: {id: [resultado[0].id], nombre: [resultado[0].nombre], email: [resultado[0].email]}}
+        return {token, usuario: {id: resultado[0].id, nombre: resultado[0].nombre, email: resultado[0].email}}
     } else {
         return null
     }
