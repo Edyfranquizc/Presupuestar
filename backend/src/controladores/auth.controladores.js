@@ -1,5 +1,3 @@
-<<<<<<< Updated upstream
-=======
 import servicios from "../servicios/auth.servicios.js"
 
 async function login(req, res) {
@@ -25,4 +23,3 @@ async function registro(req, res) {
 }
 
 export default { login, registro }
->>>>>>> Stashed changes
