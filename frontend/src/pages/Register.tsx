@@ -32,12 +32,27 @@ export default function Register() {
       setError("Completá todos los campos.");
       return;
     }
-    if (form.password !== form.confirmPassword) {
-      setError("Las contraseñas no coinciden.");
+
+    if (form.password.length < 8) {
+      setError("La contraseña debe tener al menos 8 caracteres.");
       return;
     }
-    if (form.password.length < 6) {
-      setError("La contraseña debe tener al menos 6 caracteres.");
+    if (!/[A-Z]/.test(form.password)) {
+      setError("La contraseña debe tener al menos una mayúscula.");
+      return;
+    }
+    if (!/[0-9]/.test(form.password)) {
+      setError("La contraseña debe tener al menos un número.");
+      return;
+    }
+    if (!/[*#$!@%&]/.test(form.password)) {
+      setError(
+        "La contraseña debe tener al menos un carácter especial (* # $ ! @ % &).",
+      );
+      return;
+    }
+    if (form.password !== form.confirmPassword) {
+      setError("Las contraseñas no coinciden.");
       return;
     }
 
@@ -48,7 +63,7 @@ export default function Register() {
         email: form.email,
         password: form.password,
       });
-      navigate("/onboarding"); // después del registro va al onboarding
+      navigate("/onboarding");
     } catch {
       setError("No se pudo crear la cuenta. Intentá de nuevo.");
     } finally {
@@ -66,7 +81,7 @@ export default function Register() {
 
         <Input
           name="nombre"
-          placeholder="¿Cuál es tu nombre?"
+          placeholder="¿Cómo es tu nombre?"
           value={form.nombre}
           onChange={handleChange}
           label="Nombre y Apellido"
@@ -74,7 +89,7 @@ export default function Register() {
 
         <Input
           name="apellido"
-          placeholder="¿Cuál es tu apellido?"
+          placeholder="¿Cómo es tu apellido?"
           value={form.apellido}
           onChange={handleChange}
         />
@@ -82,7 +97,7 @@ export default function Register() {
         <Input
           name="email"
           type="email"
-          placeholder="Ingresá tu correo"
+          placeholder="Ingresar correo electrónico"
           value={form.email}
           onChange={handleChange}
           label="Correo electrónico"
@@ -91,7 +106,7 @@ export default function Register() {
         <Input
           name="password"
           type="password"
-          placeholder="Ingresá tu contraseña"
+          placeholder="Ingresar contraseña"
           value={form.password}
           onChange={handleChange}
           label="Contraseña"
@@ -100,7 +115,7 @@ export default function Register() {
         <Input
           name="confirmPassword"
           type="password"
-          placeholder="Confirmá tu contraseña"
+          placeholder="Confirmar contraseña"
           value={form.confirmPassword}
           onChange={handleChange}
           label="Confirmar contraseña"
