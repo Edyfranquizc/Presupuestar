@@ -31,7 +31,6 @@ export default function ForgotPassword() {
       return;
     }
     setIsLoading(true);
-
     await new Promise((r) => setTimeout(r, 1000));
     setIsLoading(false);
     setStep("enviado");
@@ -43,14 +42,31 @@ export default function ForgotPassword() {
       setError("Completá todos los campos.");
       return;
     }
+
+    //Validaciones de contraseña segura
+    if (passwords.nueva.length < 8) {
+      setError("La contraseña debe tener al menos 8 caracteres.");
+      return;
+    }
+    if (!/[A-Z]/.test(passwords.nueva)) {
+      setError("La contraseña debe tener al menos una mayúscula.");
+      return;
+    }
+    if (!/[0-9]/.test(passwords.nueva)) {
+      setError("La contraseña debe tener al menos un número.");
+      return;
+    }
+    if (!/[*#$!@%&]/.test(passwords.nueva)) {
+      setError(
+        "La contraseña debe tener al menos un carácter especial (* # $ ! @ % &).",
+      );
+      return;
+    }
     if (passwords.nueva !== passwords.confirmar) {
       setError("Las contraseñas no coinciden.");
       return;
     }
-    if (passwords.nueva.length < 6) {
-      setError("Mínimo 6 caracteres.");
-      return;
-    }
+
     setIsLoading(true);
     await new Promise((r) => setTimeout(r, 1000));
     setIsLoading(false);
@@ -60,12 +76,12 @@ export default function ForgotPassword() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
-        {/* PASO 1: formulario de email*/}
+        {/* PASO 1: formulario de email */}
         {step === "form" && (
           <form onSubmit={handleSendEmail} className="flex flex-col gap-4">
             <h1 className="text-xl font-semibold">Olvidaste tu contraseña</h1>
             <p className="text-sm text-gray-500">
-              Introducí tu correo electrónico para restablecer tu contraseña.
+              Introducí tu correo para restablecer tu contraseña.
             </p>
 
             <Input
@@ -94,13 +110,12 @@ export default function ForgotPassword() {
           </form>
         )}
 
-        {/* ── PASO 2: email enviado ── */}
+        {/* PASO 2: email enviado */}
         {step === "enviado" && (
           <div className="flex flex-col gap-4 text-center">
             <h1 className="text-xl font-semibold">¡Correo enviado!</h1>
             <p className="text-sm text-gray-500">
-              Hemos enviado un enlace de recuperación a <strong>{email}</strong>{" "}
-              Revisá tu bandeja de entrada.
+              Revisá tu bandeja de entrada en <strong>{email}</strong>
             </p>
 
             <Button fullWidth onClick={() => setStep("nueva-password")}>
@@ -119,7 +134,7 @@ export default function ForgotPassword() {
           </div>
         )}
 
-        {/* ── PASO 3: nueva contraseña ── */}
+        {/* PASO 3: nueva contraseña */}
         {step === "nueva-password" && (
           <form onSubmit={handleUpdatePassword} className="flex flex-col gap-4">
             <h1 className="text-xl font-semibold">Crear nueva contraseña</h1>
