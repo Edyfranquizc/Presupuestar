@@ -11,4 +11,15 @@ async function login(req, res) {
     }
 }
 
-export default { login }
+async function registro(req, res) {
+    const { nombre, apellido, email, password } = req.body 
+    const resultado = await servicios.registro(nombre, apellido, email, password)
+    
+    if (resultado !== null) {
+        res.status(201).json(resultado)
+    } else {
+        res.status(400).json({mensaje: "Se produjo un error al registrar al usuario."})
+    }
+}
+
+export default { login, registro }
