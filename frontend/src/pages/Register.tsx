@@ -63,7 +63,7 @@ export default function Register() {
         email: form.email,
         password: form.password,
       });
-      navigate("/onboarding");
+      navigate("/dashboard");
     } catch {
       setError("No se pudo crear la cuenta. Intentá de nuevo.");
     } finally {
