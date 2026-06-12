@@ -68,6 +68,26 @@ export default function Login() {
         <Button type="submit" isLoading={isLoading} fullWidth>
           Ingresar
         </Button>
+
+        <p className="text-sm text-center text-gray-500">
+          ¿Olvidaste tu contraseña?{" "}
+          <span
+            onClick={() => navigate("/forgot-password")}
+            className="text-black font-medium cursor-pointer hover:underline"
+          >
+            Recuperar acceso
+          </span>
+        </p>
+
+        <p className="text-sm text-center text-gray-500">
+          ¿No tenés cuenta?{" "}
+          <span
+            onClick={() => navigate("/register")}
+            className="text-black font-medium cursor-pointer hover:underline"
+          >
+            Crear cuenta
+          </span>
+        </p>
       </form>
     </div>
   );
