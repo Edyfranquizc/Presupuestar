@@ -1,36 +1,22 @@
 //importo express
 import express from "express";
 //importo los controladores de presupuesto
-import * as controlador from "/modelos/presupuestos.controladores.js";
+import controladores from "../controladores/presupuestos.controladores.js";
 //defino ruta
 const rutasPres = express.Router();
 //funcion get
-rutasPres.get("/presupuestos",(req,res)=>{
-    const presupuestos=controlador.get()
-    res.json(presupuestos)});
+rutasPres.get("/presupuestos",controladores.listado)
 //funcion get por id
-rutasPres.get("/presupuestos/:id",(req,res)=>{
-    const presupuestoid=parseInt(req.params.id)
-    const presupuesto=controlador.getid(presupuestoid)
-    res.json(presupuesto)
-});
+rutasPres.get("/presupuestos/:id",controladores.buscar);
 //funcion post
-rutasPres.post("/presupuestos", (req,res)=>{
-    const nuevopresupuesto={...req.body,id:presupuestos.length+1}
-    controlador.postfunc(nuevopresupuesto)
-    res.send()
-});
+rutasPres.post("/presupuestos", controladores.crear);
 //funcion put
 rutasPres.put("/presupuestos/:id",(req,res)=>{
     const presupuestoid=parseInt(req.params.id)
-    const presupuesto=controlador.putfunc(presupuestoid)
+    const presupuesto=controladores.putfunc(presupuestoid)
     res.send()
 });
-//funcion delete
-rutasPres.delete("/presupuestos/:id",(req,res)=>{
-    const presupuestoid=parseInt(req.params.id)
-    const presupuesto=controlador.deletefunc(presupuestoid)
-    res.send()
-});
+//funcion para cambiar estado
+rutasPres.put("/presupuestos/:id/estado",controladores.edicionestado);
 //exporto la ruta
 export default rutasPres
