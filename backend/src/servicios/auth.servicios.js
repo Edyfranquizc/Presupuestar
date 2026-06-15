@@ -19,8 +19,8 @@ async function registro(nombre, apellido, email, password) {
     const resultado = await modelos.registrarUsuario(nombre, apellido, email, password)
 
     if (resultado !== null) {
-        const token = generarToken({email: email, password: password, id: resultado[0].id})
-        return {token, usuario: {id: resultado[0].id, nombre: resultado[0].nombre, email: resultado[0].email}}
+        const token = generarToken({email: email, password: password, id: resultado.id})
+        return {token, usuario: {id: resultado.id, nombre: resultado.nombre, email: resultado.email}}
     } else {
         return resultado
     }
