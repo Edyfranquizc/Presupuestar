@@ -19,7 +19,8 @@ async function verificarToken(req, res, next) {
             res.status(401).json({mensaje: "No se encontró ningún token."})
         } else {
             try {
-                await verificar(token, clave)
+                const datos = await verificar(token, clave)
+                req.usuario = datos
                 next()
             } catch {
                 res.status(401).json({mensaje: "El token es inválido."})
