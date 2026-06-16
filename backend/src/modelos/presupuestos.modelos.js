@@ -1,6 +1,7 @@
 import { conexion } from "../data.js"
 import dayjs from "dayjs"
 import { v4 } from "uuid"
+
 async function crearpresupuesto(id_usuario,id_cliente,fecha_vencimiento,estado_enum,monto_subtotal,descuento,impuestos,recargo,monto_total) {
     //let verificacion= verificarexistencia(nombre, apellido, email,)
    // if (verificacion==false){
@@ -17,11 +18,14 @@ async function crearpresupuesto(id_usuario,id_cliente,fecha_vencimiento,estado_e
 async function listaruno(id) {
     
 }
-async function listartodo() {
-    
+async function listarPresupuestos(id_usuario) {
+    const consulta = "SELECT * FROM presupuestos WHERE id_usuario = ?"
+    const resultado = await conexion.execute(consulta, [id_usuario])
+    console.log(resultado)
+    return resultado
 }
 async function actualizar(id,estado_enum ) {
     const fecha_ultima_modificacion = dayjs().format('YYYY-MM-DD HH:mm:ss')
     const consulta = ""
 }
-export default { crearpresupuesto, listartodo,listaruno, }
+export default { crearpresupuesto, listarPresupuestos, listaruno }
