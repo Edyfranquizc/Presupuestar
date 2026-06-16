@@ -1,12 +1,14 @@
 import servicios from "../servicios/presupuestos.servicios.js"
 
 //funcion obterner todos los presupuestos
-async function listado(req, res) {
-    const resultado =await servicios.get()
+async function listarPresupuestos(req, res) {
+    const id_usuario = req.usuario.id
+    const resultado = await servicios.listarPresupuestos(id_usuario)
+
     if (resultado !== null) {
         res.status(200).json(resultado)
     } else {
-        res.status(400).json({mensaje: "No se ha encontrado presupuestos."})
+        res.status(200).json({mensaje: "No se guardaron presupuestos para este usuario."})
     }
 };
 //funcion obterner presupuesto por id
@@ -39,4 +41,4 @@ async function edicionestado(req,res){
         res.status(400).json({mensaje: "No se ha podido editar el presupuesto."})
     }
 }
-export default {listado, edicionestado, crear,buscar}
+export default { listarPresupuestos, edicionestado, crear, buscar }

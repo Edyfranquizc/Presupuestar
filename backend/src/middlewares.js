@@ -1,6 +1,7 @@
 import express from "express"
 import jwt from "jsonwebtoken"
 import { promisify } from "util"
+import "dotenv/config"
 
 const clave = process.env.JWT_SECRET_KEY
 const verificar = promisify(jwt.verify)
@@ -22,8 +23,8 @@ async function verificarToken(req, res, next) {
                 const datos = await verificar(token, clave)
                 req.usuario = datos
                 next()
-            } catch {
-                res.status(401).json({mensaje: "El token es inválido."})
+            } catch (err) {
+                res.status(401).json({mensaje: "El token es inválido.", causa: err})
             }
         }
     } else {
@@ -31,4 +32,4 @@ async function verificarToken(req, res, next) {
     }
 }
 
-export default { manejar404 }
+export default { manejar404, verificarToken }

@@ -5,9 +5,9 @@ import controladores from "../controladores/presupuestos.controladores.js";
 //defino ruta
 const rutasPres = express.Router();
 //funcion get
-rutasPres.get("/presupuestos",controladores.listado)
+rutasPres.get("/", controladores.listarPresupuestos)
 //funcion get por id
-rutasPres.get("/presupuestos/:id",controladores.buscar);
+rutasPres.get("/presupuestos/:id", controladores.buscar);
 //funcion post
 rutasPres.post("/presupuestos", controladores.crear);
 //funcion put
