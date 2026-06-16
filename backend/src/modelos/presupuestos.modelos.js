@@ -21,8 +21,12 @@ async function listaruno(id) {
 async function listarPresupuestos(id_usuario) {
     const consulta = "SELECT * FROM presupuestos WHERE id_usuario = ?"
     const resultado = await conexion.execute(consulta, [id_usuario])
-    console.log(resultado)
-    return resultado
+
+    if (resultado[0].length > 0) {
+        return resultado[0]
+    } else {
+        return null
+    }
 }
 async function actualizar(id,estado_enum ) {
     const fecha_ultima_modificacion = dayjs().format('YYYY-MM-DD HH:mm:ss')
