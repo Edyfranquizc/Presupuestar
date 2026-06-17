@@ -2,19 +2,32 @@ import { conexion } from "../data.js"
 import dayjs from "dayjs"
 import { v4 } from "uuid"
 
-async function crearpresupuesto(id_usuario,id_cliente,fecha_vencimiento,estado_enum,monto_subtotal,descuento,impuestos,recargo,monto_total) {
-    //let verificacion= verificarexistencia(nombre, apellido, email,)
-   // if (verificacion==false){
+async function crearPresupuesto(datosPresupuesto, idUsuario) {
+    if (!datosPresupuesto.idCliente) {
+        const { total, subtotal, descuentoMonto, ivaMonto, nombre, email } = datosPresupuesto
+        const idCliente = v4()
+        const consultaNuevoCliente = "INSERT INTO clientes (id, nombre, email) VALUES (?, ?, ?)"
+        const resultadoNuevoCliente = await conexion.execute(consulta, [id_cliente, nombre, email])
+    } else {
+        const { total, subtotal, descuentoMonto, ivaMonto, idCliente } = datosPresupuesto
+    }
+
     const id = v4()
-    const fecha_emision = dayjs().format('YYYY-MM-DD')
-    const fecha_ultima_modificacion=fecha_emision
-    const consulta = "INSERT INTO usuarios (id,id_usuario,id_cliente,fecha_emision,fecha_vencimiento,estado enum,monto_subtotal,descuento,impuestos,recargo,monto_total,fecha_ultima_modificacion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-    const resultado = await conexion.execute(consulta, [id,id_usuario,id_cliente,fecha_emision,fecha_vencimiento,estado_enum,monto_subtotal,descuento,impuestos,recargo,monto_total,fecha_ultima_modificacion])
+    const fechaEmision = dayjs().format('YYYY-MM-DD HH:mm:ss')
+    const fechaVencimiento = dayjs(fecha_emision).add(15, "day").format('YYYY-MM-DD')
+    const estado = "pendiente"
+    const fechaUltimaModificacion = fecha_emision
+    
+    const consultaNuevoPresupuesto = "INSERT INTO presupuestos (id, id_usuario, id_cliente, fecha_emision, fecha_vencimiento, estado, monto_subtotal, descuento, impuestos, monto_total, fecha_ultima_modificacion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    
+    const resultadoNuevoPresupuesto = await conexion.execute(consulta, 
+        [id, idUsuario, idCliente, fechaEmision, 
+        fechaVencimiento, estado, subtotal, 
+        descuentoMonto, ivaMonto, total, fechaUltimaModificacion])
 
     return resultado
-    ///}else{ return "El usuario ya esta registrado" }
-    
 }
+
 async function listaruno(id) {
     
 }
@@ -32,4 +45,5 @@ async function actualizar(id,estado_enum ) {
     const fecha_ultima_modificacion = dayjs().format('YYYY-MM-DD HH:mm:ss')
     const consulta = ""
 }
+
 export default { crearpresupuesto, listarPresupuestos, listaruno }

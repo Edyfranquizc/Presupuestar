@@ -9,7 +9,7 @@ rutasPres.get("/", controladores.listarPresupuestos)
 //funcion get por id
 rutasPres.get("/presupuestos/:id", controladores.buscar);
 //funcion post
-rutasPres.post("/presupuestos", controladores.crear);
+rutasPres.post("/", controladores.crearPresupuesto);
 //funcion put
 rutasPres.put("/presupuestos/:id",(req,res)=>{
     const presupuestoid=parseInt(req.params.id)

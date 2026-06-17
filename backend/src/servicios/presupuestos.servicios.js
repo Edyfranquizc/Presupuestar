@@ -21,11 +21,11 @@ async function buscar(req, res) {
     }
 };
 
-async function creacion(id_usuario,id_cliente,fecha_emision,fecha_vencimiento,estado_enum,monto_subtotal,descuento,impuestos,recargo,monto_total){
-    const resultado = await modelos.crearpresupuesto(id_usuario,id_cliente,fecha_emision,fecha_vencimiento,estado_enum,monto_subtotal,descuento,impuestos,recargo,monto_total)
+async function crearPresupuesto(datosPresupuesto, id_usuario){
+    const resultado = await modelos.crearPresupuesto(datosPresupuesto, id_usuario)
     return resultado
 }
 
 async function edicionestado(){}
 
-export default { listarPresupuestos, edicionestado, buscar }
+export default { listarPresupuestos, edicionestado, buscar, crearPresupuesto }
