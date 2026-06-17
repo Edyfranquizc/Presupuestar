@@ -3,29 +3,27 @@ import dayjs from "dayjs"
 import { v4 } from "uuid"
 
 async function crearPresupuesto(datosPresupuesto, idUsuario) {
-    if (!datosPresupuesto.idCliente) {
-        const { total, subtotal, descuentoMonto, ivaMonto, nombre, email } = datosPresupuesto
-        const idCliente = v4()
-        const consultaNuevoCliente = "INSERT INTO clientes (id, nombre, email) VALUES (?, ?, ?)"
-        const resultadoNuevoCliente = await conexion.execute(consulta, [id_cliente, nombre, email])
-    } else {
-        const { total, subtotal, descuentoMonto, ivaMonto, idCliente } = datosPresupuesto
+    const { cliente_nombre, cliente_email, cliente_telefono, notas, subtotal, descuentoTipo, descuentoValor, descuentoMonto, 
+        baseImponible, ivaPorcentaje, ivaMonto, total, estado} = datosPresupuesto
+    
+    const id_presupuesto = v4()
+    const numero = id_presupuesto.replace(/\D/g, "").slice(0, 5)
+    const fechaCreacion = dayjs().format('YYYY-MM-DD HH:mm:ss')
+    const fechaVencimiento = dayjs(fechaCreacion).add(15, "day").format('YYYY-MM-DD')
+    const fechaUltimaModificacion = fechaCreacion
+    
+    const consultaNuevoPresupuesto = "INSERT INTO presupuestos (id, id_usuario, fecha_creacion, fecha_vencimiento, estado, subtotal, descuento_valor, total, fecha_ultima_modificacion, numero, cliente_nombre, cliente_email, cliente_telefono, descuento_tipo, descuento_monto, base_imponible, iva_porcentaje, iva_monto, notas) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    const resultadoNuevoPresupuesto = await conexion.execute(consultaNuevoPresupuesto, 
+        [id_presupuesto, idUsuario, fechaCreacion, 
+        fechaVencimiento, estado, subtotal, descuentoValor, total, fechaUltimaModificacion, numero, 
+        cliente_nombre, cliente_email, cliente_telefono, descuentoTipo, descuentoMonto, baseImponible, ivaPorcentaje, ivaMonto, notas])
+    
+    for (const item of datosPresupuesto.items) {
+        const { descripcion, cantidad, precioUnitario, subtotal } = item
+        const id_item = v4()
+        const consultaItems = "INSERT INTO items_presupuesto (id, id_presupuesto, descripcion, cantidad, precio_unitario, subtotal) VALUES (?, ?, ?, ?, ?, ?)"
+        const resultadoItems = await conexion.execute(consultaItems, [id_item, id_presupuesto, descripcion, cantidad, precioUnitario, subtotal])
     }
-
-    const id = v4()
-    const fechaEmision = dayjs().format('YYYY-MM-DD HH:mm:ss')
-    const fechaVencimiento = dayjs(fecha_emision).add(15, "day").format('YYYY-MM-DD')
-    const estado = "pendiente"
-    const fechaUltimaModificacion = fecha_emision
-    
-    const consultaNuevoPresupuesto = "INSERT INTO presupuestos (id, id_usuario, id_cliente, fecha_emision, fecha_vencimiento, estado, monto_subtotal, descuento, impuestos, monto_total, fecha_ultima_modificacion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-    
-    const resultadoNuevoPresupuesto = await conexion.execute(consulta, 
-        [id, idUsuario, idCliente, fechaEmision, 
-        fechaVencimiento, estado, subtotal, 
-        descuentoMonto, ivaMonto, total, fechaUltimaModificacion])
-
-    return resultado
 }
 
 async function listaruno(id) {
