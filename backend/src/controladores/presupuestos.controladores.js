@@ -8,7 +8,7 @@ async function listarPresupuestos(req, res) {
     if (resultado !== null) {
         res.status(200).json(resultado)
     } else {
-        res.status(200).json({mensaje: "No se guardaron presupuestos para este usuario."})
+        res.status(200).json([])
     }
 };
 //funcion obterner presupuesto por id
