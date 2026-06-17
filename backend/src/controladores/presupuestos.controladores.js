@@ -22,11 +22,13 @@ async function buscar(req, res) {
     }
 };
 //funcion para añadir presupuesto
-async function crear(req,res){
-    const nuevopresupuesto={...req.body}
-    const resultado =await servicios.postfunc(nuevopresupuesto)
+async function crearPresupuesto(req, res) {
+    const datos = {...req.body}
+    const id_usuario = req.usuario.id
+    const resultado = await servicios.crearPresupuesto(datos, id_usuario)
+
     if (resultado !== null) {
-        res.status(200).json(resultado)
+        res.status(201).json({mensaje: "Presupuesto creado correctamente."})
     } else {
         res.status(400).json({mensaje: "No se ha podido crear el presupuesto."})
     }
@@ -41,4 +43,4 @@ async function edicionestado(req,res){
         res.status(400).json({mensaje: "No se ha podido editar el presupuesto."})
     }
 }
-export default { listarPresupuestos, edicionestado, crear, buscar }
+export default { listarPresupuestos, edicionestado, crearPresupuesto, buscar }
