@@ -37,8 +37,9 @@ export type EstadoPresupuesto = "pendiente" | "aceptado" | "rechazado" | "vencid
 export interface Presupuesto {
   id: string;
   numero: number;
-  clienteId: string;
-  cliente?: Cliente;
+  cliente_nombre: string;
+  cliente_email?: string;
+  cliente_telefono?: string;
   items: ItemPresupuesto[];
   subtotal: number;
   descuentoTipo: "porcentaje" | "monto_fijo";
