@@ -19,6 +19,8 @@ export default function Register() {
 
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [aceptaTerminos, setAceptaTerminos] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -27,12 +29,14 @@ export default function Register() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-
     if (!form.nombre || !form.apellido || !form.email || !form.password) {
       setError("Completá todos los campos.");
       return;
     }
-
+    if (!aceptaTerminos) {
+      setError("Debés aceptar los términos y condiciones.");
+      return;
+    }
     if (form.password.length < 8) {
       setError("La contraseña debe tener al menos 8 caracteres.");
       return;
@@ -55,7 +59,6 @@ export default function Register() {
       setError("Las contraseñas no coinciden.");
       return;
     }
-
     try {
       setIsLoading(true);
       await register({
@@ -63,7 +66,7 @@ export default function Register() {
         email: form.email,
         password: form.password,
       });
-      navigate("/dashboard");
+      navigate("/onboarding");
     } catch {
       setError("No se pudo crear la cuenta. Intentá de nuevo.");
     } finally {
@@ -77,63 +80,104 @@ export default function Register() {
         onSubmit={handleSubmit}
         className="flex flex-col gap-4 w-full max-w-sm"
       >
-        <h1 className="text-xl font-semibold">Crear cuenta</h1>
+        <h1 className="text-xl font-semibold text-center">Logo®</h1>
+        <h2 className="text-lg font-semibold text-center">Crear cuenta</h2>
 
-        <Input
-          name="nombre"
-          placeholder="¿Cómo es tu nombre?"
-          value={form.nombre}
-          onChange={handleChange}
-          label="Nombre y Apellido"
-        />
+        {/* Nombre y Apellido */}
+        <div>
+          <label className="text-sm font-medium text-gray-700 flex items-center gap-1 mb-1">
+            👤 Nombre y Apellido
+          </label>
+          <div className="flex flex-col gap-2">
+            <Input
+              name="nombre"
+              placeholder="¿Cómo es tu nombre?"
+              value={form.nombre}
+              onChange={handleChange}
+            />
+            <Input
+              name="apellido"
+              placeholder="¿Cuál es tu apellido?"
+              value={form.apellido}
+              onChange={handleChange}
+            />
+          </div>
+        </div>
 
-        <Input
-          name="apellido"
-          placeholder="¿Cómo es tu apellido?"
-          value={form.apellido}
-          onChange={handleChange}
-        />
-
+        {/* Email */}
         <Input
           name="email"
           type="email"
           placeholder="Ingresar correo electrónico"
           value={form.email}
           onChange={handleChange}
-          label="Correo electrónico"
+          label="✉️ Correo electrónico"
         />
 
-        <Input
-          name="password"
-          type="password"
-          placeholder="Ingresar contraseña"
-          value={form.password}
-          onChange={handleChange}
-          label="Contraseña"
-        />
+        {/* Contraseña con tooltip de requisitos */}
+        <div>
+          <label className="text-sm font-medium text-gray-700 flex items-center gap-1 mb-1">
+            🔒 Contraseña
+            <span
+              className="cursor-pointer text-gray-400 hover:text-black relative"
+              onMouseEnter={() => setShowTooltip(true)}
+              onMouseLeave={() => setShowTooltip(false)}
+            >
+              ⓘ
+              {showTooltip && (
+                <div className="absolute left-5 top-0 bg-white border border-gray-200 rounded-lg shadow-md p-3 z-10 w-52 text-xs text-gray-600">
+                  <p>✅ Mínimo 8 caracteres.</p>
+                  <p>✅ Al menos una letra mayúscula.</p>
+                  <p>✅ Al menos un número</p>
+                  <p>✅ Carácter especial (ej: *, #, $).</p>
+                </div>
+              )}
+            </span>
+          </label>
 
+          {/* showToggle agrega el ojo automáticamente */}
+          <Input
+            name="password"
+            placeholder="Ingresar contraseña"
+            value={form.password}
+            onChange={handleChange}
+            showToggle
+          />
+        </div>
+
+        {/* Confirmar contraseña — showToggle agrega el ojo automáticamente */}
         <Input
           name="confirmPassword"
-          type="password"
           placeholder="Confirmar contraseña"
           value={form.confirmPassword}
           onChange={handleChange}
-          label="Confirmar contraseña"
+          showToggle
         />
+
+        {/* Checkbox términos */}
+        <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={aceptaTerminos}
+            onChange={(e) => setAceptaTerminos(e.target.checked)}
+            className="w-4 h-4 accent-black"
+          />
+          Acepto términos y condiciones
+        </label>
 
         {error && <p className="text-red-500 text-sm">{error}</p>}
 
         <Button type="submit" isLoading={isLoading} fullWidth>
-          Registrarme
+          Registrarse
         </Button>
 
         <p className="text-sm text-center text-gray-500">
-          ¿Ya tenés cuenta?{" "}
+          ¿Todavía no tenés una cuenta?{" "}
           <span
             onClick={() => navigate("/")}
             className="text-black font-medium cursor-pointer hover:underline"
           >
-            Ingresá acá
+            Registrate ahora
           </span>
         </p>
       </form>
