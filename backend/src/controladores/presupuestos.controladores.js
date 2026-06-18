@@ -28,7 +28,7 @@ async function crearPresupuesto(req, res) {
     const resultado = await servicios.crearPresupuesto(datos, id_usuario)
 
     if (resultado !== null) {
-        res.status(201).json({mensaje: "Presupuesto creado correctamente."})
+        res.status(201).json(resultado)
     } else {
         res.status(400).json({mensaje: "No se ha podido crear el presupuesto."})
     }
