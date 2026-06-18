@@ -12,7 +12,7 @@ async function crearPresupuesto(datosPresupuesto, idUsuario) {
     const fechaVencimiento = dayjs(fechaCreacion).add(15, "day").format('YYYY-MM-DD')
     const fechaUltimaModificacion = fechaCreacion
     
-    const consultaNuevoPresupuesto = "INSERT INTO presupuestos (id, id_usuario, fecha_creacion, fecha_vencimiento, estado, subtotal, descuento_valor, total, fecha_ultima_modificacion, numero, cliente_nombre, cliente_email, cliente_telefono, descuento_tipo, descuento_monto, base_imponible, iva_porcentaje, iva_monto, notas) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    const consultaNuevoPresupuesto = "INSERT INTO presupuestos (id, id_usuario, fecha_creacion, fecha_vencimiento, estado, subtotal, descuento_valor, total, fecha_ultima_modificacion, numero, cliente_nombre, cliente_email, cliente_telefono, descuento_tipo, descuento_monto, base_imponible, iva_porcentaje, iva_monto, notas) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
     const resultadoNuevoPresupuesto = await conexion.execute(consultaNuevoPresupuesto, 
         [id_presupuesto, idUsuario, fechaCreacion, 
         fechaVencimiento, estado, subtotal, descuentoValor, total, fechaUltimaModificacion, numero, 
@@ -44,4 +44,4 @@ async function actualizar(id,estado_enum ) {
     const consulta = ""
 }
 
-export default { crearpresupuesto, listarPresupuestos, listaruno }
+export default { crearPresupuesto, listarPresupuestos, listaruno }
