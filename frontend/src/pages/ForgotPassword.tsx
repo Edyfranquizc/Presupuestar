@@ -12,10 +12,7 @@ export default function ForgotPassword() {
 
   const [step, setStep] = useState<Step>("form");
   const [email, setEmail] = useState("");
-  const [passwords, setPasswords] = useState({
-    nueva: "",
-    confirmar: "",
-  });
+  const [passwords, setPasswords] = useState({ nueva: "", confirmar: "" });
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -42,8 +39,6 @@ export default function ForgotPassword() {
       setError("Completá todos los campos.");
       return;
     }
-
-    //Validaciones de contraseña segura
     if (passwords.nueva.length < 8) {
       setError("La contraseña debe tener al menos 8 caracteres.");
       return;
@@ -66,7 +61,6 @@ export default function ForgotPassword() {
       setError("Las contraseñas no coinciden.");
       return;
     }
-
     setIsLoading(true);
     await new Promise((r) => setTimeout(r, 1000));
     setIsLoading(false);
@@ -74,26 +68,29 @@ export default function ForgotPassword() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
+    <div className="min-h-screen flex items-center justify-center px-4 bg-gray-50">
       <div className="w-full max-w-sm">
         {/* PASO 1: formulario de email */}
         {step === "form" && (
-          <form onSubmit={handleSendEmail} className="flex flex-col gap-4">
-            <h1 className="text-xl font-semibold">Olvidaste tu contraseña</h1>
+          <form
+            onSubmit={handleSendEmail}
+            className="flex flex-col gap-4 text-center"
+          >
+            <h1 className="text-2xl font-semibold">Logo®</h1>
+            <h2 className="text-xl font-semibold">Olvidaste tu contraseña</h2>
             <p className="text-sm text-gray-500">
-              Introducí tu correo para restablecer tu contraseña.
+              Introduce tu correo electrónico para restablecer tu contraseña
             </p>
 
             <Input
               name="email"
               type="email"
-              placeholder="Ingresá tu correo"
+              placeholder="Ingresa tu correo electrónico"
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
                 setError(null);
               }}
-              label="Correo electrónico"
               error={error ?? undefined}
             />
 
@@ -103,19 +100,29 @@ export default function ForgotPassword() {
 
             <p
               onClick={() => navigate("/")}
-              className="text-sm text-center text-gray-500 cursor-pointer hover:underline"
+              className="text-sm text-gray-500 cursor-pointer underline"
             >
-              Volver al inicio de sesión
+              Iniciar sesión
             </p>
           </form>
         )}
 
-        {/* PASO 2: email enviado */}
+        {/* PASO 2: modal correo enviado */}
         {step === "enviado" && (
-          <div className="flex flex-col gap-4 text-center">
-            <h1 className="text-xl font-semibold">¡Correo enviado!</h1>
+          <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm flex flex-col gap-4 text-center">
+            <div className="flex justify-between items-center">
+              <span className="text-gray-500">✓</span>
+              <span
+                onClick={() => navigate("/")}
+                className="cursor-pointer text-gray-400 hover:text-black"
+              >
+                ✕
+              </span>
+            </div>
+
+            <h2 className="text-xl font-semibold">¡Correo enviado!</h2>
             <p className="text-sm text-gray-500">
-              Revisá tu bandeja de entrada en <strong>{email}</strong>
+              Hemos enviado un enlace de recuperación a <strong>{email}</strong>
             </p>
 
             <Button fullWidth onClick={() => setStep("nueva-password")}>
@@ -136,37 +143,50 @@ export default function ForgotPassword() {
 
         {/* PASO 3: nueva contraseña */}
         {step === "nueva-password" && (
-          <form onSubmit={handleUpdatePassword} className="flex flex-col gap-4">
-            <h1 className="text-xl font-semibold">Crear nueva contraseña</h1>
+          <form
+            onSubmit={handleUpdatePassword}
+            className="flex flex-col gap-4 text-center"
+          >
+            <h1 className="text-2xl font-semibold">Logo®</h1>
+            <h2 className="text-xl font-semibold">Crear nueva contraseña</h2>
 
             <Input
               name="nueva"
-              type="password"
               placeholder="Nueva contraseña"
               value={passwords.nueva}
               onChange={handlePasswordChange}
-              label="Nueva contraseña"
+              showToggle
             />
 
             <Input
               name="confirmar"
-              type="password"
-              placeholder="Confirmá tu contraseña"
+              placeholder="Confirmar contraseña"
               value={passwords.confirmar}
               onChange={handlePasswordChange}
-              label="Confirmar contraseña"
+              showToggle
               error={error ?? undefined}
             />
+
+            {/* Lista de requisitos visible */}
+            <div className="text-left text-xs text-gray-500 flex flex-col gap-1">
+              <p>✅ Mínimo 8 caracteres.</p>
+              <p>✅ Al menos una letra mayúscula.</p>
+              <p>✅ Al menos un número</p>
+              <p>✅ Carácter especial (ej: *, #, $).</p>
+            </div>
 
             <Button type="submit" isLoading={isLoading} fullWidth>
               Actualizar contraseña
             </Button>
 
-            <p
-              onClick={() => navigate("/")}
-              className="text-sm text-center text-gray-500 cursor-pointer hover:underline"
-            >
-              ¿Ya tenés cuenta? Ingresá ahora
+            <p className="text-sm text-gray-500">
+              ¿Ya tenés una cuenta?{" "}
+              <span
+                onClick={() => navigate("/")}
+                className="text-black font-medium cursor-pointer hover:underline"
+              >
+                Ingresa ahora
+              </span>
             </p>
           </form>
         )}

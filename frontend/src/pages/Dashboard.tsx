@@ -18,14 +18,11 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen px-4 py-6 max-w-2xl mx-auto">
-
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-lg font-semibold">Presupuestos</h1>
-          {usuario && (
-            <p className="text-sm text-gray-500">{usuario.nombre}</p>
-          )}
+          {usuario && <p className="text-sm text-gray-500">{usuario.nombre}</p>}
         </div>
         <div className="flex gap-2">
           <button
@@ -40,10 +37,7 @@ export default function Dashboard() {
           >
             + Nuevo
           </button>
-          <button
-            onClick={handleLogout}
-            className="text-sm text-gray-500 px-2"
-          >
+          <button onClick={handleLogout} className="text-sm text-gray-500 px-2">
             Salir
           </button>
         </div>
@@ -84,10 +78,10 @@ export default function Dashboard() {
             >
               <div className="flex flex-col gap-1">
                 <p className="text-sm font-medium">
-                  {p.cliente?.nombre ?? "Sin cliente"}
+                  {p.cliente_nombre ?? "Sin cliente"}
                 </p>
                 <p className="text-xs text-gray-400">
-                  #{p.numero} · {formatDate(p.fechaCreacion)}
+                  #{p.numero} · {formatDate(p.fecha_creacion)}
                 </p>
               </div>
               <div className="flex flex-col items-end gap-1">

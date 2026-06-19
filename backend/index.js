@@ -2,8 +2,8 @@ import express from "express"
 import middlewares from "./backend/src/middlewares.js"
 import cors from "cors"
 
-import rutasAuth from "./backend/src/rutas/auth.rutas.js"
-import rutasPres from "./backend/src/rutas/presupuestos.rutas.js"
+import rutasAuth from "./src/rutas/auth.rutas.js"
+import rutasPres from "./src/rutas/presupuestos.rutas.js"
 
 const app = express()
 const corsOptions = {

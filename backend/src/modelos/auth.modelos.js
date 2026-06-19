@@ -22,6 +22,7 @@ async function verificarUsuario(email, password) {
 
 async function registrarUsuario(nombre, apellido, email, password) {
     const verificacion = await verificarexistencia(email)
+
     if (!verificacion) {
         const password_hash = await bcrypt.hashSync(password, 10)
         const id = v4()

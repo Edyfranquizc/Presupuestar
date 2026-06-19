@@ -14,7 +14,7 @@ export async function getPresupuesto(id: string): Promise<Presupuesto> {
 }
 
 export async function crearPresupuesto(
-  data: Omit<Presupuesto, "id" | "numero" | "fechaCreacion">
+  data: Omit<Presupuesto, "id" | "numero" | "fecha_creacion">
 ): Promise<Presupuesto> {
   const response = await api.post<Presupuesto>("/presupuestos", data);
   return response.data;

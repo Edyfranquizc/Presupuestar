@@ -4,11 +4,12 @@ async function verificarexistencia(email) {
     try {
         const consulta = "SELECT usuarios.email FROM `usuarios` WHERE `email` = ?"
         const resultado = await conexion.execute(consulta, [email])
+
         if (resultado[0].length > 0) { 
-            console.log("ya existe ese email en la db.",resultado[0])
+            console.log("ya existe ese email en la db.")
             return true 
         } else { 
-            console.log("no existe ese email en la db.",resultado[0])
+            console.log("no existe ese email en la db.")
             return false }
     }
     catch (error) { console.log(error); throw error }

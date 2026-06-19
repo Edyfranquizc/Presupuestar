@@ -1,8 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { calcularResumen, calcularSubtotalItem } from "../utils/calculations.ts";
+import {
+  calcularResumen,
+  calcularSubtotalItem,
+} from "../utils/calculations.ts";
 import { formatCurrency } from "../utils/formatters.ts";
 import type { ItemPresupuesto } from "../types/index.ts";
+import { crearPresupuesto } from "../services/presupuestos.service.ts";
 
 function itemVacio(): ItemPresupuesto {
   return {
@@ -17,23 +21,31 @@ function itemVacio(): ItemPresupuesto {
 export default function FormPresupuesto() {
   const navigate = useNavigate();
 
-  const [cliente, setCliente] = useState({ nombre: "", email: "", telefono: "" });
+  const [cliente, setCliente] = useState({
+    nombre: "",
+    email: "",
+    telefono: "",
+  });
   const [items, setItems] = useState<ItemPresupuesto[]>([itemVacio()]);
   const [notas, setNotas] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  function actualizarItem(id: string, campo: keyof ItemPresupuesto, valor: string | number) {
+  function actualizarItem(
+    id: string,
+    campo: keyof ItemPresupuesto,
+    valor: string | number,
+  ) {
     setItems((prev) =>
       prev.map((item) => {
         if (item.id !== id) return item;
         const actualizado = { ...item, [campo]: valor };
         actualizado.subtotal = calcularSubtotalItem(
           Number(actualizado.cantidad),
-          Number(actualizado.precioUnitario)
+          Number(actualizado.precioUnitario),
         );
         return actualizado;
-      })
+      }),
     );
   }
 
@@ -60,9 +72,24 @@ export default function FormPresupuesto() {
     }
     try {
       setIsLoading(true);
-      // TODO Sprint 3: conectar con presupuestosService.crearPresupuesto()
-      await new Promise((r) => setTimeout(r, 500));
-      navigate("/dashboard");
+      const payload = {
+  cliente_nombre: cliente.nombre,
+  cliente_email: cliente.email,
+  cliente_telefono: cliente.telefono,
+  items,
+  notas,
+  estado: "pendiente" as const,
+  subtotal: resumen.subtotal,
+  descuento_tipo: "porcentaje" as const,
+  descuento_valor: 0,
+  descuento_monto: resumen.descuentoMonto,
+  base_imponible: resumen.baseImponible,
+  iva_porcentaje: 21,
+  iva_monto: resumen.ivaMonto,
+  total: resumen.total,
+};
+const presupuestoCreado = await crearPresupuesto(payload);
+navigate(`/vista-previa/${presupuestoCreado.id}`);
     } catch {
       setError("No se pudo guardar el presupuesto.");
     } finally {
@@ -74,47 +101,62 @@ export default function FormPresupuesto() {
     <div className="p-4 max-w-2xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-lg font-semibold">Nuevo presupuesto</h1>
-        <button onClick={() => navigate("/dashboard")} className="text-sm text-gray-500">
+        <button
+          onClick={() => navigate("/dashboard")}
+          className="text-sm text-gray-500"
+        >
           ← Volver
         </button>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-
         {/* Cliente */}
         <section className="flex flex-col gap-3">
           <h2 className="text-sm font-medium text-gray-600">Cliente</h2>
           <input
             placeholder="Nombre *"
             value={cliente.nombre}
-            onChange={(e) => setCliente((p) => ({ ...p, nombre: e.target.value }))}
+            onChange={(e) =>
+              setCliente((p) => ({ ...p, nombre: e.target.value }))
+            }
             className="border rounded px-3 py-2 text-sm w-full"
           />
           <input
             placeholder="Email"
             type="email"
             value={cliente.email}
-            onChange={(e) => setCliente((p) => ({ ...p, email: e.target.value }))}
+            onChange={(e) =>
+              setCliente((p) => ({ ...p, email: e.target.value }))
+            }
             className="border rounded px-3 py-2 text-sm w-full"
           />
           <input
             placeholder="Teléfono"
             value={cliente.telefono}
-            onChange={(e) => setCliente((p) => ({ ...p, telefono: e.target.value }))}
+            onChange={(e) =>
+              setCliente((p) => ({ ...p, telefono: e.target.value }))
+            }
             className="border rounded px-3 py-2 text-sm w-full"
           />
         </section>
 
         {/* Items */}
         <section className="flex flex-col gap-3">
-          <h2 className="text-sm font-medium text-gray-600">Productos / servicios</h2>
+          <h2 className="text-sm font-medium text-gray-600">
+            Productos / servicios
+          </h2>
 
           {items.map((item) => (
-            <div key={item.id} className="flex flex-col gap-2 border rounded p-3">
+            <div
+              key={item.id}
+              className="flex flex-col gap-2 border rounded p-3"
+            >
               <input
                 placeholder="Descripción *"
                 value={item.descripcion}
-                onChange={(e) => actualizarItem(item.id, "descripcion", e.target.value)}
+                onChange={(e) =>
+                  actualizarItem(item.id, "descripcion", e.target.value)
+                }
                 className="border rounded px-3 py-2 text-sm w-full"
               />
               <div className="flex gap-2">
@@ -123,7 +165,9 @@ export default function FormPresupuesto() {
                   min="1"
                   placeholder="Cantidad"
                   value={item.cantidad}
-                  onChange={(e) => actualizarItem(item.id, "cantidad", Number(e.target.value))}
+                  onChange={(e) =>
+                    actualizarItem(item.id, "cantidad", Number(e.target.value))
+                  }
                   className="border rounded px-3 py-2 text-sm w-full"
                 />
                 <input
@@ -131,12 +175,20 @@ export default function FormPresupuesto() {
                   min="0"
                   placeholder="Precio"
                   value={item.precioUnitario || ""}
-                  onChange={(e) => actualizarItem(item.id, "precioUnitario", Number(e.target.value))}
+                  onChange={(e) =>
+                    actualizarItem(
+                      item.id,
+                      "precioUnitario",
+                      Number(e.target.value),
+                    )
+                  }
                   className="border rounded px-3 py-2 text-sm w-full"
                 />
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-500">Subtotal: {formatCurrency(item.subtotal)}</span>
+                <span className="text-sm text-gray-500">
+                  Subtotal: {formatCurrency(item.subtotal)}
+                </span>
                 <button
                   type="button"
                   onClick={() => eliminarItem(item.id)}
@@ -201,7 +253,6 @@ export default function FormPresupuesto() {
             {isLoading ? "Guardando..." : "Guardar"}
           </button>
         </div>
-
       </form>
     </div>
   );
