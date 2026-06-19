@@ -73,24 +73,23 @@ export default function FormPresupuesto() {
     try {
       setIsLoading(true);
       const payload = {
-        cliente_nombre: cliente.nombre,
-        cliente_email: cliente.email,
-        cliente_telefono: cliente.telefono,
-        items,
-        notas,
-        estado: "pendiente" as const,
-        subtotal: resumen.subtotal,
-        descuentoTipo: "porcentaje" as const,
-        descuentoValor: 0,
-        descuentoMonto: resumen.descuentoMonto,
-        baseImponible: resumen.baseImponible,
-        ivaPorcentaje: 21,
-        ivaMonto: resumen.ivaMonto,
-        total: resumen.total,
-      };
-      await crearPresupuesto(payload);
-      await new Promise((r) => setTimeout(r, 500));
-      navigate("/dashboard");
+  cliente_nombre: cliente.nombre,
+  cliente_email: cliente.email,
+  cliente_telefono: cliente.telefono,
+  items,
+  notas,
+  estado: "pendiente" as const,
+  subtotal: resumen.subtotal,
+  descuento_tipo: "porcentaje" as const,
+  descuento_valor: 0,
+  descuento_monto: resumen.descuentoMonto,
+  base_imponible: resumen.baseImponible,
+  iva_porcentaje: 21,
+  iva_monto: resumen.ivaMonto,
+  total: resumen.total,
+};
+const presupuestoCreado = await crearPresupuesto(payload);
+navigate(`/vista-previa/${presupuestoCreado.id}`);
     } catch {
       setError("No se pudo guardar el presupuesto.");
     } finally {

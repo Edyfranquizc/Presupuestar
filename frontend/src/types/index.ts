@@ -42,17 +42,17 @@ export interface Presupuesto {
   cliente_telefono?: string;
   items: ItemPresupuesto[];
   subtotal: number;
-  descuentoTipo: "porcentaje" | "monto_fijo";
-  descuentoValor: number;
-  descuentoMonto: number;
-  baseImponible: number;
-  ivaPorcentaje: number;
-  ivaMonto: number;
+  descuento_tipo: "porcentaje" | "monto_fijo";
+  descuento_valor: number;
+  descuento_monto: number;
+  base_imponible: number;
+  iva_porcentaje: number;
+  iva_monto: number;
   total: number;
   estado: EstadoPresupuesto;
   notas?: string;
-  fechaCreacion: string;
-  fechaVencimiento?: string;
+  fecha_creacion: string;
+  fecha_vencimiento?: string;
 }
 
 export interface AuthResponse {
