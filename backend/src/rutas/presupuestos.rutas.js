@@ -5,18 +5,18 @@ import controladores from "../controladores/presupuestos.controladores.js";
 //defino ruta
 const rutasPres = express.Router();
 //funcion get
-rutasPres.get("/presupuestos",controladores.listado)
+rutasPres.get("/presupuestos",controladores.listarPresupuestos)
 //funcion get por id
-rutasPres.get("/presupuestos/:id",controladores.buscar);
+rutasPres.get("/presupuestos/:id",controladores.buscarPresupuesto);
 //funcion post
-rutasPres.post("/presupuestos", controladores.crear);
+rutasPres.post("/presupuestos/crear", controladores.crearPresupuesto);
 //funcion put
-rutasPres.put("/presupuestos/:id",(req,res)=>{
-    const presupuestoid=parseInt(req.params.id)
-    const presupuesto=controladores.putfunc(presupuestoid)
+/*rutasPres.put("/presupuestos/:id",(req,res)=>{
+    const presupuestoid=req.params.id
+    const presupuesto=controladores.edicionestado(presupuestoid)
     res.send()
-});
+});*/
 //funcion para cambiar estado
-rutasPres.put("/presupuestos/:id/estado",controladores.edicionestado);
+rutasPres.put("/presupuestos/:id",controladores.editarEstado);
 //exporto la ruta
 export default rutasPres

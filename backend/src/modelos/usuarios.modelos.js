@@ -2,11 +2,16 @@ import { conexion } from "../data.js"
 //verificamos existencia si hay usuario existente con mail
 async function verificarexistencia(email) {
     try {
-        const consulta = "SELECT usuarios.email FROM usuarios WHERE email = ?"
+        const consulta = "SELECT usuarios.email FROM `usuarios` WHERE `email` = ?"
         const resultado = await conexion.execute(consulta, [email])
-        if (resultado) { return false } else { return true }
+        if (resultado[0].length > 0) { 
+            console.log("ya existe ese email en la db.",resultado[0])
+            return true 
+        } else { 
+            console.log("no existe ese email en la db.",resultado[0])
+            return false }
     }
-    catch (error) { throw error }
+    catch (error) { console.log(error); throw error }
 };
 
 async function a(params) {

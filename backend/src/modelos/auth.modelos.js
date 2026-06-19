@@ -21,17 +21,16 @@ async function verificarUsuario(email, password) {
 }
 
 async function registrarUsuario(nombre, apellido, email, password) {
-    let verificacion = verificarexistencia(email)
-    if (verificacion == false) {
+    const verificacion = await verificarexistencia(email)
+    if (!verificacion) {
         const password_hash = await bcrypt.hashSync(password, 10)
         const id = v4()
         const fecha_registro = dayjs().format('YYYY-MM-DD HH:mm:ss')
         const consulta = "INSERT INTO usuarios (id, nombre, apellido, email, password_hash, fecha_registro) VALUES (?, ?, ?, ?, ?, ?)"
         const resultado = await conexion.execute(consulta, [id, nombre, apellido, email, password_hash, fecha_registro])
-        return { nombre, email }
+        return { id, nombre, email }
+    } else { 
+        return null
     }
-    else { return "El usuario ya esta registrado" }
-
 }
-
 export default { verificarUsuario, registrarUsuario }

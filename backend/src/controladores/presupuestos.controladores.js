@@ -1,18 +1,20 @@
 import servicios from "../servicios/presupuestos.servicios.js"
 
 //funcion obterner todos los presupuestos
-async function listado(req, res) {
-    const resultado =await servicios.get()
+async function listarPresupuestos(req, res) {
+    const id_usuario = req.usuario.id
+    const resultado = await servicios.listarPresupuestos(id_usuario)
+
     if (resultado !== null) {
         res.status(200).json(resultado)
     } else {
-        res.status(400).json({mensaje: "No se ha encontrado presupuestos."})
+        res.status(200).json([])
     }
 };
 //funcion obterner presupuesto por id
-async function buscar(req, res) {
-    const presupuestoid = parseInt(req.params.id)
-    const resultado =await servicios.getid(presupuestoid)
+async function buscarPresupuesto(req, res) {
+    const presupuestoid = req.params.id
+    const resultado =await servicios.buscar(presupuestoid)
     if (resultado !== null) {
         res.status(200).json(resultado)
     } else {
@@ -20,23 +22,27 @@ async function buscar(req, res) {
     }
 };
 //funcion para añadir presupuesto
-async function crear(req,res){
-    const nuevopresupuesto={...req.body}
-    const resultado =await servicios.postfunc(nuevopresupuesto)
+async function crearPresupuesto(req, res) {
+    const datos = {...req.body}
+    const id_usuario = req.usuario.id
+    const resultado = await servicios.crearPresupuesto(datos, id_usuario)
+
     if (resultado !== null) {
-        res.status(200).json(resultado)
+        res.status(201).json(resultado)
     } else {
         res.status(400).json({mensaje: "No se ha podido crear el presupuesto."})
     }
 }
 //funcion para editar estado de presupuesto
-async function edicionestado(req,res){
-    const presupuestoid=parseInt(req.params.id)
-    const resultado =await servicios.putfunc(presupuestoid)
+async function editarEstado(req,res){
+    const presupuesto=req.body
+    const presupuestoid=req.params.id
+
+    const resultado =await servicios.editarEstado(presupuestoid,presupuesto)
     if (resultado !== null) {
-        res.status(200).json(resultado)
+        res.status(200).json({mensaje: "Presupuesto editado."})
     } else {
         res.status(400).json({mensaje: "No se ha podido editar el presupuesto."})
     }
 }
-export default {listado, edicionestado, crear,buscar}
+export default {listarPresupuestos, editarEstado, crearPresupuesto,buscarPresupuesto} 
