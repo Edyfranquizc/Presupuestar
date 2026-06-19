@@ -62,7 +62,8 @@ export default function Register() {
     try {
       setIsLoading(true);
       await register({
-        nombre: `${form.nombre} ${form.apellido}`,
+        nombre: form.nombre,
+        apellido: form.apellido,
         email: form.email,
         password: form.password,
       });

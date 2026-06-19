@@ -11,10 +11,10 @@ interface LoginPayload {
 
 interface RegisterPayload {
   nombre: string;
+  apellido: string;
   email: string;
   password: string;
 }
-
 export async function login(payload: LoginPayload): Promise<AuthResponse> {
   const response = await api.post<AuthResponse>("/auth/login", payload);
   return response.data;
