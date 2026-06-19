@@ -11,7 +11,7 @@ async function listarPresupuestos(id_usuario) {
 }
 
 async function buscarPresupuesto(req, res) {
-    const resultado =await modelos.listaruno(req)
+    const resultado =await modelos.listarPresupuesto(req)
     if (!(resultado[0]==undefined)) {return resultado}else{return null}
     
 };
@@ -21,7 +21,7 @@ async function crearPresupuesto(datosPresupuesto, id_usuario){
 }
 
 async function editarEstado(id,estado){
-    const resultado = await modelos.actualizar(id,estado)
+    const resultado = await modelos.actualizarPresupuesto(id,estado)
     return resultado
 }
 
