@@ -9,7 +9,7 @@ async function crearPresupuesto(datosPresupuesto, idUsuario) {
     
     // Generamos los datos faltantes. 
     const idPresupuesto = v4()
-    const numero = id_presupuesto.replace(/\D/g, "").slice(0, 5)
+    const numero = idPresupuesto.replace(/\D/g, "").slice(0, 5)
     const fechaCreacion = dayjs().format('YYYY-MM-DD HH:mm:ss')
     const fechaVencimiento = dayjs(fechaCreacion).add(15, "day").format('YYYY-MM-DD')
     const fechaUltimaModificacion = fechaCreacion
@@ -32,7 +32,6 @@ async function crearPresupuesto(datosPresupuesto, idUsuario) {
     // Generamos la consulta para traer los datos del presupuesto y sus respectivos ítems. 
     const consultaDevolverNuevoPresupuesto = "SELECT * FROM presupuestos JOIN items_presupuesto ON presupuestos.id = items_presupuesto.id_presupuesto WHERE presupuestos.id = ?"
     const resultadoDevolverNuevoPresupuesto = await conexion.execute(consultaDevolverNuevoPresupuesto, [idPresupuesto])
-    console.log(resultadoDevolverNuevoPresupuesto[0])
 
     // Generamos la estructura solicitada para retornar al front.
     const objetoADevolver = resultadoDevolverNuevoPresupuesto[0].reduce((acumulador, fila) => {
