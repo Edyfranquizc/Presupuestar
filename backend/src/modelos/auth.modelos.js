@@ -34,5 +34,4 @@ async function registrarUsuario(nombre, apellido, email, password) {
         return null
     }
 }
-
 export default { verificarUsuario, registrarUsuario }

@@ -12,7 +12,6 @@ function manejar404(req, res) {
 
 async function verificarToken(req, res, next) {
     const header = req.headers["authorization"]
-
     if (header) {
         const token = header.split(" ")[1]
 

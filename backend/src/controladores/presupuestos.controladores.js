@@ -12,9 +12,9 @@ async function listarPresupuestos(req, res) {
     }
 };
 //funcion obterner presupuesto por id
-async function buscar(req, res) {
-    const presupuestoid = parseInt(req.params.id)
-    const resultado =await servicios.getid(presupuestoid)
+async function buscarPresupuesto(req, res) {
+    const presupuestoid = req.params.id
+    const resultado =await servicios.buscar(presupuestoid)
     if (resultado !== null) {
         res.status(200).json(resultado)
     } else {
@@ -34,13 +34,15 @@ async function crearPresupuesto(req, res) {
     }
 }
 //funcion para editar estado de presupuesto
-async function edicionestado(req,res){
-    const presupuestoid=parseInt(req.params.id)
-    const resultado =await servicios.putfunc(presupuestoid)
+async function editarEstado(req,res){
+    const presupuesto=req.body
+    const presupuestoid=req.params.id
+
+    const resultado =await servicios.editarEstado(presupuestoid,presupuesto)
     if (resultado !== null) {
-        res.status(200).json(resultado)
+        res.status(200).json({mensaje: "Presupuesto editado."})
     } else {
         res.status(400).json({mensaje: "No se ha podido editar el presupuesto."})
     }
 }
-export default { listarPresupuestos, edicionestado, crearPresupuesto, buscar }
+export default {listarPresupuestos, editarEstado, crearPresupuesto,buscarPresupuesto} 

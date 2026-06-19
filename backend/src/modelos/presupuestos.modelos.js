@@ -80,9 +80,10 @@ async function crearPresupuesto(datosPresupuesto, idUsuario) {
 
     return objetoADevolver
 }
-
-async function listaruno(id) {
-    
+async function listarPresupuesto(id) {
+    const consulta = "SELECT * FROM presupuestos where `id` = ? LIMIT 1"
+    const resultado = await conexion.execute(consulta, [id])
+    return resultado[0]
 }
 async function listarPresupuestos(id_usuario) {
     const consulta = "SELECT * FROM presupuestos WHERE id_usuario = ?"
@@ -94,9 +95,16 @@ async function listarPresupuestos(id_usuario) {
         return null
     }
 }
-async function actualizar(id,estado_enum ) {
+async function actualizarPresupuesto(id, estado) {
     const fecha_ultima_modificacion = dayjs().format('YYYY-MM-DD HH:mm:ss')
-    const consulta = ""
+    const consulta = "UPDATE `presupuestos` SET `estado` = ?,`fecha_ultima_modificacion`= ? WHERE `id` = ?"
+    const estat = ["pendiente", "vencido", "rechazado", "aceptado"]
+    for (let check = 0, r = estat.length; check < r; check++) { 
+        if (estado.estado == estat[check]) { 
+            const resultado = await conexion.execute(consulta, [estado.estado, fecha_ultima_modificacion, id])
+        return resultado
+        } 
+    }
+    return null
 }
-
-export default { crearPresupuesto, listarPresupuestos, listaruno }
+export default { crearPresupuesto, listarPresupuestos, listarPresupuesto, actualizarPresupuesto }

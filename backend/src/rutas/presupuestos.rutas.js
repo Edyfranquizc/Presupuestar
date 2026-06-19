@@ -11,12 +11,12 @@ rutasPres.get("/presupuestos/:id", controladores.buscar);
 //funcion post
 rutasPres.post("/", controladores.crearPresupuesto);
 //funcion put
-rutasPres.put("/presupuestos/:id",(req,res)=>{
-    const presupuestoid=parseInt(req.params.id)
-    const presupuesto=controladores.putfunc(presupuestoid)
+/*rutasPres.put("/presupuestos/:id",(req,res)=>{
+    const presupuestoid=req.params.id
+    const presupuesto=controladores.edicionestado(presupuestoid)
     res.send()
-});
+});*/
 //funcion para cambiar estado
-rutasPres.put("/presupuestos/:id/estado",controladores.edicionestado);
+rutasPres.put("/presupuestos/:id",controladores.editarEstado);
 //exporto la ruta
 export default rutasPres

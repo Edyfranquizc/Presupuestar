@@ -10,15 +10,10 @@ async function listarPresupuestos(id_usuario) {
     }
 }
 
-async function buscar(req, res) {
-    const presupuestoid = parseInt(req.params.id)
-    const resultado =await servicios.getid(presupuestoid)
+async function buscarPresupuesto(req, res) {
+    const resultado =await modelos.listarPresupuesto(req)
+    if (!(resultado[0]==undefined)) {return resultado}else{return null}
     
-    if (resultado !== null) {
-        res.status(200).json(resultado)
-    } else {
-        res.status(400).json({mensaje: "No se ha encontrado el presupuesto."})
-    }
 };
 
 async function crearPresupuesto(datosPresupuesto, id_usuario){
@@ -26,6 +21,9 @@ async function crearPresupuesto(datosPresupuesto, id_usuario){
     return resultado
 }
 
-async function edicionestado(){}
+async function editarEstado(id,estado){
+    const resultado = await modelos.actualizarPresupuesto(id,estado)
+    return resultado
+}
 
-export default { listarPresupuestos, edicionestado, buscar, crearPresupuesto }
+export default { listarPresupuestos, editarEstado, buscarPresupuesto, crearPresupuesto }
