@@ -14,7 +14,7 @@ async function listarPresupuestos(req, res) {
 //funcion obterner presupuesto por id
 async function buscarPresupuesto(req, res) {
     const presupuestoid = req.params.id
-    const resultado =await servicios.buscar(presupuestoid)
+    const resultado =await servicios.buscarPresupuesto(presupuestoid)
     if (resultado !== null) {
         res.status(200).json(resultado)
     } else {
