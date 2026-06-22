@@ -28,7 +28,7 @@ export interface ItemPresupuesto {
   id: string;
   descripcion: string;
   cantidad: number;
-  precioUnitario: number;
+  precio_unitario: number;
   subtotal: number;
 }
 
