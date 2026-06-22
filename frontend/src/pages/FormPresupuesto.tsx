@@ -13,7 +13,7 @@ function itemVacio(): ItemPresupuesto {
     id: crypto.randomUUID(),
     descripcion: "",
     cantidad: 1,
-    precioUnitario: 0,
+    precio_unitario: 0,
     subtotal: 0,
   };
 }
@@ -42,7 +42,7 @@ export default function FormPresupuesto() {
         const actualizado = { ...item, [campo]: valor };
         actualizado.subtotal = calcularSubtotalItem(
           Number(actualizado.cantidad),
-          Number(actualizado.precioUnitario),
+          Number(actualizado.precio_unitario),
         );
         return actualizado;
       }),
@@ -66,7 +66,7 @@ export default function FormPresupuesto() {
       setError("El nombre del cliente es obligatorio.");
       return;
     }
-    if (items.some((i) => !i.descripcion.trim() || i.precioUnitario <= 0)) {
+    if (items.some((i) => !i.descripcion.trim() || i.precio_unitario <= 0)) {
       setError("Completá descripción y precio de cada ítem.");
       return;
     }
@@ -174,11 +174,11 @@ navigate(`/vista-previa/${presupuestoCreado.id}`);
                   type="number"
                   min="0"
                   placeholder="Precio"
-                  value={item.precioUnitario || ""}
+                  value={item.precio_unitario || ""}
                   onChange={(e) =>
                     actualizarItem(
                       item.id,
-                      "precioUnitario",
+                      "precio_unitario",
                       Number(e.target.value),
                     )
                   }

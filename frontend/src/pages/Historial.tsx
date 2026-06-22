@@ -84,10 +84,10 @@ export default function Historial() {
             >
               <div className="flex flex-col gap-1">
                 <p className="text-sm font-medium">
-                  {p.cliente?.nombre ?? "Sin cliente"}
+                  {p.cliente_nombre ?? "Sin cliente"}
                 </p>
                 <p className="text-xs text-gray-400">
-                  #{p.numero} · {formatDate(p.fechaCreacion)}
+                  #{p.numero} · {formatDate(p.fecha_creacion)}
                 </p>
               </div>
               <div className="flex flex-col items-end gap-1">
