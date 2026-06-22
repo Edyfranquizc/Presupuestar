@@ -12,7 +12,7 @@ async function crearPresupuesto(datosPresupuesto, id_usuario) {
     const numero = id_presupuesto.replace(/\D/g, "").slice(0, 5)
     const fecha_creacion = dayjs().format('YYYY-MM-DD HH:mm:ss')
     const fecha_vencimiento = dayjs(fecha_creacion).add(15, "day").format('YYYY-MM-DD')
-    const fecha_ultima_modificacion = fechaCreacion
+    const fecha_ultima_modificacion = fecha_creacion
     
     // Guardamos el presupuesto en la base de datos.
     const consultaAgregarNuevoPresupuesto = "INSERT INTO presupuestos (id, id_usuario, fecha_creacion, fecha_vencimiento, estado, subtotal, descuento_valor, total, fecha_ultima_modificacion, numero, cliente_nombre, cliente_email, cliente_telefono, descuento_tipo, descuento_monto, base_imponible, iva_porcentaje, iva_monto, notas) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
