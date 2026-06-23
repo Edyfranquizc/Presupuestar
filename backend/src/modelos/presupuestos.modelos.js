@@ -89,54 +89,101 @@ async function listarPresupuesto(id) {
 async function listarPresupuestos(id_usuario) {
     const consulta = "SELECT * FROM presupuestos JOIN items_presupuesto ON presupuestos.id = items_presupuesto.id_presupuesto WHERE id_usuario = ?"
     const resultado = await conexion.execute(consulta, [id_usuario])
-
+    
+    const presupuestosParaDevolver = []
     for (const presupuesto of resultado[0]) {
-        if (presupuesto.id) {
-
-        }
-        const presupuestoConItems = presupuesto.reduce((acumulador, fila) => {
-            if (!acumulador) {
-                return {
-                    id: fila.id,
-                    id_usuario: fila.id_usuario,
-                    fecha_creacion: fila.fecha_creacion,
-                    fecha_vencimiento: fila.fecha_vencimiento,
-                    cliente_nombre: fila.cliente_nombre,
-                    cliente_email: fila.cliente_email,
-                    estado: fila.estado,
-                    subtotal: fila.subtotal,
-                    descuento_valor: fila.descuento_valor,
-                    descuento_tipo: fila.descuento_tipo,
-                    descuento_monto: fila.descuento_monto,
-                    total: fila.total,
-                    numero: fila.numero,
-                    cliente_telefono: fila.cliente_telefono,
-                    base_imponible: fila.base_imponible,
-                    iva_porcentaje: fila.iva_porcentaje,
-                    iva_monto: fila.iva_monto,
-                    notas: fila.notas,
-                    items: [
-                        {
-                            id: fila.id_item,
-                            id_presupuesto: fila.id_presupuesto,
-                            descripcion: fila.descripcion,
-                            cantidad: fila.cantidad,
-                            precio_unitario: fila.precio_unitario,
-                            subtotal: fila.subtotal
-                        }
-                    ]
-                }
-            } else {
-                acumulador.items.push({id: fila.id_item,
-                            id_presupuesto: fila.id_presupuesto,
-                            descripcion: fila.descripcion,
-                            cantidad: fila.cantidad,
-                            precio_unitario: fila.precio_unitario,
-                            subtotal: fila.subtotal})
-                return acumulador
-            }
-        }, null)
+        // Probar de usar indexOf para verificar el ID "anterior" al de la iteración.
     }
+    resultadoDevolverNuevoPresupuesto[0].reduce((acumulador, fila) => {
+        if (!acumulador) {
+            return {
+                id: fila.id,
+                id_usuario: fila.id_usuario,
+                fecha_creacion: fila.fecha_creacion,
+                fecha_vencimiento: fila.fecha_vencimiento,
+                cliente_nombre: fila.cliente_nombre,
+                cliente_email: fila.cliente_email,
+                estado: fila.estado,
+                subtotal: fila.subtotal,
+                descuento_valor: fila.descuento_valor,
+                descuento_tipo: fila.descuento_tipo,
+                descuento_monto: fila.descuento_monto,
+                total: fila.total,
+                numero: fila.numero,
+                cliente_telefono: fila.cliente_telefono,
+                base_imponible: fila.base_imponible,
+                iva_porcentaje: fila.iva_porcentaje,
+                iva_monto: fila.iva_monto,
+                notas: fila.notas,
+                items: [
+                    {
+                        id: fila.id_item,
+                        id_presupuesto: fila.id_presupuesto,
+                        descripcion: fila.descripcion,
+                        cantidad: fila.cantidad,
+                        precio_unitario: fila.precio_unitario,
+                        subtotal: fila.subtotal
+                    }
+                ]
+            }
+        } else {
+            acumulador.items.push({id: fila.id_item,
+                        id_presupuesto: fila.id_presupuesto,
+                        descripcion: fila.descripcion,
+                        cantidad: fila.cantidad,
+                        precio_unitario: fila.precio_unitario,
+                        subtotal: fila.subtotal})
+            return acumulador
+        }
+    }, null)
+
+    // for (const presupuesto of resultado[0]) {
+    //     if (presupuesto.id === id_presupuesto) {
+
+    //     }
+    //     const presupuestoConItems = presupuesto.reduce((acumulador, fila) => {
+    //         if (!acumulador) {
+    //             return {
+    //                 id: fila.id,
+    //                 id_usuario: fila.id_usuario,
+    //                 fecha_creacion: fila.fecha_creacion,
+    //                 fecha_vencimiento: fila.fecha_vencimiento,
+    //                 cliente_nombre: fila.cliente_nombre,
+    //                 cliente_email: fila.cliente_email,
+    //                 estado: fila.estado,
+    //                 subtotal: fila.subtotal,
+    //                 descuento_valor: fila.descuento_valor,
+    //                 descuento_tipo: fila.descuento_tipo,
+    //                 descuento_monto: fila.descuento_monto,
+    //                 total: fila.total,
+    //                 numero: fila.numero,
+    //                 cliente_telefono: fila.cliente_telefono,
+    //                 base_imponible: fila.base_imponible,
+    //                 iva_porcentaje: fila.iva_porcentaje,
+    //                 iva_monto: fila.iva_monto,
+    //                 notas: fila.notas,
+    //                 items: [
+    //                     {
+    //                         id: fila.id_item,
+    //                         id_presupuesto: fila.id_presupuesto,
+    //                         descripcion: fila.descripcion,
+    //                         cantidad: fila.cantidad,
+    //                         precio_unitario: fila.precio_unitario,
+    //                         subtotal: fila.subtotal
+    //                     }
+    //                 ]
+    //             }
+    //         } else {
+    //             acumulador.items.push({id: fila.id_item,
+    //                         id_presupuesto: fila.id_presupuesto,
+    //                         descripcion: fila.descripcion,
+    //                         cantidad: fila.cantidad,
+    //                         precio_unitario: fila.precio_unitario,
+    //                         subtotal: fila.subtotal})
+    //             return acumulador
+    //         }
+    //     }, null)
+    // }
 
     if (resultado[0].length > 0) {
         return resultado[0]
