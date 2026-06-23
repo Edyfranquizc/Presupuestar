@@ -2,10 +2,10 @@ import { conexion } from "../data.js"
 import dayjs from "dayjs"
 import { v4 } from "uuid"
 
-async function crearPresupuesto(datosPresupuesto, id_usuario) {
+async function crearPresupuesto(datosPresupuesto, idUsuario) {
     // Desestructuración de datos del presupuesto.
-    const { cliente_nombre, cliente_email, cliente_telefono, notas, subtotal, descuento_tipo, descuento_valor, descuento_monto, 
-        base_imponible, iva_porcentaje, iva_monto, total, estado} = datosPresupuesto
+    const { clienteNombre, clienteEmail, clienteTelefono, notas, subtotal, descuentoTipo, descuentoValor, descuentoMonto, 
+        baseImponible, ivaPorcentaje, ivaMonto, total, estado} = datosPresupuesto
     
     // Generamos los datos faltantes. 
     const id_presupuesto = v4()
@@ -17,21 +17,21 @@ async function crearPresupuesto(datosPresupuesto, id_usuario) {
     // Guardamos el presupuesto en la base de datos.
     const consultaAgregarNuevoPresupuesto = "INSERT INTO presupuestos (id, id_usuario, fecha_creacion, fecha_vencimiento, estado, subtotal, descuento_valor, total, fecha_ultima_modificacion, numero, cliente_nombre, cliente_email, cliente_telefono, descuento_tipo, descuento_monto, base_imponible, iva_porcentaje, iva_monto, notas) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
     const resultadoNuevoPresupuesto = await conexion.execute(consultaAgregarNuevoPresupuesto, 
-        [id_presupuesto, id_usuario, fecha_creacion, 
-        fecha_vencimiento, estado, subtotal, descuento_valor, total, fecha_ultima_modificacion, numero, 
-        cliente_nombre, cliente_email, cliente_telefono, descuento_tipo, descuento_monto, base_imponible, iva_porcentaje, iva_monto, notas])
+        [idPresupuesto, idUsuario, fechaCreacion, 
+        fechaVencimiento, estado, subtotal, descuentoValor, total, fechaUltimaModificacion, numero, 
+        clienteNombre, clienteEmail, clienteTelefono, descuentoTipo, descuentoMonto, baseImponible, ivaPorcentaje, ivaMonto, notas])
     
     // Guardamos los ítems en la tabla correspondiente.
     for (const item of datosPresupuesto.items) {
-        const { descripcion, cantidad, precio_unitario, subtotal } = item
-        const id_item = v4()
+        const { descripcion, cantidad, precioUnitario, subtotal } = item
+        const idItem = v4()
         const consultaItems = "INSERT INTO items_presupuesto (id_item, id_presupuesto, descripcion, cantidad, precio_unitario, subtotal) VALUES (?, ?, ?, ?, ?, ?)"
-        const resultadoItems = await conexion.execute(consultaItems, [id_item, id_presupuesto, descripcion, cantidad, precio_unitario, subtotal])
+        const resultadoItems = await conexion.execute(consultaItems, [idItem, idPresupuesto, descripcion, cantidad, precioUnitario, subtotal])
     }
 
     // Generamos la consulta para traer los datos del presupuesto y sus respectivos ítems. 
     const consultaDevolverNuevoPresupuesto = "SELECT * FROM presupuestos JOIN items_presupuesto ON presupuestos.id = items_presupuesto.id_presupuesto WHERE presupuestos.id = ?"
-    const resultadoDevolverNuevoPresupuesto = await conexion.execute(consultaDevolverNuevoPresupuesto, [id_presupuesto])
+    const resultadoDevolverNuevoPresupuesto = await conexion.execute(consultaDevolverNuevoPresupuesto, [idPresupuesto])
 
     // Generamos la estructura solicitada para retornar al front.
     const objetoADevolver = resultadoDevolverNuevoPresupuesto[0].reduce((acumulador, fila) => {
@@ -39,21 +39,21 @@ async function crearPresupuesto(datosPresupuesto, id_usuario) {
             return {
                 id: fila.id,
                 id_usuario: fila.id_usuario,
-                fecha_creacion: fila.fecha_creacion,
-                fecha_vencimiento: fila.fecha_vencimiento,
+                fechaCreacion: fila.fecha_creacion,
+                fechaVencimiento: fila.fecha_vencimiento,
                 cliente_nombre: fila.cliente_nombre,
                 cliente_email: fila.cliente_email,
                 estado: fila.estado,
                 subtotal: fila.subtotal,
-                descuento_valor: fila.descuento_valor,
-                descuento_tipo: fila.descuento_tipo,
-                descuento_monto: fila.descuento_monto,
+                descuentoValor: fila.descuento_valor,
+                descuentoTipo: fila.descuento_tipo,
+                descuentoMonto: fila.descuento_monto,
                 total: fila.total,
                 numero: fila.numero,
                 cliente_telefono: fila.cliente_telefono,
-                base_imponible: fila.base_imponible,
-                iva_porcentaje: fila.iva_porcentaje,
-                iva_monto: fila.iva_monto,
+                baseImponible: fila.base_imponible,
+                ivaPorcentaje: fila.iva_porcentaje,
+                ivaMonto: fila.iva_monto,
                 notas: fila.notas,
                 items: [
                     {
@@ -61,7 +61,7 @@ async function crearPresupuesto(datosPresupuesto, id_usuario) {
                         id_presupuesto: fila.id_presupuesto,
                         descripcion: fila.descripcion,
                         cantidad: fila.cantidad,
-                        precio_unitario: fila.precio_unitario,
+                        precioUnitario: fila.precio_unitario,
                         subtotal: fila.subtotal
                     }
                 ]
@@ -71,7 +71,7 @@ async function crearPresupuesto(datosPresupuesto, id_usuario) {
                         id_presupuesto: fila.id_presupuesto,
                         descripcion: fila.descripcion,
                         cantidad: fila.cantidad,
-                        precio_unitario: fila.precio_unitario,
+                        precioUnitario: fila.precio_unitario,
                         subtotal: fila.subtotal})
             return acumulador
         }

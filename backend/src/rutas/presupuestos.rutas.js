@@ -7,7 +7,7 @@ const rutasPres = express.Router();
 //funcion get
 rutasPres.get("/", controladores.listarPresupuestos)
 //funcion get por id
-rutasPres.get("/presupuestos/:id", controladores.buscar);
+rutasPres.get("/:id", controladores.buscarPresupuesto);
 //funcion post
 rutasPres.post("/", controladores.crearPresupuesto);
 //funcion put
@@ -17,6 +17,6 @@ rutasPres.post("/", controladores.crearPresupuesto);
     res.send()
 });*/
 //funcion para cambiar estado
-rutasPres.put("/presupuestos/:id",controladores.editarEstado);
+rutasPres.put("/:id/estado",controladores.editarEstado);
 //exporto la ruta
 export default rutasPres

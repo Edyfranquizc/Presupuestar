@@ -1,5 +1,5 @@
 import express from "express"
-import middlewares from "./backend/src/middlewares.js"
+import middlewares from "./src/middlewares.js"
 import cors from "cors"
 
 import rutasAuth from "./src/rutas/auth.rutas.js"
