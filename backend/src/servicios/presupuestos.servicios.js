@@ -2,7 +2,6 @@ import modelos from "../modelos/presupuestos.modelos.js"
 
 async function listarPresupuestos(id_usuario) {
     const resultado = await modelos.listarPresupuestos(id_usuario)
-
     if (resultado !== null) {
         return resultado
     } else {
@@ -12,8 +11,8 @@ async function listarPresupuestos(id_usuario) {
 
 async function buscarPresupuesto(req, res) {
     const resultado =await modelos.listarPresupuesto(req)
+    //console.log(resultado[0])
     if (!(resultado[0]==undefined)) {return resultado}else{return null}
-    
 };
 
 async function crearPresupuesto(datosPresupuesto, id_usuario){
