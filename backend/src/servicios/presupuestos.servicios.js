@@ -11,7 +11,6 @@ async function listarPresupuestos(id_usuario) {
 
 async function buscarPresupuesto(req, res) {
     const resultado =await modelos.listarPresupuesto(req)
-    //console.log(resultado[0])
     if (!(resultado[0]==undefined)) {return resultado}else{return null}
 };
 
