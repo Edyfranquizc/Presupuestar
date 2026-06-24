@@ -88,10 +88,8 @@ async function listarPresupuesto(id) {
     let consultaitems="SELECT items_presupuesto.descripcion,items_presupuesto.cantidad,items_presupuesto.precio_unitario,items_presupuesto.subtotal FROM items_presupuesto left JOIN presupuestos ON id_presupuesto = presupuestos.id where id_presupuesto = ?"
     const resultado = await conexion.execute(consulta, [id])
     const resultadoItems=await conexion.execute(consultaitems, [id])
-    let suman=[resultado[0],resultadoItems[0]]
-    let item0=resultadoItems[0]
-    //console.log(suman)
-    console.log(item0[0])
+    let saldo =resultado[0]
+    let suman=[saldo[0],resultadoItems[0]]
     return suman
 }
 async function listarPresupuestos(id_usuario) {
