@@ -81,9 +81,16 @@ async function crearPresupuesto(datosPresupuesto, id_usuario) {
 }
 
 async function listarPresupuesto(id) {
-    const consulta = "SELECT * FROM presupuestos where `id` = ? LIMIT 1"
+    let consulta="SELECT * FROM presupuestos where id = ?"
     const resultado = await conexion.execute(consulta, [id])
-    return resultado[0]
+    //consulto la tabla de items del presupuesto por separado
+    let consultaitems="SELECT items_presupuesto.descripcion,items_presupuesto.cantidad,items_presupuesto.precio_unitario,items_presupuesto.subtotal FROM items_presupuesto left JOIN presupuestos ON id_presupuesto = presupuestos.id where id_presupuesto = ?"
+    const resultadoItems=await conexion.execute(consultaitems, [id])
+    //paso el diccionario solo
+    let saldo =resultado[0]
+    //junto el diccionario con la lista de items que obtengo de su consulta
+    let suman=[saldo[0],resultadoItems[0]]
+    return suman
 }
 
 async function listarPresupuestos(id_usuario) {
