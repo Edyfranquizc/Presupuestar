@@ -5,6 +5,8 @@ import { usePresupuesto } from "../hooks/usePresupuesto.ts";
 import { useAuth } from "../hooks/useAuth.ts";
 import { formatCurrency, formatDate } from "../utils/formatters.ts";
 import Badge from "../components/ui/Badge.tsx";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import PresupuestoPDF from "../components/pdf/PresupuestoPDF.tsx";
 
 export default function VistaPrevia() {
   const { id } = useParams<{ id: string }>();
@@ -32,6 +34,21 @@ export default function VistaPrevia() {
 
       {!isLoading && !error && presupuesto && (
         <div className="border rounded-lg p-6 flex flex-col gap-6">
+          <div className="flex justify-end">
+            <PDFDownloadLink
+              document={
+                <PresupuestoPDF
+                  presupuesto={presupuesto}
+                  emisorNombre={usuario?.nombre ?? "Emprendedor/a"}
+                  emisorEmail={usuario?.email}
+                />
+              }
+              fileName={`presupuesto-${presupuesto.numero}.pdf`}
+              className="bg-black text-white text-sm rounded px-4 py-2"
+            >
+              {({ loading }) => (loading ? "Generando..." : "Descargar PDF")}
+            </PDFDownloadLink>
+          </div>
 
           {/* Emisor */}
           <div className="flex items-center gap-3 pb-4 border-b">
@@ -40,7 +57,9 @@ export default function VistaPrevia() {
               {usuario?.nombre?.[0]?.toUpperCase() ?? "?"}
             </div>
             <div>
-              <p className="text-sm font-semibold">{usuario?.nombre ?? "Emprendedor/a"}</p>
+              <p className="text-sm font-semibold">
+                {usuario?.nombre ?? "Emprendedor/a"}
+              </p>
               <p className="text-xs text-gray-400">{usuario?.email}</p>
             </div>
           </div>
@@ -48,7 +67,9 @@ export default function VistaPrevia() {
           {/* Encabezado del presupuesto */}
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium">Presupuesto #{presupuesto.numero}</p>
+              <p className="text-sm font-medium">
+                Presupuesto #{presupuesto.numero}
+              </p>
               <p className="text-xs text-gray-400">
                 Emitido el {formatDate(presupuesto.fecha_creacion)}
                 {presupuesto.fecha_vencimiento &&
@@ -63,10 +84,14 @@ export default function VistaPrevia() {
             <p className="text-xs text-gray-400 mb-1">Cliente</p>
             <p className="text-sm font-medium">{presupuesto.cliente_nombre}</p>
             {presupuesto.cliente_email && (
-              <p className="text-xs text-gray-500">{presupuesto.cliente_email}</p>
+              <p className="text-xs text-gray-500">
+                {presupuesto.cliente_email}
+              </p>
             )}
             {presupuesto.cliente_telefono && (
-              <p className="text-xs text-gray-500">{presupuesto.cliente_telefono}</p>
+              <p className="text-xs text-gray-500">
+                {presupuesto.cliente_telefono}
+              </p>
             )}
           </div>
 
@@ -87,8 +112,12 @@ export default function VistaPrevia() {
                   <tr key={item.id} className="border-b last:border-0">
                     <td className="py-2">{item.descripcion}</td>
                     <td className="py-2 text-right">{item.cantidad}</td>
-                    <td className="py-2 text-right">{formatCurrency(item.precio_unitario)}</td>
-                    <td className="py-2 text-right">{formatCurrency(item.subtotal)}</td>
+                    <td className="py-2 text-right">
+                      {formatCurrency(item.precio_unitario)}
+                    </td>
+                    <td className="py-2 text-right">
+                      {formatCurrency(item.subtotal)}
+                    </td>
                   </tr>
                 ))}
               </tbody>
