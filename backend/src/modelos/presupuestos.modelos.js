@@ -209,7 +209,7 @@ async function verificarFechaVencimiento() {
     const presupuestosPendientes = await conexion.execute(consulta)
 
     for (const presupuesto of presupuestosPendientes[0]) {
-        const fechaVencimiento = presupuesto.fecha_vencimiento
+        const fechaVencimiento = dayjs(presupuesto.fecha_vencimiento).format('YYYY-MM-DD')
         const id = presupuesto.id
         const fechaHoy = dayjs().format('YYYY-MM-DD')
 
