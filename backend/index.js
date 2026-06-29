@@ -1,6 +1,8 @@
 import express from "express"
 import middlewares from "./src/middlewares.js"
 import cors from "cors"
+import modelos from "./src/modelos/presupuestos.modelos.js"
+import cron from "node-cron"
 
 import rutasAuth from "./src/rutas/auth.rutas.js"
 import rutasPres from "./src/rutas/presupuestos.rutas.js"
@@ -21,3 +23,5 @@ app.use(middlewares.manejar404)
 
 const puerto = 3001
 app.listen(puerto, () => {console.log(`Servidor corriendo en http://localhost:${puerto}`)})
+
+cron.schedule("0 0 * * *", modelos.verificarFechaVencimiento)
