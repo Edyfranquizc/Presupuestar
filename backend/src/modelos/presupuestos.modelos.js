@@ -208,7 +208,7 @@ async function verificarFechaVencimiento() {
     const consulta = "SELECT id, fecha_vencimiento FROM presupuestos WHERE estado = 'pendiente'"
     const presupuestosPendientes = await conexion.execute(consulta)
 
-    for (presupuesto of presupuestosPendientes[0]) {
+    for (const presupuesto of presupuestosPendientes[0]) {
         const fechaVencimiento = presupuesto.fecha_vencimiento
         const id = presupuesto.id
         const fechaHoy = dayjs().format('YYYY-MM-DD')
