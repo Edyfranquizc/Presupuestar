@@ -203,4 +203,21 @@ async function actualizarPresupuesto(id, estado) {
     }
     return null
 }
-export default { crearPresupuesto, listarPresupuestos, listarPresupuesto, actualizarPresupuesto }
+
+async function verificarFechaVencimiento() {
+    const consulta = "SELECT id, fecha_vencimiento FROM presupuestos WHERE estado = 'pendiente'"
+    const presupuestosPendientes = await conexion.execute(consulta)
+
+    for (const presupuesto of presupuestosPendientes[0]) {
+        const fechaVencimiento = dayjs(presupuesto.fecha_vencimiento).format('YYYY-MM-DD')
+        const id = presupuesto.id
+        const fechaHoy = dayjs().format('YYYY-MM-DD')
+
+        if (fechaVencimiento === fechaHoy) {
+            const consultaActualizacion = "UPDATE presupuestos SET estado = 'vencido' WHERE id = ?"
+            const presupuestoActualizado = await conexion.execute(consultaActualizacion, [id])
+        }
+    }
+}
+
+export default { crearPresupuesto, listarPresupuestos, listarPresupuesto, actualizarPresupuesto, verificarFechaVencimiento }
