@@ -9,6 +9,7 @@ import Dashboard from "../pages/Dashboard.tsx";
 import FormPresupuesto from "../pages/FormPresupuesto.tsx";
 import Historial from "../pages/Historial.tsx";
 import VistaPrevia from "../pages/VistaPrevia.tsx";
+import Perfil from "../pages/Perfil.tsx";
 
 export default function AppRouter() {
   return (
@@ -48,6 +49,14 @@ export default function AppRouter() {
             element={
               <ProtectedRoute>
                 <VistaPrevia />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/perfil"
+            element={
+              <ProtectedRoute>
+                <Perfil />
               </ProtectedRoute>
             }
           />
