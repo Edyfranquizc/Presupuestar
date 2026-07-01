@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "../context/AuthContext.tsx";
-import ProtectedRoute from "../components/auth/ProtectedRoute.tsx";
 import Login from "../pages/Login.tsx";
 import Register from "../pages/Register.tsx";
 import ForgotPassword from "../pages/ForgotPassword.tsx";
@@ -10,6 +9,7 @@ import FormPresupuesto from "../pages/FormPresupuesto.tsx";
 import Historial from "../pages/Historial.tsx";
 import VistaPrevia from "../pages/VistaPrevia.tsx";
 import Perfil from "../pages/Perfil.tsx";
+import LayoutProtegido from "../components/layout/LayoutProtegido.tsx";
 
 export default function AppRouter() {
   return (
@@ -23,41 +23,41 @@ export default function AppRouter() {
           <Route
             path="/dashboard"
             element={
-              <ProtectedRoute>
+              <LayoutProtegido>
                 <Dashboard />
-              </ProtectedRoute>
+              </LayoutProtegido>
             }
           />
           <Route
             path="/nuevo-presupuesto"
             element={
-              <ProtectedRoute>
+              <LayoutProtegido>
                 <FormPresupuesto />
-              </ProtectedRoute>
+              </LayoutProtegido>
             }
           />
           <Route
             path="/historial"
             element={
-              <ProtectedRoute>
+              <LayoutProtegido>
                 <Historial />
-              </ProtectedRoute>
+              </LayoutProtegido>
             }
           />
           <Route
             path="/vista-previa/:id"
             element={
-              <ProtectedRoute>
+              <LayoutProtegido>
                 <VistaPrevia />
-              </ProtectedRoute>
+              </LayoutProtegido>
             }
           />
           <Route
             path="/perfil"
             element={
-              <ProtectedRoute>
+              <LayoutProtegido>
                 <Perfil />
-              </ProtectedRoute>
+              </LayoutProtegido>
             }
           />
         </Routes>
