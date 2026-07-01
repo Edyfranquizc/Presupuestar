@@ -5,7 +5,7 @@ import { v4 } from "uuid"
 async function crearPresupuesto(datosPresupuesto, id_usuario) {
     // Desestructuración de datos del presupuesto.
     const { cliente_nombre, cliente_email, cliente_telefono, notas, subtotal, descuento_tipo, descuento_valor, descuento_monto,
-        base_imponible, iva_porcentaje, iva_monto, total, estado } = datosPresupuesto
+        base_imponible, iva_porcentaje, iva_monto, total, estado, id_emprendimiento } = datosPresupuesto
 
     // Generamos los datos faltantes. 
     const id_presupuesto = v4()
@@ -15,11 +15,11 @@ async function crearPresupuesto(datosPresupuesto, id_usuario) {
     const fecha_ultima_modificacion = fecha_creacion
 
     // Guardamos el presupuesto en la base de datos.
-    const consultaAgregarNuevoPresupuesto = "INSERT INTO presupuestos (id, id_usuario, fecha_creacion, fecha_vencimiento, estado, subtotal, descuento_valor, total, fecha_ultima_modificacion, numero, cliente_nombre, cliente_email, cliente_telefono, descuento_tipo, descuento_monto, base_imponible, iva_porcentaje, iva_monto, notas) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    const consultaAgregarNuevoPresupuesto = "INSERT INTO presupuestos (id, fecha_creacion, fecha_vencimiento, estado, subtotal, descuento_valor, total, fecha_ultima_modificacion, numero, cliente_nombre, cliente_email, cliente_telefono, descuento_tipo, descuento_monto, base_imponible, iva_porcentaje, iva_monto, notas, id_emprendimiento) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
     const resultadoNuevoPresupuesto = await conexion.execute(consultaAgregarNuevoPresupuesto,
-        [id_presupuesto, id_usuario, fecha_creacion,
+        [id_presupuesto, fecha_creacion,
             fecha_vencimiento, estado, subtotal, descuento_valor, total, fecha_ultima_modificacion, numero,
-            cliente_nombre, cliente_email, cliente_telefono, descuento_tipo, descuento_monto, base_imponible, iva_porcentaje, iva_monto, notas])
+            cliente_nombre, cliente_email, cliente_telefono, descuento_tipo, descuento_monto, base_imponible, iva_porcentaje, iva_monto, notas, id_emprendimiento])
 
     // Guardamos los ítems en la tabla correspondiente.
     for (const item of datosPresupuesto.items) {
@@ -38,7 +38,6 @@ async function crearPresupuesto(datosPresupuesto, id_usuario) {
         if (!acumulador) {
             return {
                 id: fila.id,
-                id_usuario: fila.id_usuario,
                 fecha_creacion: fila.fecha_creacion,
                 fecha_vencimiento: fila.fecha_vencimiento,
                 cliente_nombre: fila.cliente_nombre,
@@ -55,6 +54,7 @@ async function crearPresupuesto(datosPresupuesto, id_usuario) {
                 iva_porcentaje: fila.iva_porcentaje,
                 iva_monto: fila.iva_monto,
                 notas: fila.notas,
+                id_emprendimiento: fila.id_emprendimiento,
                 items: [
                     {
                         id: fila.id_item,
@@ -142,7 +142,6 @@ async function listarPresupuestos(id_usuario) {
         if (!presupuestoEncontrado) {
             acumulador.push({
                 id: fila.id,
-                id_usuario: fila.id_usuario,
                 fecha_creacion: fila.fecha_creacion,
                 fecha_vencimiento: fila.fecha_vencimiento,
                 cliente_nombre: fila.cliente_nombre,
@@ -159,6 +158,7 @@ async function listarPresupuestos(id_usuario) {
                 iva_porcentaje: fila.iva_porcentaje,
                 iva_monto: fila.iva_monto,
                 notas: fila.notas,
+                id_emprendimiento: fila.id_emprendimiento,
                 items: [
                     {
                         id: fila.id_item,
