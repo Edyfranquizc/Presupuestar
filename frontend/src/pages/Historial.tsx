@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { usePresupuestos } from "../hooks/usePresupuestos.ts";
+import { actualizarEstado } from "../services/presupuestos.service.ts";
 import { formatCurrency, formatDate } from "../utils/formatters.ts";
 import Badge from "../components/ui/Badge.tsx";
 import type { EstadoPresupuesto } from "../types/index.ts";
@@ -17,8 +18,27 @@ const ESTADOS: { value: EstadoPresupuesto | "todos"; label: string }[] = [
 
 export default function Historial() {
   const navigate = useNavigate();
-  const { presupuestos, isLoading, error } = usePresupuestos();
+  const { presupuestos: data, isLoading, error } = usePresupuestos();
+const [estadosLocales, setEstadosLocales] = useState<Record<string, EstadoPresupuesto>>({});
   const [filtro, setFiltro] = useState<EstadoPresupuesto | "todos">("todos");
+  const [actualizando, setActualizando] = useState<string | null>(null);
+
+  const presupuestos = data.map((p) =>
+  estadosLocales[p.id] ? { ...p, estado: estadosLocales[p.id] } : p
+);
+
+  async function handleCambiarEstado(id: string, nuevoEstado: "aceptado" | "rechazado") {
+    setActualizando(id);
+    try {
+      await actualizarEstado(id, nuevoEstado);
+      setEstadosLocales((prev) => ({ ...prev, [id]: nuevoEstado }));
+
+    } catch {
+      alert("No se pudo actualizar el estado. Intentá de nuevo.");
+    } finally {
+      setActualizando(null);
+    }
+  }
 
   const filtrados =
     filtro === "todos"
@@ -57,7 +77,6 @@ export default function Historial() {
         ))}
       </div>
 
-      {/* Estados de carga y error */}
       {isLoading && (
         <p className="text-sm text-gray-400 text-center py-8">Cargando...</p>
       )}
@@ -66,14 +85,12 @@ export default function Historial() {
         <p className="text-sm text-red-500 text-center py-8">{error}</p>
       )}
 
-      {/* Empty state */}
       {!isLoading && !error && filtrados.length === 0 && (
         <p className="text-sm text-gray-400 text-center py-8">
           No hay presupuestos{filtro !== "todos" ? ` ${filtro}s` : ""}.
         </p>
       )}
 
-      {/* Lista */}
       {!isLoading && !error && filtrados.length > 0 && (
         <div className="flex flex-col gap-3">
           {filtrados.map((p) => (
@@ -90,11 +107,30 @@ export default function Historial() {
                   #{p.numero} · {formatDate(p.fecha_creacion)}
                 </p>
               </div>
+
               <div className="flex flex-col items-end gap-1">
                 <p className="text-sm font-semibold">
                   {formatCurrency(p.total)}
                 </p>
-                <Badge variant={p.estado} />
+
+                {p.estado === "pendiente" ? (
+                  <select
+                    disabled={actualizando === p.id}
+                    defaultValue=""
+                    onClick={(e) => e.stopPropagation()}
+                    onChange={(e) => {
+                      e.stopPropagation();
+                      handleCambiarEstado(p.id, e.target.value as "aceptado" | "rechazado");
+                    }}
+                    className="text-xs border border-gray-300 rounded px-2 py-0.5 bg-white disabled:opacity-50"
+                  >
+                    <option value="" disabled>Pendiente ▾</option>
+                    <option value="aceptado">Aceptado</option>
+                    <option value="rechazado">Rechazado</option>
+                  </select>
+                ) : (
+                  <Badge variant={p.estado} />
+                )}
               </div>
             </div>
           ))}
