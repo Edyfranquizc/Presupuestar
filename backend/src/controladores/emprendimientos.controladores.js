@@ -11,4 +11,15 @@ async function listarEmprendimientos(req, res) {
     }
 }
 
+async function crearEmprendimiento(datosEmprendimiento) {
+    const idUsuario = req.usuario.id
+    const resultado = await servicios.crearEmprendimiento(datosEmprendimiento, idUsuario)
+
+    if (resultado) {
+        res.status(201).json(resultado)
+    } else {
+        res.status(400).json({mensaje: "No se pudo crear el presupuesto."})
+    }
+}
+
 export default { listarEmprendimientos }

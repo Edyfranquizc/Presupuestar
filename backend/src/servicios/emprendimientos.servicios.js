@@ -10,4 +10,14 @@ async function listarEmprendimientos(id_usuario) {
     }
 }
 
+async function crearEmprendimiento(datosEmprendimiento, idUsuario) {
+    const nuevoEmprendimiento = await modelos.crearEmprendimiento(datosEmprendimiento, idUsuario)
+
+    if (nuevoEmprendimiento != null) {
+        return nuevoEmprendimiento
+    } else {
+        return false 
+    }
+}
+
 export default { listarEmprendimientos }
