@@ -9,3 +9,5 @@ async function listarEmprendimientos(id_usuario) {
         return false 
     }
 }
+
+export default { listarEmprendimientos }

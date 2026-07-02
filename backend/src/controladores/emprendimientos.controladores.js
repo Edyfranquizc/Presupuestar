@@ -10,3 +10,5 @@ async function listarEmprendimientos(req, res) {
         res.status(200).json([])
     }
 }
+
+export default { listarEmprendimientos }

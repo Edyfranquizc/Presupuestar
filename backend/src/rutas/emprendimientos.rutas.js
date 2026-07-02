@@ -3,7 +3,7 @@ import controladores from "../controladores/emprendimientos.controladores.js"
 
 const rutasEmprendimientos = express.Router()
 
-rutasEmprendimientos.get("/", listarEmprendimientos)
-rutasEmprendimientos.post("/", crearEmprendimiento)
+rutasEmprendimientos.get("/", controladores.listarEmprendimientos)
+// rutasEmprendimientos.post("/", controladores.crearEmprendimiento)
 
-export { rutasEmprendimientos }
+export default rutasEmprendimientos
