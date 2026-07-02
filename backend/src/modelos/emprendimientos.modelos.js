@@ -16,10 +16,10 @@ async function crearEmprendimiento(datosEmprendimiento, id_usuario) {
     const { nombre, rubro, moneda, cuit, logo_url } = datosEmprendimiento
 
     const id = v4()
-    const consulta = "INSER INTO emprendimientos (id, nombre, rubro, moneda, cuit, logo_url, id_usuario) VALUES (?, ?, ?, ?, ?, ?, ?)"
-    const nuevoEmprendimiento = conexion.execute(consulta, [id, nombre, rubro, moneda, cuit, logo_url, id_usuario])
+    const consulta = "INSERT INTO emprendimientos (id, nombre, rubro, moneda, cuit, logo_url, id_usuario) VALUES (?, ?, ?, ?, ?, ?, ?)"
+    const nuevoEmprendimiento = await conexion.execute(consulta, [id, nombre, rubro, moneda, cuit, logo_url, id_usuario])
 
     return { id, nombre, rubro, moneda, cuit, logo_url }
 }
 
-export default { listarEmprendimientos }
+export default { listarEmprendimientos, crearEmprendimiento }

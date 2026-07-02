@@ -20,4 +20,4 @@ async function crearEmprendimiento(datosEmprendimiento, idUsuario) {
     }
 }
 
-export default { listarEmprendimientos }
+export default { listarEmprendimientos, crearEmprendimiento }

@@ -11,7 +11,8 @@ async function listarEmprendimientos(req, res) {
     }
 }
 
-async function crearEmprendimiento(datosEmprendimiento) {
+async function crearEmprendimiento(req, res) {
+    const datosEmprendimiento = req.body
     const idUsuario = req.usuario.id
     const resultado = await servicios.crearEmprendimiento(datosEmprendimiento, idUsuario)
 
@@ -22,4 +23,4 @@ async function crearEmprendimiento(datosEmprendimiento) {
     }
 }
 
-export default { listarEmprendimientos }
+export default { listarEmprendimientos, crearEmprendimiento }
