@@ -8,9 +8,9 @@ interface AuthContextType {
   usuario: Usuario | null;
   token: string | null;
   isAuthenticated: boolean;
+  emprendimientoActivo: Emprendimiento | null;
   guardarSesion: (token: string, usuario: Usuario) => void;
   cerrarSesion: () => void;
-  emprendimientoActivo: Emprendimiento | null;
   setEmprendimientoActivo: (e: Emprendimiento) => void;
 }
 
@@ -19,25 +19,28 @@ const AuthContext = createContext<AuthContextType | null>(null);
 function getInitialState() {
   const tokenGuardado = localStorage.getItem("token");
   const usuarioGuardado = localStorage.getItem("usuario");
+  const emprendimientoGuardado = localStorage.getItem("emprendimiento");
   if (tokenGuardado && usuarioGuardado) {
     try {
       return {
         token: tokenGuardado,
         usuario: JSON.parse(usuarioGuardado) as Usuario,
+        emprendimiento: emprendimientoGuardado ? JSON.parse(emprendimientoGuardado) as Emprendimiento : null,
       };
     } catch {
       localStorage.removeItem("token");
       localStorage.removeItem("usuario");
+      localStorage.removeItem("emprendimiento");
     }
   }
-  return { token: null, usuario: null };
+  return { token: null, usuario: null, emprendimiento: null };
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const initial = getInitialState();
   const [usuario, setUsuario] = useState<Usuario | null>(initial.usuario);
   const [token, setToken] = useState<string | null>(initial.token);
-  const [emprendimientoActivo, setEmprendimientoActivo] = useState<Emprendimiento | null>(null);
+  const [emprendimientoActivo, setEmprendimientoActivoState] = useState<Emprendimiento | null>(initial.emprendimiento);
 
   function guardarSesion(nuevoToken: string, nuevoUsuario: Usuario) {
     localStorage.setItem("token", nuevoToken);
@@ -49,8 +52,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   function cerrarSesion() {
     localStorage.removeItem("token");
     localStorage.removeItem("usuario");
+    localStorage.removeItem("emprendimiento");
     setToken(null);
     setUsuario(null);
+    setEmprendimientoActivoState(null);
+  }
+
+  function setEmprendimientoActivo(emp: Emprendimiento) {
+    localStorage.setItem("emprendimiento", JSON.stringify(emp));
+    setEmprendimientoActivoState(emp);
   }
 
   return (
@@ -59,9 +69,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         usuario,
         token,
         isAuthenticated: !!token,
+        emprendimientoActivo,
         guardarSesion,
         cerrarSesion,
-        emprendimientoActivo,
         setEmprendimientoActivo,
       }}
     >
