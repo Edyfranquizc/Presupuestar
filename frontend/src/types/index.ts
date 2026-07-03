@@ -70,5 +70,5 @@ export interface Emprendimiento {
   rubro: string;
   moneda: string;
   cuit?: string;
-  logo_url?: string;
+  logo_url?: string | null;
 }

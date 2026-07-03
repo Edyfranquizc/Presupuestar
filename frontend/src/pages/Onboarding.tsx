@@ -73,6 +73,7 @@ export default function Onboarding() {
         rubro: form.rubro,
         cuit: form.cuit,
         moneda: form.moneda,
+        logo_url: null,
       });
       setEmprendimientoActivo(emprendimiento);
     } catch {
