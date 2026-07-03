@@ -25,7 +25,7 @@ async function crearEmprendimiento(datosEmprendimiento, id_usuario) {
     if (cantidadEmprendimientos[0][0]['COUNT(id)'] < 3) {
         const id = v4()
         const consultaNuevoEmprendimiento = "INSERT INTO emprendimientos (id, nombre, rubro, moneda, cuit, logo_url, id_usuario) VALUES (?, ?, ?, ?, ?, ?, ?)"
-        const nuevoEmprendimiento = await conexion.execute(consultaNuevoEmprendimiento, [id, nombre, rubro, moneda, cuit, logo_url, id_usuario])
+const nuevoEmprendimiento = await conexion.execute(consultaNuevoEmprendimiento, [id, nombre, rubro, moneda, cuit ?? null, logo_url ?? null, id_usuario])
         return { id, nombre, rubro, moneda, cuit, logo_url }
     } else {
         return false
