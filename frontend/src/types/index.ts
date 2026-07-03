@@ -64,3 +64,11 @@ export interface ApiError {
   error: string;
   mensaje: string;
 }
+export interface Emprendimiento {
+  id: string;
+  nombre: string;
+  rubro: string;
+  moneda: string;
+  cuit?: string;
+  logo_url?: string;
+}

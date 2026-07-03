@@ -2,7 +2,7 @@
 
 import { createContext, useState } from "react";
 import type { ReactNode } from "react";
-import type { Usuario } from "../types/index.ts";
+import type { Usuario, Emprendimiento } from "../types/index.ts";
 
 interface AuthContextType {
   usuario: Usuario | null;
@@ -10,6 +10,8 @@ interface AuthContextType {
   isAuthenticated: boolean;
   guardarSesion: (token: string, usuario: Usuario) => void;
   cerrarSesion: () => void;
+  emprendimientoActivo: Emprendimiento | null;
+  setEmprendimientoActivo: (e: Emprendimiento) => void;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -35,6 +37,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const initial = getInitialState();
   const [usuario, setUsuario] = useState<Usuario | null>(initial.usuario);
   const [token, setToken] = useState<string | null>(initial.token);
+  const [emprendimientoActivo, setEmprendimientoActivo] = useState<Emprendimiento | null>(null);
 
   function guardarSesion(nuevoToken: string, nuevoUsuario: Usuario) {
     localStorage.setItem("token", nuevoToken);
@@ -58,6 +61,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAuthenticated: !!token,
         guardarSesion,
         cerrarSesion,
+        emprendimientoActivo,
+        setEmprendimientoActivo,
       }}
     >
       {children}
