@@ -1,6 +1,8 @@
 // Pantalla onboarding para configurar datos personales, del negocio y redes sociales
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth.ts";
+import { crearEmprendimiento } from "../services/emprendimientos.service.ts";
 
 import Input from "../components/ui/Input";
 import Button from "../components/ui/Button";
@@ -22,6 +24,7 @@ function Dots({ active, total = 4 }: { active: number; total?: number }) {
 
 export default function Onboarding() {
   const navigate = useNavigate();
+  const { setEmprendimientoActivo } = useAuth();
   const [step, setStep] = useState(0);
 
   const [form, setForm] = useState({
@@ -61,11 +64,23 @@ export default function Onboarding() {
     setStep((prev) => prev - 1);
   }
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    console.log("Datos del onboarding listos para enviar:", form);
-    nextStep(); // Envía al modal final de éxito
+  async function handleSubmit(e: React.FormEvent) {
+  e.preventDefault();
+  if (form.nombreNegocio.trim()) {
+    try {
+      const emprendimiento = await crearEmprendimiento({
+        nombre: form.nombreNegocio,
+        rubro: form.rubro,
+        cuit: form.cuit,
+        moneda: form.moneda,
+      });
+      setEmprendimientoActivo(emprendimiento);
+    } catch {
+      // si falla, igualmente avanzamos
+    }
   }
+  nextStep();
+}
 
   function handleFinish() {
     navigate("/dashboard");

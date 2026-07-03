@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth.ts";
 import {
   calcularResumen,
   calcularSubtotalItem,
@@ -20,6 +21,7 @@ function itemVacio(): ItemPresupuesto {
 
 export default function FormPresupuesto() {
   const navigate = useNavigate();
+  const { emprendimientoActivo } = useAuth();
 
   const [cliente, setCliente] = useState({
     nombre: "",
@@ -87,6 +89,7 @@ export default function FormPresupuesto() {
   iva_porcentaje: 21,
   iva_monto: resumen.ivaMonto,
   total: resumen.total,
+  id_emprendimiento: emprendimientoActivo?.id ?? null,
 };
 const presupuestoCreado = await crearPresupuesto(payload);
 navigate(`/vista-previa/${presupuestoCreado.id}`);
