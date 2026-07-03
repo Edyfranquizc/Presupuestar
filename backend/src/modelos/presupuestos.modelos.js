@@ -132,7 +132,7 @@ async function listarPresupuesto(id) {
 }
 
 async function listarPresupuestos(id_usuario) {
-    const consulta = "SELECT * FROM presupuestos JOIN items_presupuesto ON presupuestos.id = items_presupuesto.id_presupuesto WHERE id_usuario = ?"
+    const consulta = "SELECT presupuestos.*, items_presupuesto.* FROM presupuestos JOIN emprendimientos ON presupuestos.id_emprendimiento = emprendimientos.id JOIN items_presupuesto ON presupuestos.id = items_presupuesto.id_presupuesto WHERE emprendimientos.id_usuario = ?"
     const resultado = await conexion.execute(consulta, [id_usuario])
 
     // Generamos la estructura para devolver al front.
