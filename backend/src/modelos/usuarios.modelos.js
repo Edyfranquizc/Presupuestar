@@ -1,4 +1,3 @@
-import { act } from "react"
 import { conexion } from "../data.js"
 //verificamos existencia si hay usuario existente con mail
 async function verificarexistencia(email) {
@@ -28,9 +27,12 @@ async function traerUsuario(idUsuario) {
 }
 
 async function actualizarUsuario(idUsuario, datosUsuario) {
-    for (const dato of datosUsuario) {
-        const consultaActualizar = `UPDATE ${dato} FROM usuarios WHERE id = ?`
-        const resultadoConsultaActualizar = conexion.execute(consulta, [idUsuario])
+    for (const dato of Object.entries(datosUsuario)) {
+        const columna = dato[0]
+        const valor = dato[1]
+
+        const consultaActualizar = `UPDATE usuarios SET ${columna} = ? WHERE id = ?`
+        const resultadoConsultaActualizar = conexion.execute(consultaActualizar, [valor, idUsuario])
     }
 
     const usuarioActualizado = await traerUsuario(idUsuario)
