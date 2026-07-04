@@ -20,12 +20,20 @@ async function traerUsuario(idUsuario) {
     const resultadoUsuario = await conexion.execute(consulta, [idUsuario])
 
     if (resultadoUsuario[0]) {
-        console.log(resultadoUsuario[0])
         return resultadoUsuario[0]
     } else {
         return null
     }
-    
+}
+
+async function actualizarUsuario(idUsuario, datosUsuario) {
+    for (const dato of datosUsuario) {
+        const consultaActualizar = `UPDATE ${dato} FROM usuarios WHERE id = ?`
+        const resultadoConsultaActualizar = conexion.execute(consulta, [idUsuario])
+    }
+
+    const usuarioActualizado = await traerUsuario(idUsuario)
+    return usuarioActualizado
 }
 
 async function a(params) {
