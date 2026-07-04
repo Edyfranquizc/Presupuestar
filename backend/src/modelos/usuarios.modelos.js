@@ -28,6 +28,5 @@ async function traerUsuario(idUsuario) {
 }
 
 async function a(params) {
-    
 }
-export default verificarexistencia
+export default { verificarexistencia, traerUsuario }
