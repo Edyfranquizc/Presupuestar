@@ -17,9 +17,10 @@ async function verificarexistencia(email) {
 
 async function traerUsuario(idUsuario) {
     const consulta = "SELECT * FROM usuarios WHERE id = ?"
-    const resultadoUsuario = conexion.execute(consulta, [idUsuario])
+    const resultadoUsuario = await conexion.execute(consulta, [idUsuario])
 
     if (resultadoUsuario[0]) {
+        console.log(resultadoUsuario[0])
         return resultadoUsuario[0]
     } else {
         return null
