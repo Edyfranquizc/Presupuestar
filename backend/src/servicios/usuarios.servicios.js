@@ -20,4 +20,4 @@ async function actualizarUsuario(idUsuario, datosUsuario) {
     }
 }
 
-export default { traerUsuario }
+export default { traerUsuario, actualizarUsuario }

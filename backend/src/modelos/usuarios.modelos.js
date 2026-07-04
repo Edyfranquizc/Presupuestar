@@ -1,3 +1,4 @@
+import { act } from "react"
 import { conexion } from "../data.js"
 //verificamos existencia si hay usuario existente con mail
 async function verificarexistencia(email) {
@@ -38,4 +39,5 @@ async function actualizarUsuario(idUsuario, datosUsuario) {
 
 async function a(params) {
 }
-export default { verificarexistencia, traerUsuario }
+
+export default { verificarexistencia, traerUsuario, actualizarUsuario }
