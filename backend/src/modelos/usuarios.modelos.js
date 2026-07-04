@@ -15,6 +15,18 @@ async function verificarexistencia(email) {
     catch (error) { console.log(error); throw error }
 };
 
+async function traerUsuario(idUsuario) {
+    const consulta = "SELECT * FROM usuarios WHERE id = ?"
+    const resultadoUsuario = conexion.execute(consulta, [idUsuario])
+
+    if (resultadoUsuario[0]) {
+        return resultadoUsuario[0]
+    } else {
+        return null
+    }
+    
+}
+
 async function a(params) {
     
 }
