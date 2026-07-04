@@ -15,7 +15,31 @@ async function verificarexistencia(email) {
     catch (error) { console.log(error); throw error }
 };
 
-async function a(params) {
-    
+async function traerUsuario(idUsuario) {
+    const consulta = "SELECT * FROM usuarios WHERE id = ?"
+    const resultadoUsuario = await conexion.execute(consulta, [idUsuario])
+
+    if (resultadoUsuario[0]) {
+        return resultadoUsuario[0]
+    } else {
+        return null
+    }
 }
-export default verificarexistencia
+
+async function actualizarUsuario(idUsuario, datosUsuario) {
+    for (const dato of Object.entries(datosUsuario)) {
+        const columna = dato[0]
+        const valor = dato[1]
+
+        const consultaActualizar = `UPDATE usuarios SET ${columna} = ? WHERE id = ?`
+        const resultadoConsultaActualizar = conexion.execute(consultaActualizar, [valor, idUsuario])
+    }
+
+    const usuarioActualizado = await traerUsuario(idUsuario)
+    return usuarioActualizado
+}
+
+async function a(params) {
+}
+
+export default { verificarexistencia, traerUsuario, actualizarUsuario }

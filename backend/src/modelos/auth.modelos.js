@@ -2,7 +2,7 @@ import { conexion } from "../data.js"
 import bcrypt from "bcrypt"
 import dayjs from "dayjs"
 import { v4 } from "uuid"
-import verificarexistencia from "./usuarios.modelos.js"
+import modelos from "./usuarios.modelos.js"
 
 async function verificarUsuario(email, password) {
     const consulta = "SELECT usuarios.id, usuarios.nombre, usuarios.email, usuarios.password_hash FROM usuarios WHERE email = ?"
@@ -21,7 +21,7 @@ async function verificarUsuario(email, password) {
 }
 
 async function registrarUsuario(nombre, apellido, email, password) {
-    const verificacion = await verificarexistencia(email)
+    const verificacion = await modelos.verificarexistencia(email)
 
     if (!verificacion) {
         const password_hash = await bcrypt.hashSync(password, 10)
