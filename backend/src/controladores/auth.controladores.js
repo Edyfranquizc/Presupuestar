@@ -12,8 +12,10 @@ async function login(req, res) {
 }
 
 async function registro(req, res) {
-    const { nombre, apellido, email, password } = req.body 
-    const resultado = await servicios.registro(nombre, apellido, email, password)
+    const { nombre, apellido, email, password,fecha_nacimiento,ubicacion } = req.body 
+    console.log(nombre, apellido, email,fecha_nacimiento,ubicacion)
+    console.log(req.body)
+    const resultado = await servicios.registro(nombre, apellido, email, password,fecha_nacimiento,ubicacion)
     
     if (resultado !== null) {
         res.status(201).json(resultado)

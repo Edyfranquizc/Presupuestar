@@ -15,8 +15,9 @@ async function login(email, password) {
     }
 }
 
-async function registro(nombre, apellido, email, password) {
-    const resultado = await modelos.registrarUsuario(nombre, apellido, email, password)
+async function registro(nombre, apellido, email, password,fecha_nacimiento,ubicacion) {
+    console.log(nombre, apellido, email,fecha_nacimiento,ubicacion)
+    const resultado = await modelos.registrarUsuario(nombre, apellido, email, password,fecha_nacimiento,ubicacion)
 
     if (resultado !== null) {
         const token = generarToken({email: email, password: password, id: resultado.id})

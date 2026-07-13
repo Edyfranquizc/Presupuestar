@@ -11,6 +11,9 @@ async function verificarUsuario(email, password) {
     if (resultado[0].length > 0) {
         const hash = resultado[0][0].password_hash
         if (bcrypt.compareSync(password, hash)) {
+            const fecha_login = dayjs().format('YYYY-MM-DD HH:mm:ss')
+            const act=`UPDATE usuarios SET ultimo_login_fecha= ? WHERE usuarios.email = ?`
+            const fas = await conexion.execute(act, [fecha_login,email])
             return resultado[0]
         } else {
             return null
@@ -20,15 +23,23 @@ async function verificarUsuario(email, password) {
     }
 }
 
-async function registrarUsuario(nombre, apellido, email, password) {
+async function registrarUsuario(nombre, apellido, email, password,experiencia_rubro_credito,fecha_nacimiento,ubicacion) {
     const verificacion = await modelos.verificarexistencia(email)
-
-    if (!verificacion) {
+    /*let co = [nombre, apellido, email, password,fecha_nacimiento,ubicacion,experiencia_rubro_credito]
+    for (let i in co){
+        console.log(co.at(i))
+        if (co[i]==undefined){
+            co[i]=null
+            console.log(co)
+        }
+    }
+    console.log(nombre, apellido, email,fecha_nacimiento,ubicacion,experiencia_rubro_credito)
+    */if (!verificacion) {
         const password_hash = await bcrypt.hashSync(password, 10)
         const id = v4()
         const fecha_registro = dayjs().format('YYYY-MM-DD HH:mm:ss')
-        const consulta = "INSERT INTO usuarios (id, nombre, apellido, email, password_hash, fecha_registro) VALUES (?, ?, ?, ?, ?, ?)"
-        const resultado = await conexion.execute(consulta, [id, nombre, apellido, email, password_hash, fecha_registro])
+        const consulta = "INSERT INTO usuarios (id, nombre, apellido, email, password_hash, fecha_registro,fecha_nacimiento,ubicacion,experiencia_rubro_credito) VALUES (?, ?, ?, ?, ?, ?,?,?,?)"
+        const resultado = await conexion.execute(consulta, [id, nombre, apellido, email, password_hash, fecha_registro,fecha_nacimiento,ubicacion,experiencia_rubro_credito])
         return { id, nombre, email }
     } else { 
         return null

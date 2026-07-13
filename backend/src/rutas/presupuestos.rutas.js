@@ -10,12 +10,6 @@ rutasPres.get("/", controladores.listarPresupuestos)
 rutasPres.get("/:id", controladores.buscarPresupuesto);
 //funcion post
 rutasPres.post("/", controladores.crearPresupuesto);
-//funcion put
-/*rutasPres.put("/presupuestos/:id",(req,res)=>{
-    const presupuestoid=req.params.id
-    const presupuesto=controladores.edicionestado(presupuestoid)
-    res.send()
-});*/
 //funcion para cambiar estado
 rutasPres.put("/:id/estado",controladores.editarEstado);
 //exporto la ruta
