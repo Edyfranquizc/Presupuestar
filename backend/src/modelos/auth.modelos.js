@@ -20,7 +20,8 @@ async function verificarUsuario(email, password) {
     }
 }
 
-async function registrarUsuario(nombre, apellido, email, password) {
+async function registrarUsuario(datosUsuario) {
+    const { email, nombre, apellido, fecha_nacimiento, ubicacion, password } = datosUsuario
     const verificacion = await modelos.verificarexistencia(email)
 
     if (!verificacion) {
