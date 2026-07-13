@@ -32,7 +32,7 @@ async function actualizarUsuario(idUsuario, datosUsuario) {
         const valor = dato[1]
 
         const consultaActualizar = `UPDATE usuarios SET ${columna} = ? WHERE id = ?`
-        const resultadoConsultaActualizar = conexion.execute(consultaActualizar, [valor, idUsuario])
+        const resultadoConsultaActualizar = await conexion.execute(consultaActualizar, [valor, idUsuario])
     }
 
     const usuarioActualizado = await traerUsuario(idUsuario)
