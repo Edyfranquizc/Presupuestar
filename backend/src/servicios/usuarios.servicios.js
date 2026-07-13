@@ -20,4 +20,14 @@ async function actualizarUsuario(idUsuario, datosUsuario) {
     }
 }
 
-export default { traerUsuario, actualizarUsuario }
+async function cambiarPassword(idUsuario, datosPassword) {
+    const resultado = await modelos.cambiarPassword(idUsuario, datosPassword)
+
+    if (resultado) {
+        return resultado
+    } else {
+        return null
+    }
+}
+
+export default { traerUsuario, actualizarUsuario, cambiarPassword }

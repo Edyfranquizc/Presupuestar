@@ -42,4 +42,11 @@ async function actualizarUsuario(idUsuario, datosUsuario) {
 async function a(params) {
 }
 
+async function cambiarPassword(idUsuario, datosPassword) {
+    // Primero comparamos la contraseña que se envía con la contraseña guardada. Si coinciden, se guarda la nueva contraseña. 
+    const { passwordActual, passwordNueva } = datosPassword
+
+    
+}
+
 export default { verificarexistencia, traerUsuario, actualizarUsuario }
