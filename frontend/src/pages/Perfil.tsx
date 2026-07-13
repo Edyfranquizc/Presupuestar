@@ -4,12 +4,16 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth.ts";
 import { getEmprendimientos } from "../services/emprendimientos.service.ts";
-import type { Emprendimiento } from "../types/index.ts";
+import { getUsuarioMe, actualizarUsuarioMe } from "../services/usuarios.service.ts";
+import type { Emprendimiento, Usuario } from "../types/index.ts";
 
 export default function Perfil() {
   const navigate = useNavigate();
   const { usuario, cerrarSesion, emprendimientoActivo, setEmprendimientoActivo } = useAuth();
   const [emprendimientos, setEmprendimientos] = useState<Emprendimiento[]>([]);
+  const [datosUsuario, setDatosUsuario] = useState<Usuario | null>(null);
+  const [editando, setEditando] = useState(false);
+  const [form, setForm] = useState({ fecha_nacimiento: "", ubicacion: "" });
 
   useEffect(() => {
     getEmprendimientos()
@@ -17,9 +21,25 @@ export default function Perfil() {
       .catch(() => {});
   }, []);
 
+  useEffect(() => {
+    getUsuarioMe().then((datos) => {
+      setDatosUsuario(datos);
+      setForm({
+        fecha_nacimiento: datos?.fecha_nacimiento ?? "",
+        ubicacion: datos?.ubicacion ?? "",
+      });
+    }).catch(() => {});
+  }, []);
+
   function handleLogout() {
     cerrarSesion();
     navigate("/");
+  }
+
+  async function handleGuardarDatos() {
+    const actualizado = await actualizarUsuarioMe(form);
+    setDatosUsuario(actualizado);
+    setEditando(false);
   }
 
   return (
@@ -41,13 +61,31 @@ export default function Perfil() {
       {/* Tus datos */}
       <p className="text-sm font-semibold mb-2">Tus datos</p>
       <div className="border rounded-lg divide-y text-sm mb-6">
-        <div className="flex justify-between px-4 py-3 text-gray-400">
-          <span>Fecha de nacimiento</span>
-          <span>—</span>
+        <div className="flex justify-between items-center px-4 py-3">
+          <span className="text-gray-500">Fecha de nacimiento</span>
+          {editando ? (
+            <input
+              type="date"
+              value={form.fecha_nacimiento}
+              onChange={(e) => setForm({ ...form, fecha_nacimiento: e.target.value })}
+              className="border rounded px-2 py-1 text-sm"
+            />
+          ) : (
+            <span>{datosUsuario?.fecha_nacimiento ?? "—"}</span>
+          )}
         </div>
-        <div className="flex justify-between px-4 py-3 text-gray-400">
-          <span>Ubicación</span>
-          <span>—</span>
+        <div className="flex justify-between items-center px-4 py-3">
+          <span className="text-gray-500">Ubicación</span>
+          {editando ? (
+            <input
+              type="text"
+              value={form.ubicacion}
+              onChange={(e) => setForm({ ...form, ubicacion: e.target.value })}
+              className="border rounded px-2 py-1 text-sm"
+            />
+          ) : (
+            <span>{datosUsuario?.ubicacion ?? "—"}</span>
+          )}
         </div>
         <div className="flex justify-between px-4 py-3">
           <span>Contraseña</span>
@@ -57,6 +95,17 @@ export default function Perfil() {
           >
             Cambiar
           </span>
+        </div>
+        <div className="px-4 py-3">
+          {editando ? (
+            <button onClick={handleGuardarDatos} className="text-sm font-medium underline">
+              Guardar
+            </button>
+          ) : (
+            <button onClick={() => setEditando(true)} className="text-sm text-gray-500 underline">
+              Editar datos
+            </button>
+          )}
         </div>
       </div>
 
