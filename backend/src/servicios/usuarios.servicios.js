@@ -24,7 +24,7 @@ async function cambiarPassword(idUsuario, datosPassword) {
     const resultado = await modelos.cambiarPassword(idUsuario, datosPassword)
 
     if (resultado) {
-        return resultado
+        return true
     } else {
         return null
     }

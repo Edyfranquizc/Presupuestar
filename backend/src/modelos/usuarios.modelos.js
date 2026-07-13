@@ -1,4 +1,6 @@
 import { conexion } from "../data.js"
+import bcrypt from "bcrypt"
+
 //verificamos existencia si hay usuario existente con mail
 async function verificarexistencia(email) {
     try {
@@ -43,10 +45,26 @@ async function a(params) {
 }
 
 async function cambiarPassword(idUsuario, datosPassword) {
-    // Primero comparamos la contraseña que se envía con la contraseña guardada. Si coinciden, se guarda la nueva contraseña. 
     const { passwordActual, passwordNueva } = datosPassword
-
     
+    const consulta = "SELECT usuarios.password_hash FROM usuarios WHERE id = ?"
+    const resultadoConsulta = await conexion.execute(consulta, [idUsuario])
+
+    if (resultadoConsulta[0].length > 0) {
+        const hash = resultadoConsulta[0][0]
+        console.log(hash)
+        if (bcrypt.compareSync(passwordActual, hash)) {
+            try {
+                const passwordNuevaHash = bcrypt.hashSync(passwordNueva, 10)
+                const consultaPasswordNueva = "UPDATE usuarios SET password_hash = ? WHERE id = ?"
+                const resultadoConsultaPasswordNueva = await conexion.execute(consultaPasswordNueva, [passwordNuevaHash, idUsuario])
+            
+                return true
+            } catch (error) {
+                return null
+            }
+        }
+    }
 }
 
 export default { verificarexistencia, traerUsuario, actualizarUsuario }
