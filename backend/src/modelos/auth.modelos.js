@@ -21,15 +21,15 @@ async function verificarUsuario(email, password) {
 }
 
 async function registrarUsuario(datosUsuario) {
-    const { email, nombre, apellido, fecha_nacimiento, ubicacion, password } = datosUsuario
+    const { email, nombre, apellido, fecha_nacimiento, ubicacion, password, dni } = datosUsuario
     const verificacion = await modelos.verificarexistencia(email)
 
     if (!verificacion) {
         const password_hash = await bcrypt.hashSync(password, 10)
         const id = v4()
         const fecha_registro = dayjs().format('YYYY-MM-DD HH:mm:ss')
-        const consulta = "INSERT INTO usuarios (id, nombre, apellido, email, password_hash, fecha_registro) VALUES (?, ?, ?, ?, ?, ?)"
-        const resultado = await conexion.execute(consulta, [id, nombre, apellido, email, password_hash, fecha_registro])
+        const consulta = "INSERT INTO usuarios (id, nombre, apellido, email, password_hash, fecha_registro, fecha_nacimiento, ubicacion, dni) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        const resultado = await conexion.execute(consulta, [id, nombre, apellido, email, password_hash, fecha_registro, fecha_nacimiento, ubicacion, dni])
         return { id, nombre, email }
     } else { 
         return null
