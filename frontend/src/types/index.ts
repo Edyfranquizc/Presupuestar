@@ -4,6 +4,9 @@ export interface Usuario {
   id: string;
   nombre: string;
   email: string;
+  apellido?: string;
+  fecha_nacimiento?: string | null;
+  ubicacion?: string | null;
 }
 
 export interface Empresa {
