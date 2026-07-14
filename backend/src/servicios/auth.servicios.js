@@ -15,9 +15,9 @@ async function login(email, password) {
     }
 }
 
-async function registro(nombre, apellido, email, password,fecha_nacimiento,ubicacion) {
-    console.log(nombre, apellido, email,fecha_nacimiento,ubicacion)
-    const resultado = await modelos.registrarUsuario(nombre, apellido, email, password,fecha_nacimiento,ubicacion)
+async function registro(nombre, apellido, email, password,experiencia_rubro_credito,fecha_nacimiento,ubicacion,dni) {
+    //console.log(nombre, apellido, email,fecha_nacimiento,ubicacion)
+    const resultado = await modelos.registrarUsuario(nombre, apellido, email, password,experiencia_rubro_credito,fecha_nacimiento,ubicacion,dni)
 
     if (resultado !== null) {
         const token = generarToken({email: email, password: password, id: resultado.id})
