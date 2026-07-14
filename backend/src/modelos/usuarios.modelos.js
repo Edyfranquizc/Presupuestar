@@ -51,7 +51,7 @@ async function cambiarPassword(idUsuario, datosPassword) {
     const resultadoConsulta = await conexion.execute(consulta, [idUsuario])
 
     if (resultadoConsulta[0].length > 0) {
-        const hash = resultadoConsulta[0][0]
+        const hash = resultadoConsulta[0][0].password_hash
         console.log(hash)
         if (bcrypt.compareSync(passwordActual, hash)) {
             try {
@@ -67,4 +67,4 @@ async function cambiarPassword(idUsuario, datosPassword) {
     }
 }
 
-export default { verificarexistencia, traerUsuario, actualizarUsuario }
+export default { verificarexistencia, traerUsuario, actualizarUsuario, cambiarPassword }
