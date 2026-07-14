@@ -15,3 +15,11 @@ export async function actualizarUsuarioMe(
   const response = await api.put<Usuario>("/usuarios/me", datos);
   return response.data ?? null;
 }
+
+export async function cambiarPasswordMe(datos: {
+  passwordActual: string;
+  passwordNueva: string;
+}): Promise<{ mensaje: string }> {
+  const response = await api.put<{ mensaje: string }>("/usuarios/me/password", datos);
+  return response.data;
+}
