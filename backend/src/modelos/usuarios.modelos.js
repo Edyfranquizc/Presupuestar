@@ -10,8 +10,8 @@ async function verificarexistencia(email) {
 
         if (resultado[0].length > 0) { 
             console.log("ya existe ese email en la db.")
-            return true 
-        } else { 
+            return true
+        } else {
             console.log("no existe ese email en la db.")
             return false }
     }
