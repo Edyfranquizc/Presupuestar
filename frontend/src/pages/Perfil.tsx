@@ -119,7 +119,7 @@ export default function Perfil() {
             Creá el primero para empezar a armar presupuestos con tu marca.
           </p>
           <button
-            onClick={() => navigate("/onboarding")}
+            onClick={() => navigate("/onboarding", { state: { soloNegocio: true } })}
             className="mt-2 bg-black text-white text-sm rounded px-4 py-2"
           >
             + Crear emprendimiento
@@ -147,7 +147,7 @@ export default function Perfil() {
           })}
           {emprendimientos.length < 3 && (
             <button
-              onClick={() => navigate("/onboarding")}
+              onClick={() => navigate("/onboarding", { state: { soloNegocio: true } })}
               className="border rounded-lg px-4 py-3 text-sm text-gray-500 text-left"
             >
               + Crear otro emprendimiento
