@@ -61,7 +61,7 @@ export default function Dashboard() {
           );
         })}
         <button
-          onClick={() => navigate("/onboarding")}
+          onClick={() => navigate("/onboarding", { state: { soloNegocio: true } })}
           className="flex flex-col items-center gap-1 shrink-0"
         >
           <div className="w-12 h-12 rounded-full bg-gray-800 text-white flex items-center justify-center text-lg">
