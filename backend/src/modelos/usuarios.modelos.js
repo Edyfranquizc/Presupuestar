@@ -1,5 +1,6 @@
 import { conexion } from "../data.js"
 import bcrypt from "bcrypt"
+import dayjs from "dayjs"
 
 //verificamos existencia si hay usuario existente con mail
 async function verificarexistencia(email) {
@@ -22,7 +23,22 @@ async function traerUsuario(idUsuario) {
     const resultadoUsuario = await conexion.execute(consulta, [idUsuario])
 
     if (resultadoUsuario[0]) {
-        return resultadoUsuario[0]
+        const fechaNacimientoFormateada = dayjs(resultadoUsuario[0][0].fecha_nacimiento).format("YYYY-MM-DD")
+        const fechaRegistroFormateada = dayjs(resultadoUsuario[0][0].fecha_registro).format("YYYY-MM-DD")
+
+        const resultadoUsuarioFormateado = {
+            id: resultadoUsuario[0][0].id,
+            nombre: resultadoUsuario[0][0].nombre,
+            apellido: resultadoUsuario[0][0].apellido,
+            email: resultadoUsuario[0][0].email,
+            password_hash: resultadoUsuario[0][0].password_hash,
+            fecha_nacimiento: fechaNacimientoFormateada,
+            fecha_registro: fechaRegistroFormateada,
+            ubicacion: resultadoUsuario[0][0].ubicacion,
+            dni: resultadoUsuario[0][0].dni
+        }
+        
+        return resultadoUsuarioFormateado
     } else {
         return null
     }
@@ -51,7 +67,7 @@ async function cambiarPassword(idUsuario, datosPassword) {
     const resultadoConsulta = await conexion.execute(consulta, [idUsuario])
 
     if (resultadoConsulta[0].length > 0) {
-        const hash = resultadoConsulta[0][0]
+        const hash = resultadoConsulta[0][0].password_hash
         console.log(hash)
         if (bcrypt.compareSync(passwordActual, hash)) {
             try {
@@ -67,4 +83,4 @@ async function cambiarPassword(idUsuario, datosPassword) {
     }
 }
 
-export default { verificarexistencia, traerUsuario, actualizarUsuario }
+export default { verificarexistencia, traerUsuario, actualizarUsuario, cambiarPassword }
