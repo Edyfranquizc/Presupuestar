@@ -33,7 +33,7 @@ async function cambiarPassword(req, res) {
     if (resultado) {
         res.status(200).json({mensaje: "Contraseña actualizada correctamente."})
     } else {
-        res.status(400).jons({mensaje: "No se pudo actualizar la contraseña."})
+        res.status(400).json({mensaje: "No se pudo actualizar la contraseña."})
     }
 }
 
