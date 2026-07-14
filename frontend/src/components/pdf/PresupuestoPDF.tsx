@@ -1,6 +1,6 @@
 // PresupuestoPDF.tsx — Documento PDF descargable del presupuesto
 
-import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
+import { Document, Page, Text, View, Image, StyleSheet } from "@react-pdf/renderer";
 import type { Presupuesto } from "../../types/index.ts";
 import { formatCurrency, formatDate } from "../../utils/formatters.ts";
 
@@ -14,6 +14,8 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     marginBottom: 12,
   },
+  emisorInfo: { flexDirection: "row", alignItems: "center", gap: 8 },
+  emisorLogo: { width: 32, height: 32, borderRadius: 16 },
   emisorNombre: { fontSize: 13, fontWeight: "bold" },
   emisorEmail: { fontSize: 9, color: "#6b7280" },
   presupuestoNumero: { fontSize: 11, fontWeight: "bold", textAlign: "right" },
@@ -63,17 +65,20 @@ interface PresupuestoPDFProps {
   presupuesto: Presupuesto;
   emisorNombre: string;
   emisorEmail?: string;
+  logoUrl?: string;
 }
 
-export default function PresupuestoPDF({ presupuesto, emisorNombre, emisorEmail }: PresupuestoPDFProps) {
+export default function PresupuestoPDF({ presupuesto, emisorNombre, emisorEmail, logoUrl }: PresupuestoPDFProps) {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
         <View style={styles.headerRow}>
-          <View>
-            {/* TODO: reemplazar por nombre/logo del negocio cuando exista el endpoint de Onboarding */}
-            <Text style={styles.emisorNombre}>{emisorNombre}</Text>
-            {emisorEmail && <Text style={styles.emisorEmail}>{emisorEmail}</Text>}
+          <View style={styles.emisorInfo}>
+            {logoUrl && <Image src={logoUrl} style={styles.emisorLogo} />}
+            <View>
+              <Text style={styles.emisorNombre}>{emisorNombre}</Text>
+              {emisorEmail && <Text style={styles.emisorEmail}>{emisorEmail}</Text>}
+            </View>
           </View>
           <View>
             <Text style={styles.presupuestoNumero}>Presupuesto #{presupuesto.numero}</Text>

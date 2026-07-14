@@ -24,4 +24,17 @@ async function actualizarUsuario(req, res) {
     }
 }
 
-export default { traerUsuario, actualizarUsuario }
+async function cambiarPassword(req, res) {
+    const idUsuario = req.usuario.id
+    const datosPassword = req.body
+
+    const resultado = await servicios.cambiarPassword(idUsuario, datosPassword)
+
+    if (resultado) {
+        res.status(200).json({mensaje: "Contraseña actualizada correctamente."})
+    } else {
+        res.status(400).json({mensaje: "No se pudo actualizar la contraseña."})
+    }
+}
+
+export default { traerUsuario, actualizarUsuario, cambiarPassword }

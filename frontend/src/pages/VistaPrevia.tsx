@@ -11,7 +11,7 @@ import PresupuestoPDF from "../components/pdf/PresupuestoPDF.tsx";
 export default function VistaPrevia() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { usuario } = useAuth();
+  const { usuario, emprendimientoActivo } = useAuth();
   const { presupuesto, isLoading, error } = usePresupuesto(id);
 
   return (
@@ -39,8 +39,9 @@ export default function VistaPrevia() {
               document={
                 <PresupuestoPDF
                   presupuesto={presupuesto}
-                  emisorNombre={usuario?.nombre ?? "Emprendedor/a"}
+                  emisorNombre={emprendimientoActivo?.nombre ?? usuario?.nombre ?? "Emprendedor/a"}
                   emisorEmail={usuario?.email}
+                  logoUrl={emprendimientoActivo?.logo_url ?? undefined}
                 />
               }
               fileName={`presupuesto-${presupuesto.numero}.pdf`}
@@ -52,13 +53,20 @@ export default function VistaPrevia() {
 
           {/* Emisor */}
           <div className="flex items-center gap-3 pb-4 border-b">
-            {/* TODO: reemplazar por logoUrl real cuando exista el endpoint de datos de empresa (Onboarding todavía no persiste nada) */}
-            <div className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center text-sm font-semibold">
-              {usuario?.nombre?.[0]?.toUpperCase() ?? "?"}
-            </div>
+            {emprendimientoActivo?.logo_url ? (
+              <img
+                src={emprendimientoActivo.logo_url}
+                alt={emprendimientoActivo.nombre}
+                className="w-10 h-10 rounded-full object-cover"
+              />
+            ) : (
+              <div className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center text-sm font-semibold">
+                {(emprendimientoActivo?.nombre ?? usuario?.nombre)?.[0]?.toUpperCase() ?? "?"}
+              </div>
+            )}
             <div>
               <p className="text-sm font-semibold">
-                {usuario?.nombre ?? "Emprendedor/a"}
+                {emprendimientoActivo?.nombre ?? usuario?.nombre ?? "Emprendedor/a"}
               </p>
               <p className="text-xs text-gray-400">{usuario?.email}</p>
             </div>

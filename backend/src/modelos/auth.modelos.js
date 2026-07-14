@@ -23,41 +23,16 @@ async function verificarUsuario(email, password) {
     }
 }
 
-async function registrarUsuario(nombre, apellido, email, password,experiencia_rubro_credito,fecha_nacimiento,ubicacion,dni) {
+async function registrarUsuario(datosUsuario) {
+    const { email, nombre, apellido, fecha_nacimiento, ubicacion, password, dni } = datosUsuario
     const verificacion = await modelos.verificarexistencia(email)
-
-    //Solo si quiero rechazar undefined
-    let co = [nombre, apellido, email, password,fecha_nacimiento,ubicacion,experiencia_rubro_credito,dni]
-    for (let i in co){
-        console.log(co.at(i), typeof(i))
-        if (co[i]==undefined){
-            console.log(i)
-            /**/switch (parseInt(i)){
-            case 4:
-                fecha_nacimiento=null
-                console.log(fecha_nacimiento)
-                break;
-            case 5:
-                ubicacion=null
-                console.log(ubicacion)
-                break;
-            case 6:
-                experiencia_rubro_credito=null
-                console.log(experiencia_rubro_credito)
-                break;
-            }
-            
-            //return null
-        }
-    }
-    console.log(experiencia_rubro_credito)
     
     if (!verificacion) {
         const password_hash = await bcrypt.hashSync(password, 10)
         const id = v4()
         const fecha_registro = dayjs().format('YYYY-MM-DD HH:mm:ss')
-        const consulta = "INSERT INTO usuarios (id, nombre, apellido, email, password_hash, fecha_registro,fecha_nacimiento,ubicacion,experiencia_rubro_credito,dni) VALUES (?, ?, ?, ?, ?, ?,?,?,?,?)"
-        const resultado = await conexion.execute(consulta, [id, nombre, apellido, email, password_hash, fecha_registro,fecha_nacimiento,ubicacion,experiencia_rubro_credito,dni])
+        const consulta = "INSERT INTO usuarios (id, nombre, apellido, email, password_hash, fecha_registro, fecha_nacimiento, ubicacion, dni) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        const resultado = await conexion.execute(consulta, [id, nombre, apellido, email, password_hash, fecha_registro, fecha_nacimiento, ubicacion, dni])
         return { id, nombre, email }
     } else {
         return null

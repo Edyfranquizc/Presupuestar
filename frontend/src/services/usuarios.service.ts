@@ -1,0 +1,17 @@
+// Servicio de usuario
+
+import api from "./api.ts";
+import type { Usuario } from "../types/index.ts";
+
+export async function getUsuarioMe(): Promise<Usuario | null> {
+  const response = await api.get<Usuario[]>("/usuarios/me");
+  // el backend devuelve un array de filas, tomamos la primera
+  return response.data[0] ?? null;
+}
+
+export async function actualizarUsuarioMe(
+  datos: { fecha_nacimiento?: string; ubicacion?: string }
+): Promise<Usuario | null> {
+  const response = await api.put<Usuario>("/usuarios/me", datos);
+  return response.data ?? null;
+}

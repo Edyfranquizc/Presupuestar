@@ -1,6 +1,6 @@
 // Pantalla onboarding para configurar datos personales, del negocio y redes sociales
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth.ts";
 import { crearEmprendimiento } from "../services/emprendimientos.service.ts";
 
@@ -24,9 +24,10 @@ function Dots({ active, total = 4 }: { active: number; total?: number }) {
 
 export default function Onboarding() {
   const navigate = useNavigate();
+  const location = useLocation();
+const soloNegocio = Boolean((location.state as { soloNegocio?: boolean } | null)?.soloNegocio);
   const { setEmprendimientoActivo } = useAuth();
-  const [step, setStep] = useState(0);
-
+  const [step, setStep] = useState(soloNegocio ? 2 : 0);
   const [form, setForm] = useState({
     fechaNacimiento: "",
     dni: "",
