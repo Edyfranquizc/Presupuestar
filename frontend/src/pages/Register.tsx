@@ -85,24 +85,32 @@ export default function Register() {
         <h2 className="text-lg font-semibold text-center">Crear cuenta</h2>
 
         {/* Nombre y Apellido */}
+        <div className="flex flex-col gap-2">
+          {/* Campo Nombre */}
         <div>
-          <label className="text-sm font-medium text-gray-700 flex items-center gap-1 mb-1">
-            👤 Nombre y Apellido
-          </label>
-          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium text-gray-700 flex items-center gap-1 mb-1">
+              👤 Nombre
+            </label>
             <Input
               name="nombre"
               placeholder="¿Cómo es tu nombre?"
               value={form.nombre}
               onChange={handleChange}
             />
-            <Input
-              name="apellido"
-              placeholder="¿Cuál es tu apellido?"
-              value={form.apellido}
-              onChange={handleChange}
-            />
+            </div>
+           {/* Campo Apellido */}
+          <div>
+          <label className="text-sm font-medium text-gray-700 flex items-center gap-1 mb-1">
+            👤 Apellido
+          </label>
+          <Input
+            name="apellido"
+            placeholder="¿Cuál es tu apellido?"
+            value={form.apellido}
+            onChange={handleChange}
+          />
           </div>
+
         </div>
 
         {/* Email */}
