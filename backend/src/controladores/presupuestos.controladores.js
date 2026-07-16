@@ -45,4 +45,16 @@ async function editarEstado(req,res){
         res.status(400).json({mensaje: "No se ha podido editar el presupuesto."})
     }
 }
-export default {listarPresupuestos, editarEstado, crearPresupuesto,buscarPresupuesto} 
+//funcion para editar estado de presupuesto
+async function editarVencimiento(req,res){
+    const presupuesto=req.body
+    const presupuestoid=req.params.id
+
+    const resultado =await servicios.editarVencimiento(presupuestoid,presupuesto)
+    if (resultado !== null) {
+        res.status(200).json({mensaje: "Presupuesto editado."})
+    } else {
+        res.status(400).json({mensaje: "No se ha podido editar el presupuesto."})
+    }
+}
+export default {listarPresupuestos, editarEstado, crearPresupuesto,buscarPresupuesto,editarVencimiento} 

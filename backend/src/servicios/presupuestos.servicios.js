@@ -23,4 +23,8 @@ async function editarEstado(id, estado) {
     return resultado
 }
 
-export default { listarPresupuestos, editarEstado, buscarPresupuesto, crearPresupuesto }
+async function editarVencimiento(id, vencimiento) {
+    const resultado = await modelos.editarVencimiento(id, vencimiento)
+    return resultado
+}
+export default { listarPresupuestos, editarEstado, buscarPresupuesto, crearPresupuesto,editarVencimiento }

@@ -57,8 +57,6 @@ async function actualizarUsuario(idUsuario, datosUsuario) {
     return usuarioActualizado
 }
 
-async function a(params) {
-}
 
 async function cambiarPassword(idUsuario, datosPassword) {
     const { passwordActual, passwordNueva } = datosPassword
