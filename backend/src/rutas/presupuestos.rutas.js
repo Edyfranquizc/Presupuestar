@@ -12,5 +12,7 @@ rutasPres.get("/:id", controladores.buscarPresupuesto);
 rutasPres.post("/", controladores.crearPresupuesto);
 //funcion para cambiar estado
 rutasPres.put("/:id/estado",controladores.editarEstado);
+//funcion para cambiar estado
+rutasPres.put("/:id/vencimiento",controladores.editarVencimiento);
 //exporto la ruta
 export default rutasPres
