@@ -4,9 +4,8 @@ import api from "./api.ts";
 import type { Usuario } from "../types/index.ts";
 
 export async function getUsuarioMe(): Promise<Usuario | null> {
-  const response = await api.get<Usuario[]>("/usuarios/me");
-  // el backend devuelve un array de filas, tomamos la primera
-  return response.data[0] ?? null;
+  const response = await api.get<Usuario>("/usuarios/me");
+  return response.data ?? null;
 }
 
 export async function actualizarUsuarioMe(
