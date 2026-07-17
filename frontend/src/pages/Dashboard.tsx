@@ -60,6 +60,7 @@ export default function Dashboard() {
             </button>
           );
         })}
+        {emprendimientos.length < 3 && (
         <button
           onClick={() => navigate("/onboarding", { state: { soloNegocio: true } })}
           className="flex flex-col items-center gap-1 shrink-0"
@@ -69,6 +70,7 @@ export default function Dashboard() {
           </div>
           <span className="text-xs text-gray-500">Crear</span>
         </button>
+        )}
       </div>
 
       {/* Resumen */}
