@@ -11,6 +11,9 @@ async function verificarUsuario(email, password) {
     if (resultado[0].length > 0) {
         const hash = resultado[0][0].password_hash
         if (bcrypt.compareSync(password, hash)) {
+            const fecha_login = dayjs().format('YYYY-MM-DD HH:mm:ss')
+            const act=`UPDATE usuarios SET ultimo_login_fecha= ? WHERE usuarios.email = ?`
+            const fas = await conexion.execute(act, [fecha_login,email])
             return resultado[0]
         } else {
             return null
@@ -22,6 +25,9 @@ async function verificarUsuario(email, password) {
 
 async function registrarUsuario(datosUsuario) {
     const { email, nombre, apellido, fecha_nacimiento, ubicacion, password } = datosUsuario
+    let { email, nombre, apellido, fecha_nacimiento, ubicacion, password, dni } = datosUsuario
+    if( ubicacion==undefined){ubicacion=null}
+    if( fecha_nacimiento==undefined){fecha_nacimiento=null}
     const verificacion = await modelos.verificarexistencia(email)
 
     if (!verificacion) {
@@ -30,8 +36,11 @@ async function registrarUsuario(datosUsuario) {
         const fecha_registro = dayjs().format('YYYY-MM-DD HH:mm:ss')
         const consulta = "INSERT INTO usuarios (id, nombre, apellido, email, password_hash, fecha_registro, fecha_nacimiento, ubicacion) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
         const resultado = await conexion.execute(consulta, [id, nombre, apellido, email, password_hash, fecha_registro, fecha_nacimiento, ubicacion])
+        console.log({ email, nombre, apellido, fecha_nacimiento, ubicacion, password, dni } )
+        const consulta = "INSERT INTO usuarios (id, nombre, apellido, email, password_hash, fecha_registro, fecha_nacimiento, ubicacion, dni) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        const resultado = await conexion.execute(consulta, [id, nombre, apellido, email, password_hash, fecha_registro, fecha_nacimiento, ubicacion, dni])
         return { id, nombre, email }
-    } else { 
+    } else {
         return null
     }
 }
