@@ -24,7 +24,7 @@ async function verificarUsuario(email, password) {
 }
 
 async function registrarUsuario(datosUsuario) {
-    const { email, nombre, apellido, fecha_nacimiento, ubicacion, password } = datosUsuario
+    let { email, nombre, apellido, fecha_nacimiento, ubicacion, password } = datosUsuario
     if( ubicacion==undefined){ubicacion=null}
     if( fecha_nacimiento==undefined){fecha_nacimiento=null}
     const verificacion = await modelos.verificarexistencia(email)
