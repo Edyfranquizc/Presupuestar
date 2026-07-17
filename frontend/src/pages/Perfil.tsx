@@ -17,7 +17,6 @@ export default function Perfil() {
     usuario,
     cerrarSesion,
     emprendimientoActivo,
-    setEmprendimientoActivo,
   } = useAuth();
   const [emprendimientos, setEmprendimientos] = useState<Emprendimiento[]>([]);
   const [datosUsuario, setDatosUsuario] = useState<Usuario | null>(null);
@@ -269,8 +268,8 @@ export default function Perfil() {
             return (
               <div
                 key={emp.id}
-                onClick={() => setEmprendimientoActivo(emp)}
-                className={`border rounded-lg px-4 py-3 flex justify-between items-center cursor-pointer ${
+                
+                className={`border rounded-lg px-4 py-3 flex justify-between items-center  ${
                   activo ? "border-black" : "border-gray-200"
                 }`}
               >
