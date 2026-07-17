@@ -11,6 +11,17 @@ import {
 } from "../services/usuarios.service.ts";
 import type { Emprendimiento, Usuario } from "../types/index.ts";
 
+function convertirFechaAISO(fecha?: string | null): string {
+  if (!fecha) return "";
+  const partes = fecha.split("-");
+  if (partes.length === 3 && partes[0].length === 2) {
+    // viene como DD-MM-YYYY (formato del backend)
+    const [dia, mes, anio] = partes;
+    return `${anio}-${mes}-${dia}`;
+  }
+  return fecha; // ya viene en YYYY-MM-DD
+}
+
 export default function Perfil() {
   const navigate = useNavigate();
   const {
@@ -38,16 +49,16 @@ export default function Perfil() {
   }, []);
 
   useEffect(() => {
-    getUsuarioMe()
-      .then((datos) => {
-        setDatosUsuario(datos);
-        setForm({
-          fecha_nacimiento: datos?.fecha_nacimiento ?? "",
-          ubicacion: datos?.ubicacion ?? "",
-        });
-      })
-      .catch(() => {});
-  }, []);
+  getUsuarioMe()
+    .then((datos) => {
+      setDatosUsuario(datos);
+      setForm({
+        fecha_nacimiento: convertirFechaAISO(datos?.fecha_nacimiento),
+        ubicacion: datos?.ubicacion ?? "",
+      });
+    })
+    .catch(() => {});
+}, []);
 
   function handleLogout() {
     cerrarSesion();
