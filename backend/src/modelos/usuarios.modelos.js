@@ -19,26 +19,11 @@ async function verificarexistencia(email) {
 };
 
 async function traerUsuario(idUsuario) {
-    const consulta = "SELECT * FROM usuarios WHERE id = ?"
+    const consulta = "SELECT id, nombre, apellido, email, DATE_FORMAT(fecha_nacimiento, '%d-%m-%Y') AS fecha_nacimiento, DATE_FORMAT(fecha_registro, '%d-%m-%Y') AS fecha_registro, ubicacion FROM usuarios WHERE id = ?"
     const resultadoUsuario = await conexion.execute(consulta, [idUsuario])
 
     if (resultadoUsuario[0]) {
-        const fechaNacimientoFormateada = dayjs(resultadoUsuario[0][0].fecha_nacimiento).format("YYYY-MM-DD")
-        const fechaRegistroFormateada = dayjs(resultadoUsuario[0][0].fecha_registro).format("YYYY-MM-DD")
-
-        const resultadoUsuarioFormateado = {
-            id: resultadoUsuario[0][0].id,
-            nombre: resultadoUsuario[0][0].nombre,
-            apellido: resultadoUsuario[0][0].apellido,
-            email: resultadoUsuario[0][0].email,
-            password_hash: resultadoUsuario[0][0].password_hash,
-            fecha_nacimiento: fechaNacimientoFormateada,
-            fecha_registro: fechaRegistroFormateada,
-            ubicacion: resultadoUsuario[0][0].ubicacion,
-            dni: resultadoUsuario[0][0].dni
-        }
-        
-        return resultadoUsuarioFormateado
+        return resultadoUsuario[0]
     } else {
         return null
     }
