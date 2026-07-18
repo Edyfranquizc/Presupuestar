@@ -135,12 +135,26 @@ export default function Dashboard() {
       )}
 
       {/* Crear presupuesto */}
-      <button
-        onClick={() => navigate("/nuevo-presupuesto")}
-        className="w-full bg-black text-white rounded-lg py-3 text-sm font-medium"
-      >
-        Crear presupuesto
-      </button>
+{emprendimientos.length === 0 ? (
+  <div className="border border-dashed rounded-lg p-4 text-center">
+    <p className="text-sm text-gray-500 mb-3">
+      Necesitás crear un emprendimiento antes de armar tu primer presupuesto.
+    </p>
+    <button
+      onClick={() => navigate("/onboarding", { state: { soloNegocio: true } })}
+      className="w-full bg-black text-white rounded-lg py-3 text-sm font-medium"
+    >
+      Crear mi primer emprendimiento
+    </button>
+  </div>
+) : (
+  <button
+    onClick={() => navigate("/nuevo-presupuesto")}
+    className="w-full bg-black text-white rounded-lg py-3 text-sm font-medium"
+  >
+    Crear presupuesto
+  </button>
+)}
 
     </div>
   );
