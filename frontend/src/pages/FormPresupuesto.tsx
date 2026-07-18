@@ -80,10 +80,14 @@ export default function FormPresupuesto() {
       setError("Completá descripción y precio de cada ítem.");
       return;
     }
+    if (items.some((i) => i.precio_unitario > 10000000)) {
+      setError("El precio de un ítem no puede superar los $10.000.000.");
+      return;
+    }
     if (!emprendimientoActivo) {
-  setError("Necesitás tener un emprendimiento activo para crear un presupuesto.");
-  return;
-}
+      setError("Necesitás tener un emprendimiento activo para crear un presupuesto.");
+      return;
+    }
     try {
       setIsLoading(true);
       const payload = {
@@ -137,7 +141,7 @@ export default function FormPresupuesto() {
             className="border rounded px-3 py-2 text-sm w-full"
           />
           <input
-            placeholder="Email"
+            placeholder="Email *"
             type="email"
             value={cliente.email}
             onChange={(e) =>
@@ -146,7 +150,7 @@ export default function FormPresupuesto() {
             className="border rounded px-3 py-2 text-sm w-full"
           />
           <input
-            placeholder="Teléfono"
+            placeholder="Teléfono *"
             value={cliente.telefono}
             onChange={(e) =>
               setCliente((p) => ({ ...p, telefono: e.target.value }))
@@ -188,6 +192,7 @@ export default function FormPresupuesto() {
                 <input
                   type="number"
                   min="0"
+                  max="10000000"
                   placeholder="Precio"
                   value={item.precio_unitario || ""}
                   onChange={(e) =>
