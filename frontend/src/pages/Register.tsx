@@ -87,7 +87,7 @@ export default function Register() {
         {/* Nombre y Apellido */}
         <div className="flex flex-col gap-2">
           {/* Campo Nombre */}
-        <div>
+          <div>
             <label className="text-sm font-medium text-gray-700 flex items-center gap-1 mb-1">
               👤 Nombre
             </label>
@@ -97,20 +97,19 @@ export default function Register() {
               value={form.nombre}
               onChange={handleChange}
             />
-            </div>
-           {/* Campo Apellido */}
-          <div>
-          <label className="text-sm font-medium text-gray-700 flex items-center gap-1 mb-1">
-            👤 Apellido
-          </label>
-          <Input
-            name="apellido"
-            placeholder="¿Cuál es tu apellido?"
-            value={form.apellido}
-            onChange={handleChange}
-          />
           </div>
-
+          {/* Campo Apellido */}
+          <div>
+            <label className="text-sm font-medium text-gray-700 flex items-center gap-1 mb-1">
+              👤 Apellido
+            </label>
+            <Input
+              name="apellido"
+              placeholder="¿Cuál es tu apellido?"
+              value={form.apellido}
+              onChange={handleChange}
+            />
+          </div>
         </div>
 
         {/* Email */}
@@ -181,12 +180,12 @@ export default function Register() {
         </Button>
 
         <p className="text-sm text-center text-gray-500">
-          ¿Todavía no tenés una cuenta?{" "}
+          ¿Ya tenés una cuenta?{" "}
           <span
             onClick={() => navigate("/")}
             className="text-black font-medium cursor-pointer hover:underline"
           >
-            Registrate ahora
+            Iniciá sesión
           </span>
         </p>
       </form>
