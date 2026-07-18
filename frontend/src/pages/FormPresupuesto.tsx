@@ -68,31 +68,43 @@ export default function FormPresupuesto() {
       setError("El nombre del cliente es obligatorio.");
       return;
     }
+    if (!cliente.email.trim()) {
+      setError("El email del cliente es obligatorio.");
+      return;
+    }
+    if (!cliente.telefono.trim()) {
+      setError("El teléfono del cliente es obligatorio.");
+      return;
+    }
     if (items.some((i) => !i.descripcion.trim() || i.precio_unitario <= 0)) {
       setError("Completá descripción y precio de cada ítem.");
       return;
     }
+    if (!emprendimientoActivo) {
+  setError("Necesitás tener un emprendimiento activo para crear un presupuesto.");
+  return;
+}
     try {
       setIsLoading(true);
       const payload = {
-  cliente_nombre: cliente.nombre,
-  cliente_email: cliente.email,
-  cliente_telefono: cliente.telefono,
-  items,
-  notas,
-  estado: "pendiente" as const,
-  subtotal: resumen.subtotal,
-  descuento_tipo: "porcentaje" as const,
-  descuento_valor: 0,
-  descuento_monto: resumen.descuentoMonto,
-  base_imponible: resumen.baseImponible,
-  iva_porcentaje: 21,
-  iva_monto: resumen.ivaMonto,
-  total: resumen.total,
-  id_emprendimiento: emprendimientoActivo?.id ?? null,
-};
-const presupuestoCreado = await crearPresupuesto(payload);
-navigate(`/vista-previa/${presupuestoCreado.id}`);
+        cliente_nombre: cliente.nombre,
+        cliente_email: cliente.email,
+        cliente_telefono: cliente.telefono,
+        items,
+        notas,
+        estado: "pendiente" as const,
+        subtotal: resumen.subtotal,
+        descuento_tipo: "porcentaje" as const,
+        descuento_valor: 0,
+        descuento_monto: resumen.descuentoMonto,
+        base_imponible: resumen.baseImponible,
+        iva_porcentaje: 21,
+        iva_monto: resumen.ivaMonto,
+        total: resumen.total,
+        id_emprendimiento: emprendimientoActivo.id,
+      };
+      const presupuestoCreado = await crearPresupuesto(payload);
+      navigate(`/vista-previa/${presupuestoCreado.id}`);
     } catch {
       setError("No se pudo guardar el presupuesto.");
     } finally {
