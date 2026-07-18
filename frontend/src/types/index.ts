@@ -40,6 +40,7 @@ export type EstadoPresupuesto = "pendiente" | "aceptado" | "rechazado" | "vencid
 export interface Presupuesto {
   id: string;
   numero: number;
+  id_emprendimiento: string;
   cliente_nombre: string;
   cliente_email?: string;
   cliente_telefono?: string;

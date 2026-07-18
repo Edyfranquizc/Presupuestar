@@ -1,12 +1,14 @@
 // Historial.tsx — Historial completo de presupuestos con filtro por estado
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { usePresupuestos } from "../hooks/usePresupuestos.ts";
 import { actualizarEstado } from "../services/presupuestos.service.ts";
 import { formatCurrency, formatDate } from "../utils/formatters.ts";
 import Badge from "../components/ui/Badge.tsx";
-import type { EstadoPresupuesto } from "../types/index.ts";
+import type { EstadoPresupuesto, Emprendimiento } from "../types/index.ts";
+import { getEmprendimientos } from "../services/emprendimientos.service.ts";
+
 
 const ESTADOS: { value: EstadoPresupuesto | "todos"; label: string }[] = [
   { value: "todos",     label: "Todos"      },
@@ -22,6 +24,14 @@ export default function Historial() {
 const [estadosLocales, setEstadosLocales] = useState<Record<string, EstadoPresupuesto>>({});
   const [filtro, setFiltro] = useState<EstadoPresupuesto | "todos">("todos");
   const [actualizando, setActualizando] = useState<string | null>(null);
+  const [emprendimientos, setEmprendimientos] = useState<Emprendimiento[]>([]);
+const [filtroEmprendimiento, setFiltroEmprendimiento] = useState<string>("todos");
+
+useEffect(() => {
+  getEmprendimientos()
+    .then(setEmprendimientos)
+    .catch(() => {});
+}, []);
 
   const presupuestos = data.map((p) =>
   estadosLocales[p.id] ? { ...p, estado: estadosLocales[p.id] } : p
@@ -40,10 +50,9 @@ const [estadosLocales, setEstadosLocales] = useState<Record<string, EstadoPresup
     }
   }
 
-  const filtrados =
-    filtro === "todos"
-      ? presupuestos
-      : presupuestos.filter((p) => p.estado === filtro);
+  const filtrados = presupuestos
+  .filter((p) => filtro === "todos" || p.estado === filtro)
+  .filter((p) => filtroEmprendimiento === "todos" || p.id_emprendimiento === filtroEmprendimiento);
 
   return (
     <div className="min-h-screen px-4 py-6 max-w-2xl mx-auto">
@@ -76,6 +85,20 @@ const [estadosLocales, setEstadosLocales] = useState<Record<string, EstadoPresup
           </button>
         ))}
       </div>
+      {emprendimientos.length > 1 && (
+  <select
+    value={filtroEmprendimiento}
+    onChange={(e) => setFiltroEmprendimiento(e.target.value)}
+    className="text-xs border border-gray-300 rounded px-2 py-1.5 bg-white mb-4"
+  >
+    <option value="todos">Todos los emprendimientos</option>
+    {emprendimientos.map((emp) => (
+      <option key={emp.id} value={emp.id}>
+        {emp.nombre}
+      </option>
+    ))}
+  </select>
+)}
 
       {isLoading && (
         <p className="text-sm text-gray-400 text-center py-8">Cargando...</p>
