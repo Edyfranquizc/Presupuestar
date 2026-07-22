@@ -3,11 +3,19 @@ import middlewares from "./src/middlewares.js"
 import cors from "cors"
 import modelos from "./src/modelos/presupuestos.modelos.js"
 import cron from "node-cron"
+import { v2 as cloudinary } from "cloudinary"
+import "dotenv/config"
 
 import rutasAuth from "./src/rutas/auth.rutas.js"
 import rutasPres from "./src/rutas/presupuestos.rutas.js"
 import rutasEmprendimientos from "./src/rutas/emprendimientos.rutas.js"
 import rutasUsuarios from "./src/rutas/usuarios.rutas.js"
+
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.API_KEY,
+    api_secret: process.env.API_SECRET
+})
 
 const app = express()
 const corsOptions = {

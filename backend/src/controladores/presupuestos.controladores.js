@@ -1,4 +1,6 @@
 import servicios from "../servicios/presupuestos.servicios.js"
+import { v2 as cloudinary } from "cloudinary"
+import Readable from "stream"
 
 //funcion obterner todos los presupuestos
 async function listarPresupuestos(req, res) {
@@ -57,4 +59,24 @@ async function editarVencimiento(req,res){
         res.status(400).json({mensaje: "No se ha podido editar el presupuesto."})
     }
 }
-export default {listarPresupuestos, editarEstado, crearPresupuesto,buscarPresupuesto,editarVencimiento} 
+
+function bufferAStream(buffer) {
+    const stream = new Readable()
+    stream.push(buffer)
+    stream.push(null)
+    return stream
+}
+
+async function guardarEnCloudinary(req, res) {
+    const stream = await cloudinary.uploader.upload_stream({resource_type: "image"}, (error, result) => {
+        if (error) {
+            console.log(error)
+            res.status(400).json({mensaje: "No se pudo guardar el presupuesto en Cloudinary."})
+        }
+        res.status(200).json({url_presupuesto: result.secure_url})
+    })
+
+    const buffer = req.file.buffer
+    await bufferAStream(buffer).pipe(stream)
+}
+export default { listarPresupuestos, editarEstado, crearPresupuesto, buscarPresupuesto, editarVencimiento, guardarEnCloudinary } 
