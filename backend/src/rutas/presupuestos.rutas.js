@@ -14,5 +14,6 @@ rutasPres.post("/", controladores.crearPresupuesto);
 rutasPres.put("/:id/estado",controladores.editarEstado);
 //funcion para cambiar estado
 rutasPres.put("/:id/vencimiento",controladores.editarVencimiento);
+rutasPres.post("/:id/guardar", controladores.guardarEnCloudinary)
 //exporto la ruta
 export default rutasPres
