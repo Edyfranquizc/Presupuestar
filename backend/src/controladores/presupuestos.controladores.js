@@ -1,6 +1,6 @@
 import servicios from "../servicios/presupuestos.servicios.js"
 import { v2 as cloudinary } from "cloudinary"
-import Readable from "stream"
+import { Readable } from "stream"
 
 //funcion obterner todos los presupuestos
 async function listarPresupuestos(req, res) {
