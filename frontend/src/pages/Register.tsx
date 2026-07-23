@@ -182,7 +182,7 @@ export default function Register() {
         <p className="text-sm text-center text-gray-500">
           ¿Ya tenés una cuenta?{" "}
           <span
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/login")}
             className="text-black font-medium cursor-pointer hover:underline"
           >
             Iniciá sesión

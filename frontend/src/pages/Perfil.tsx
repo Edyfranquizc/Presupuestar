@@ -62,7 +62,7 @@ export default function Perfil() {
 
   function handleLogout() {
     cerrarSesion();
-    navigate("/");
+    navigate("/login");
   }
 
   async function handleGuardarDatos() {

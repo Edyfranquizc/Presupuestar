@@ -64,7 +64,7 @@ export default function ForgotPassword() {
     setIsLoading(true);
     await new Promise((r) => setTimeout(r, 1000));
     setIsLoading(false);
-    navigate("/");
+    navigate("/login");
   }
 
   return (
@@ -99,7 +99,7 @@ export default function ForgotPassword() {
             </Button>
 
             <p
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/login")}
               className="text-sm text-gray-500 cursor-pointer underline"
             >
               Iniciar sesión
@@ -113,7 +113,7 @@ export default function ForgotPassword() {
             <div className="flex justify-between items-center">
               <span className="text-gray-500">✓</span>
               <span
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/login")}
                 className="cursor-pointer text-gray-400 hover:text-black"
               >
                 ✕
@@ -182,7 +182,7 @@ export default function ForgotPassword() {
             <p className="text-sm text-gray-500">
               ¿Ya tenés una cuenta?{" "}
               <span
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/login")}
                 className="text-black font-medium cursor-pointer hover:underline"
               >
                 Ingresa ahora

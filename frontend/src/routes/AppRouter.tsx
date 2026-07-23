@@ -10,13 +10,15 @@ import Historial from "../pages/Historial.tsx";
 import VistaPrevia from "../pages/VistaPrevia.tsx";
 import Perfil from "../pages/Perfil.tsx";
 import LayoutProtegido from "../components/layout/LayoutProtegido.tsx";
+import Landing from "../pages/Landing.tsx";
 
 export default function AppRouter() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/onboarding" element={<Onboarding />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
