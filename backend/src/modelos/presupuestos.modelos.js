@@ -246,4 +246,9 @@ async function verificarFechaVencimiento() {
     }
 }
 
-export default { crearPresupuesto, listarPresupuestos, listarPresupuesto, actualizarPresupuesto, verificarFechaVencimiento,editarVencimiento }
+async function guardarURL(id_presupuesto, url) {
+    const consulta = "UPDATE presupuestos SET url_pdf = ? WHERE id = ?"
+    const resultadoGuardarURL = await conexion.execute(consulta, [url, id_presupuesto])
+}
+
+export default { crearPresupuesto, listarPresupuestos, listarPresupuesto, actualizarPresupuesto, verificarFechaVencimiento, editarVencimiento, guardarURL }
