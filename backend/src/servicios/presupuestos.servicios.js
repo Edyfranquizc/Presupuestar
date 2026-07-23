@@ -1,4 +1,12 @@
 import modelos from "../modelos/presupuestos.modelos.js"
+import { v2 as cloudinary } from "cloudinary"
+
+function bufferAStream(buffer) {
+    const stream = new Readable()
+    stream.push(buffer)
+    stream.push(null)
+    return stream
+}
 
 async function listarPresupuestos(id_usuario) {
     const resultado = await modelos.listarPresupuestos(id_usuario)
@@ -26,5 +34,17 @@ async function editarEstado(id, estado) {
 async function editarVencimiento(id, vencimiento) {
     const resultado = await modelos.editarVencimiento(id, vencimiento)
     return resultado
+}
+
+function guardarEnCloudinary(buffer, callback) {
+    const stream = cloudinary.uploader.upload_stream({resource_type: "image"}, (error, result) => {
+        if (error) {
+            console.log(error)
+            throw error
+        }
+        return result.secure_url
+        })
+        
+    bufferAStream(buffer).pipe(stream)
 }
 export default { listarPresupuestos, editarEstado, buscarPresupuesto, crearPresupuesto,editarVencimiento }

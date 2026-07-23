@@ -31,9 +31,9 @@ async function crearPresupuesto(datosPresupuesto, id_usuario) {
 
     // Generamos la consulta para traer los datos del presupuesto y sus respectivos ítems. 
     const consultaDevolverNuevoPresupuesto = 
-    "SELECT presupuestos.*, items_presupuesto.id_item, items_presupuesto.descripcion, items_presupuesto.cantidad, items_presupuesto.precio_unitario, items_presupuesto.subtotal AS item_subtotal" + 
+    "SELECT presupuestos.*, items_presupuesto.id_item, items_presupuesto.descripcion, items_presupuesto.cantidad, items_presupuesto.precio_unitario, items_presupuesto.subtotal AS item_subtotal " + 
     "FROM presupuestos " + 
-    "JOIN items_presupuesto ON presupuestos.id = items_presupuesto.id_presupuesto" + 
+    "JOIN items_presupuesto ON presupuestos.id = items_presupuesto.id_presupuesto " + 
     "WHERE presupuestos.id = ?"
     
     const resultadoDevolverNuevoPresupuesto = await conexion.execute(consultaDevolverNuevoPresupuesto, [id_presupuesto])
@@ -89,9 +89,9 @@ async function crearPresupuesto(datosPresupuesto, id_usuario) {
 
 async function listarPresupuesto(id) {
     const consulta = 
-    "SELECT presupuestos.*, items_presupuesto.id_item, items_presupuesto.descripcion, items_presupuesto.cantidad, items_presupuesto.precio_unitario, items_presupuesto.subtotal AS item_subtotal" + 
-    "FROM presupuestos" + 
-    "JOIN items_presupuesto ON presupuestos.id = items_presupuesto.id_presupuesto" + 
+    "SELECT presupuestos.*, items_presupuesto.id_item, items_presupuesto.descripcion, items_presupuesto.cantidad, items_presupuesto.precio_unitario, items_presupuesto.subtotal AS item_subtotal " + 
+    "FROM presupuestos " + 
+    "JOIN items_presupuesto ON presupuestos.id = items_presupuesto.id_presupuesto " + 
     "WHERE presupuestos.id = ?"
     
     const resultado = await conexion.execute(consulta, [id])
@@ -142,10 +142,10 @@ async function listarPresupuesto(id) {
 }
 
 async function listarPresupuestos(id_usuario) {
-    const consulta = "SELECT presupuestos.*, items_presupuesto.id_item, items_presupuesto.descripcion, items_presupuesto.cantidad, items_presupuesto.precio_unitario, items_presupuesto.subtotal AS item_subtotal" + 
-    "FROM presupuestos" + 
-    "JOIN emprendimientos ON presupuestos.id_emprendimiento = emprendimientos.id" + 
-    "JOIN items_presupuesto ON presupuestos.id = items_presupuesto.id_presupuesto" + 
+    const consulta = "SELECT presupuestos.*, items_presupuesto.id_item, items_presupuesto.descripcion, items_presupuesto.cantidad, items_presupuesto.precio_unitario, items_presupuesto.subtotal AS item_subtotal " + 
+    "FROM presupuestos " + 
+    "JOIN emprendimientos ON presupuestos.id_emprendimiento = emprendimientos.id " + 
+    "JOIN items_presupuesto ON presupuestos.id = items_presupuesto.id_presupuesto " + 
     "WHERE emprendimientos.id_usuario = ?"
     
     const resultado = await conexion.execute(consulta, [id_usuario])
