@@ -6,7 +6,8 @@ const conexion = mysql.createPool({
     user: process.env.MYSQL_ADDON_USER,
     port: process.env.MYSQL_ADDON_PORT,
     password: process.env.MYSQL_ADDON_PASSWORD,
-    database: process.env.MYSQL_ADDON_DB
+    database: process.env.MYSQL_ADDON_DB,
+    connectionLimit: 2
 }
 ).promise()
 
