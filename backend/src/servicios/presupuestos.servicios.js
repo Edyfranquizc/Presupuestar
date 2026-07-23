@@ -37,14 +37,12 @@ async function editarVencimiento(id, vencimiento) {
 }
 
 function guardarEnCloudinary(buffer, callback) {
-    const stream = cloudinary.uploader.upload_stream({resource_type: "image"}, (error, result) => {
-        if (error) {
-            console.log(error)
-            throw error
-        }
-        return result.secure_url
-        })
-        
+    const stream = cloudinary.uploader.upload_stream({resource_type: "image"}, callback)
     bufferAStream(buffer).pipe(stream)
 }
-export default { listarPresupuestos, editarEstado, buscarPresupuesto, crearPresupuesto,editarVencimiento }
+
+async function guardarURL(id_presupuesto, url) {
+    const resultado = modelos.guardarURL(id_presupuesto, url)
+}
+
+export default { listarPresupuestos, editarEstado, buscarPresupuesto, crearPresupuesto, editarVencimiento, guardarEnCloudinary, guardarURL }
