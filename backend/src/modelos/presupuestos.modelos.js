@@ -30,7 +30,12 @@ async function crearPresupuesto(datosPresupuesto, id_usuario) {
     }
 
     // Generamos la consulta para traer los datos del presupuesto y sus respectivos ítems. 
-    const consultaDevolverNuevoPresupuesto = "SELECT * FROM presupuestos JOIN items_presupuesto ON presupuestos.id = items_presupuesto.id_presupuesto WHERE presupuestos.id = ?"
+    const consultaDevolverNuevoPresupuesto = 
+    "SELECT presupuestos.*, items_presupuesto.id_item, items_presupuesto.descripcion, items_presupuesto.cantidad, items_presupuesto.precio_unitario, items_presupuesto.subtotal AS item_subtotal" + 
+    "FROM presupuestos " + 
+    "JOIN items_presupuesto ON presupuestos.id = items_presupuesto.id_presupuesto" + 
+    "WHERE presupuestos.id = ?"
+    
     const resultadoDevolverNuevoPresupuesto = await conexion.execute(consultaDevolverNuevoPresupuesto, [id_presupuesto])
 
     // Generamos la estructura solicitada para retornar al front.
@@ -62,7 +67,7 @@ async function crearPresupuesto(datosPresupuesto, id_usuario) {
                         descripcion: fila.descripcion,
                         cantidad: fila.cantidad,
                         precio_unitario: fila.precio_unitario,
-                        subtotal: fila.subtotal
+                        subtotal: fila.item_subtotal
                     }
                 ]
             }
@@ -73,7 +78,7 @@ async function crearPresupuesto(datosPresupuesto, id_usuario) {
                 descripcion: fila.descripcion,
                 cantidad: fila.cantidad,
                 precio_unitario: fila.precio_unitario,
-                subtotal: fila.subtotal
+                subtotal: fila.item_subtotal
             })
             return acumulador
         }
@@ -83,7 +88,12 @@ async function crearPresupuesto(datosPresupuesto, id_usuario) {
 }
 
 async function listarPresupuesto(id) {
-    const consulta = "SELECT * FROM presupuestos JOIN items_presupuesto ON presupuestos.id = items_presupuesto.id_presupuesto WHERE presupuestos.id = ?"
+    const consulta = 
+    "SELECT presupuestos.*, items_presupuesto.id_item, items_presupuesto.descripcion, items_presupuesto.cantidad, items_presupuesto.precio_unitario, items_presupuesto.subtotal AS item_subtotal" + 
+    "FROM presupuestos" + 
+    "JOIN items_presupuesto ON presupuestos.id = items_presupuesto.id_presupuesto" + 
+    "WHERE presupuestos.id = ?"
+    
     const resultado = await conexion.execute(consulta, [id])
     //generamos el presupuesto como se requiere en front.
     const objetoADevolver = resultado[0].reduce((acumulador, fila) => {
@@ -113,7 +123,7 @@ async function listarPresupuesto(id) {
                     descripcion: fila.descripcion,
                     cantidad: fila.cantidad,
                     precio_unitario: fila.precio_unitario,
-                    subtotal: fila.subtotal
+                    subtotal: fila.item_subtotal
                 }]
             }
         } else {
@@ -123,7 +133,7 @@ async function listarPresupuesto(id) {
                 descripcion: fila.descripcion,
                 cantidad: fila.cantidad,
                 precio_unitario: fila.precio_unitario,
-                subtotal: fila.subtotal
+                subtotal: fila.item_subtotal
             })
             return acumulador
         }
@@ -132,7 +142,12 @@ async function listarPresupuesto(id) {
 }
 
 async function listarPresupuestos(id_usuario) {
-    const consulta = "SELECT presupuestos.*, items_presupuesto.* FROM presupuestos JOIN emprendimientos ON presupuestos.id_emprendimiento = emprendimientos.id JOIN items_presupuesto ON presupuestos.id = items_presupuesto.id_presupuesto WHERE emprendimientos.id_usuario = ?"
+    const consulta = "SELECT presupuestos.*, items_presupuesto.id_item, items_presupuesto.descripcion, items_presupuesto.cantidad, items_presupuesto.precio_unitario, items_presupuesto.subtotal AS item_subtotal" + 
+    "FROM presupuestos" + 
+    "JOIN emprendimientos ON presupuestos.id_emprendimiento = emprendimientos.id" + 
+    "JOIN items_presupuesto ON presupuestos.id = items_presupuesto.id_presupuesto" + 
+    "WHERE emprendimientos.id_usuario = ?"
+    
     const resultado = await conexion.execute(consulta, [id_usuario])
 
     // Generamos la estructura para devolver al front.
@@ -166,7 +181,7 @@ async function listarPresupuestos(id_usuario) {
                         descripcion: fila.descripcion,
                         cantidad: fila.cantidad,
                         precio_unitario: fila.precio_unitario,
-                        subtotal: fila.subtotal
+                        subtotal: fila.item_subtotal
                     }
                 ]
             })
@@ -178,7 +193,7 @@ async function listarPresupuestos(id_usuario) {
                 descripcion: fila.descripcion,
                 cantidad: fila.cantidad,
                 precio_unitario: fila.precio_unitario,
-                subtotal: fila.subtotal
+                subtotal: fila.item_subtotal
             })
             return acumulador
         }
