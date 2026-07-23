@@ -1,5 +1,6 @@
 import modelos from "../modelos/presupuestos.modelos.js"
 import { v2 as cloudinary } from "cloudinary"
+import { Readable } from "stream"
 
 function bufferAStream(buffer) {
     const stream = new Readable()
@@ -42,7 +43,7 @@ function guardarEnCloudinary(buffer, callback) {
 }
 
 async function guardarURL(id_presupuesto, url) {
-    const resultado = modelos.guardarURL(id_presupuesto, url)
+    const resultado = await modelos.guardarURL(id_presupuesto, url)
 }
 
 export default { listarPresupuestos, editarEstado, buscarPresupuesto, crearPresupuesto, editarVencimiento, guardarEnCloudinary, guardarURL }
