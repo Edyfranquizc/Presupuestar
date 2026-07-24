@@ -1,36 +1,24 @@
 // Landing.tsx — Página de bienvenida antes de loguearse
 
 import { useNavigate } from "react-router-dom";
-import {
-  CalculatorIcon,
-  BoltIcon,
-  PaintBrushIcon,
-  PhotoIcon,
-  EnvelopeIcon,
-} from "@heroicons/react/24/outline";
+import { CalculatorIcon, BoltIcon, PaintBrushIcon } from "@heroicons/react/24/outline";
 import Button from "../components/ui/Button.tsx";
-
-const PASOS = [
-  { titulo: "Tus presupuestos" },
-  { titulo: "Nuevo presupuesto" },
-  { titulo: "Historial" },
-];
 
 const BENEFICIOS = [
   {
     icono: CalculatorIcon,
-    titulo: "Suma sin miedo",
-    descripcion: "El total se calcula solo, sin que tengas que revisarlo dos veces.",
+    titulo: "Cuentas resueltas",
+    descripcion: "El total se suma solo. Olvidate de repasar los números dos veces",
   },
   {
     icono: BoltIcon,
-    titulo: "Responde rápido",
-    descripcion: "Armá el presupuesto en minutos, desde el celular.",
+    titulo: "Respondé en el acto",
+    descripcion: "Mandalo directo desde tu celular para no hacer esperar al cliente",
   },
   {
     icono: PaintBrushIcon,
-    titulo: "Mostrá tu marca",
-    descripcion: "Tu logo y tus datos, listos en cada presupuesto.",
+    titulo: "Transmití confianza",
+    descripcion: "Tu logo y datos listos. Presupuestos siempre prolijos",
   },
 ];
 
@@ -38,72 +26,83 @@ export default function Landing() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <div className="flex-1 px-4 py-6 max-w-sm mx-auto w-full">
-        {/* Header */}
-        <div className="text-center mb-6">
-          <h2 className="text-lg font-semibold">Logo®</h2>
-          <p className="text-xs text-gray-400">Hecho para emprendedores</p>
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-sm mx-auto px-4 pt-8 pb-6 flex flex-col gap-8">
+        {/* Logo */}
+        <div className="flex flex-col gap-4">
+          <p className="text-center font-extrabold text-primary-600">Emprendo</p>
+
+          <div className="flex flex-col gap-2">
+            <h1 className="text-center text-2xl font-bold leading-8 text-[#121013]">
+              Presupuestá rápido
+              <br />
+              y sin tocar la calculadora
+            </h1>
+            <p className="text-center text-base font-medium leading-6 text-[#1D1B1F]">
+              Vos ponés los precios,
+              <br />
+              nosotros hacemos el resto
+            </p>
+          </div>
         </div>
 
-        {/* Hero */}
-        <h1 className="text-2xl font-semibold leading-snug mb-3">
-          No pierdas más ventas por <span className="font-bold">contestar tarde.</span>
-        </h1>
-        <p className="text-sm text-gray-500 mb-6">
-          Armá un presupuesto profesional en minutos, con las cuentas hechas y tu
-          marca puesta. Estás a un toque de compartirlo con tu cliente.
-        </p>
-
-        {/* CTAs */}
-        <div className="flex flex-col gap-3 mb-10">
-          <Button fullWidth onClick={() => navigate("/register")}>
-            Crear mi cuenta gratis
+        {/* Botones */}
+        <div className="flex flex-col gap-2">
+          <Button fullWidth size="lg" onClick={() => navigate("/register")}>
+            Registrate
           </Button>
-          <Button fullWidth variant="outline" onClick={() => navigate("/login")}>
-            Ya tengo una cuenta
+          <Button fullWidth size="lg" variant="outline" onClick={() => navigate("/login")}>
+            Iniciá sesión
           </Button>
         </div>
 
-        {/* Así de simple vas a trabajar */}
-        <p className="text-sm font-semibold mb-3">Así de simple vas a trabajar</p>
-        <div className="flex flex-col gap-3 mb-10">
-          {PASOS.map((paso) => (
-            <div key={paso.titulo} className="bg-gray-100 rounded-lg p-4">
-              <p className="text-sm text-gray-700 mb-3">{paso.titulo}</p>
-              <div className="h-16 flex items-center justify-center text-gray-400">
-                <PhotoIcon className="w-8 h-8" />
-              </div>
-            </div>
-          ))}
+        {/* Tu espacio de trabajo */}
+        <div className="flex flex-col gap-4">
+          <h2 className="text-center text-lg font-bold leading-6 text-[#121013]">
+            Tu espacio de trabajo
+          </h2>
+          <div className="flex flex-col gap-4">
+            <img src="https://placehold.co/328x164" alt="" className="w-full h-[164px] rounded-lg object-cover" />
+            <img src="https://placehold.co/328x164" alt="" className="w-full h-[164px] rounded-lg object-cover" />
+            <img src="https://placehold.co/328x164" alt="" className="w-full h-[164px] rounded-lg object-cover" />
+          </div>
         </div>
 
         {/* Beneficios */}
-        <div className="flex flex-col gap-6 mb-8">
+        <div className="flex flex-col gap-6">
           {BENEFICIOS.map((beneficio) => {
             const Icono = beneficio.icono;
             return (
-              <div key={beneficio.titulo} className="text-center">
-                <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-2">
-                  <Icono className="w-5 h-5 text-black" />
+              <div
+                key={beneficio.titulo}
+                className="bg-primary-50 rounded-lg p-6 flex flex-col items-center gap-3"
+              >
+                <div className="bg-primary-200 rounded-full p-3">
+                  <Icono className="w-6 h-6 text-primary-500" strokeWidth={1.5} />
                 </div>
-                <p className="text-sm font-semibold">{beneficio.titulo}</p>
-                <p className="text-xs text-gray-500 max-w-[240px] mx-auto">
-                  {beneficio.descripcion}
-                </p>
+                <div className="flex flex-col gap-2">
+                  <p className="text-center text-lg font-bold leading-6 text-gray-950">
+                    {beneficio.titulo}
+                  </p>
+                  <p className="text-center text-sm font-medium leading-5 tracking-[0.04em] text-gray-950">
+                    {beneficio.descripcion}
+                  </p>
+                </div>
               </div>
             );
           })}
         </div>
-      </div>
 
-      {/* Footer */}
-      <div className="border-t px-4 py-4 flex items-center justify-between max-w-sm mx-auto w-full">
-        <div>
-          <p className="text-sm font-semibold">Logo®</p>
-          <p className="text-xs text-gray-400">Hecho para emprendedores.</p>
+        {/* Footer */}
+        <div className="bg-primary-800 rounded-t-2xl px-2 py-6 -mx-4">
+          <p className="text-center text-xs font-medium leading-[18px] tracking-[0.04em] text-primary-50">
+            © Emprendo - 2026
+            <br />
+            Todos los derechos reservados
+            <br />
+            Equipo 7 - Proyecto Innova Lab
+          </p>
         </div>
-        <EnvelopeIcon className="w-5 h-5 text-gray-400" />
       </div>
     </div>
   );

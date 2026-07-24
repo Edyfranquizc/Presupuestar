@@ -1,1 +1,79 @@
 @import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", sans-serif;
+
+  /* Primary */
+  --color-primary-50: #F0F0F9;
+  --color-primary-100: #E2E1F3;
+  --color-primary-200: #C3C0E6;
+  --color-primary-300: #A7A2DB;
+  --color-primary-400: #8C86CF;
+  --color-primary-500: #7067C0;
+  --color-primary-600: #594EB0;
+  --color-primary-700: #42378D;
+  --color-primary-800: #2C2563;
+  --color-primary-900: #1A1540;
+  --color-primary-950: #100C2C;
+
+  /* Greyscale — pisa el gray por defecto de Tailwind */
+  --color-gray-50: #F7F7FA;
+  --color-gray-100: #EBEBEF;
+  --color-gray-200: #D2D2D9;
+  --color-gray-300: #B7B7C1;
+  --color-gray-400: #9C9CA8;
+  --color-gray-500: #81818E;
+  --color-gray-600: #656572;
+  --color-gray-700: #4B4B56;
+  --color-gray-800: #31313A;
+  --color-gray-900: #1B1B22;
+  --color-gray-950: #101015;
+
+  /* Success */
+  --color-success-50: #EFFEEB;
+  --color-success-100: #D5FBC8;
+  --color-success-200: #ACF98A;
+  --color-success-300: #98EC6F;
+  --color-success-400: #90E069;
+  --color-success-500: #86D161;
+  --color-success-600: #69A54B;
+  --color-success-700: #4B7835;
+  --color-success-800: #315121;
+  --color-success-900: #172A0E;
+  --color-success-950: #0D1B07;
+
+  /* Error */
+  --color-error-50: #FCEDEE;
+  --color-error-100: #F9DBDC;
+  --color-error-200: #F5B7B9;
+  --color-error-300: #F29498;
+  --color-error-400: #EF676F;
+  --color-error-500: #E23645;
+  --color-error-600: #B62A36;
+  --color-error-700: #8C1E27;
+  --color-error-800: #601118;
+  --color-error-900: #3C070B;
+  --color-error-950: #290306;
+
+  /* Warning */
+  --color-warning-50: #FEF9F1;
+  --color-warning-100: #FDF2E3;
+  --color-warning-200: #FAE6C4;
+  --color-warning-300: #F8D99E;
+  --color-warning-400: #F7CC6D;
+  --color-warning-500: #EDC25E;
+  --color-warning-600: #B99748;
+  --color-warning-700: #886F33;
+  --color-warning-800: #5B491F;
+  --color-warning-900: #31260D;
+  --color-warning-950: #1E1706;
+
+  /* Info — 200 a 500 pendientes de confirmar con UX/UI */
+  --color-info-50: #EBF4FF;
+  --color-info-100: #D4E7FF;
+  --color-info-600: #1A5CE0;
+  --color-info-700: #1142B8;
+  --color-info-800: #0C2C8C;
+  --color-info-900: #07195E;
+  --color-info-950: #040D36;
+}
