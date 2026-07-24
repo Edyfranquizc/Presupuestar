@@ -9,6 +9,8 @@ interface ButtonProps {
   isLoading?: boolean;
   variant?: "primary" | "outline";
   size?: "default" | "lg";
+  rounded?: "md" | "full";
+  icon?: React.ComponentType<{ className?: string }>;
   fullWidth?: boolean;
 }
 
@@ -20,6 +22,8 @@ export default function Button({
   isLoading = false,
   variant = "primary",
   size = "default",
+  rounded = "md",
+  icon: Icon,
   fullWidth = false,
 }: ButtonProps) {
   const variants = {
@@ -28,8 +32,13 @@ export default function Button({
   };
 
   const sizes = {
-    default: "px-4 py-2 text-sm font-medium rounded",
-    lg: "px-6 py-3 text-lg font-extrabold leading-6 tracking-[0.04em] rounded-lg",
+    default: "px-4 py-2 text-sm font-medium",
+    lg: "px-6 py-3 text-lg font-extrabold leading-6 tracking-[0.04em]",
+  };
+
+  const radios = {
+    md: "rounded-lg",
+    full: "rounded-full",
   };
 
   return (
@@ -38,13 +47,16 @@ export default function Button({
       onClick={onClick}
       disabled={disabled || isLoading}
       className={`
-        transition-colors
+        transition-colors inline-flex items-center justify-center gap-2
+        whitespace-nowrap
         disabled:opacity-50 disabled:cursor-not-allowed
         ${sizes[size]}
+        ${radios[rounded]}
         ${variants[variant]}
         ${fullWidth ? "w-full" : ""}
       `}
     >
+      {Icon && <Icon className="w-5 h-5" />}
       {isLoading ? "Cargando..." : children}
     </button>
   );

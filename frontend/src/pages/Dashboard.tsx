@@ -2,12 +2,27 @@
 
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  CheckCircleIcon,
+  ClockIcon,
+  XCircleIcon,
+  PaperAirplaneIcon,
+  DocumentPlusIcon,
+} from "@heroicons/react/24/outline";
 import { usePresupuestos } from "../hooks/usePresupuestos.ts";
 import { useAuth } from "../hooks/useAuth.ts";
 import { getEmprendimientos } from "../services/emprendimientos.service.ts";
 import { formatCurrency, formatDate } from "../utils/formatters.ts";
 import Badge from "../components/ui/Badge.tsx";
-import type { Emprendimiento } from "../types/index.ts";
+import Button from "../components/ui/Button.tsx";
+import type { Emprendimiento, EstadoPresupuesto } from "../types/index.ts";
+
+const BORDE_ESTADO: Record<EstadoPresupuesto, string> = {
+  pendiente: "border-warning-300",
+  aceptado: "border-success-300",
+  rechazado: "border-error-300",
+  vencido: "border-gray-300",
+};
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -23,7 +38,7 @@ export default function Dashboard() {
 
   const aprobados = presupuestos.filter((p) => p.estado === "aceptado").length;
   const enEspera = presupuestos.filter((p) => p.estado === "pendiente").length;
-  const vencidos = presupuestos.filter((p) => p.estado === "vencido").length;
+  const rechazados = presupuestos.filter((p) => p.estado === "rechazado").length;
   const enviados = presupuestos.length;
 
   const ultimos = [...presupuestos]
@@ -31,15 +46,13 @@ export default function Dashboard() {
     .slice(0, 3);
 
   return (
-    <div className="min-h-screen px-4 py-6 max-w-2xl mx-auto">
-
+    <div className="min-h-screen bg-gray-50 px-4 py-6 pb-28 max-w-2xl mx-auto">
       {/* Saludo */}
-      <h1 className="text-lg font-semibold">¡Hola {usuario?.nombre}!</h1>
-      <p className="text-sm text-gray-400 mb-6">¡Presupuestemos juntos!</p>
+      <h1 className="text-2xl font-bold mb-6">Hola {usuario?.nombre}</h1>
 
       {/* Selector de emprendimiento */}
       <p className="text-sm font-semibold mb-2">Tus emprendimientos</p>
-      <p className="text-xs text-gray-400 mb-3">¿Con cuál vas a trabajar hoy?</p>
+      <p className="text-xs text-gray-500 mb-3">¿Con cuál vas a trabajar hoy?</p>
       <div className="flex gap-3 mb-6 overflow-x-auto">
         {emprendimientos.map((emp) => {
           const activo = emprendimientoActivo?.id === emp.id;
@@ -51,7 +64,7 @@ export default function Dashboard() {
             >
               <div
                 className={`w-12 h-12 rounded-full flex items-center justify-center text-sm font-semibold ${
-                  activo ? "bg-black text-white" : "bg-gray-100 text-gray-500"
+                  activo ? "bg-primary-500 text-primary-50" : "bg-gray-100 text-gray-500"
                 }`}
               >
                 {emp.nombre.slice(0, 2).toUpperCase()}
@@ -61,36 +74,48 @@ export default function Dashboard() {
           );
         })}
         {emprendimientos.length < 3 && (
-        <button
-          onClick={() => navigate("/onboarding", { state: { soloNegocio: true } })}
-          className="flex flex-col items-center gap-1 shrink-0"
-        >
-          <div className="w-12 h-12 rounded-full bg-gray-800 text-white flex items-center justify-center text-lg">
-            +
-          </div>
-          <span className="text-xs text-gray-500">Crear</span>
-        </button>
+          <button
+            onClick={() => navigate("/onboarding", { state: { soloNegocio: true } })}
+            className="flex flex-col items-center gap-1 shrink-0"
+          >
+            <div className="w-12 h-12 rounded-full bg-gray-800 text-white flex items-center justify-center text-lg">
+              +
+            </div>
+            <span className="text-xs text-gray-500">Crear</span>
+          </button>
         )}
       </div>
 
       {/* Resumen */}
-      <p className="text-sm font-semibold mb-2">Resumen</p>
+      <p className="text-sm font-semibold mb-2">Resumen del mes</p>
       <div className="grid grid-cols-2 gap-3 mb-6">
-        <div className="bg-gray-100 rounded-lg p-4">
-          <p className="text-xl font-semibold">{aprobados}</p>
-          <p className="text-xs text-gray-500">Aprobados</p>
+        <div className="bg-white border border-gray-200 rounded-lg p-4 relative">
+          <div className="w-12 h-12 rounded-full bg-success-100 flex items-center justify-center absolute top-4 right-4">
+            <CheckCircleIcon className="w-6 h-6 text-success-500" strokeWidth={1.5} />
+          </div>
+          <p className="text-3xl font-bold text-success-600">{aprobados}</p>
+          <p className="text-sm text-gray-900">Aprobados</p>
         </div>
-        <div className="bg-black text-white rounded-lg p-4">
-          <p className="text-xl font-semibold">{enEspera}</p>
-          <p className="text-xs text-gray-300">En espera</p>
+        <div className="bg-white border border-gray-200 rounded-lg p-4 relative">
+          <div className="w-12 h-12 rounded-full bg-warning-100 flex items-center justify-center absolute top-4 right-4">
+            <ClockIcon className="w-6 h-6 text-warning-500" strokeWidth={1.5} />
+          </div>
+          <p className="text-3xl font-bold text-warning-600">{enEspera}</p>
+          <p className="text-sm text-gray-900">En espera</p>
         </div>
-        <div className="bg-gray-100 rounded-lg p-4">
-          <p className="text-xl font-semibold">{vencidos}</p>
-          <p className="text-xs text-gray-500">Vencidos</p>
+        <div className="bg-white border border-gray-200 rounded-lg p-4 relative">
+          <div className="w-12 h-12 rounded-full bg-error-100 flex items-center justify-center absolute top-4 right-4">
+            <XCircleIcon className="w-6 h-6 text-error-500" strokeWidth={1.5} />
+          </div>
+          <p className="text-3xl font-bold text-error-600">{rechazados}</p>
+          <p className="text-sm text-gray-900">Rechazados</p>
         </div>
-        <div className="bg-gray-100 rounded-lg p-4">
-          <p className="text-xl font-semibold">{enviados}</p>
-          <p className="text-xs text-gray-500">Enviados</p>
+        <div className="bg-white border border-gray-200 rounded-lg p-4 relative">
+          <div className="w-12 h-12 rounded-full bg-info-100 flex items-center justify-center absolute top-4 right-4">
+            <PaperAirplaneIcon className="w-6 h-6 text-info-500" strokeWidth={1.5} />
+          </div>
+          <p className="text-3xl font-bold text-info-600">{enviados}</p>
+          <p className="text-sm text-gray-900">Enviados</p>
         </div>
       </div>
 
@@ -99,7 +124,7 @@ export default function Dashboard() {
         <p className="text-sm text-gray-400 text-center py-8">Cargando...</p>
       )}
       {error && (
-        <p className="text-sm text-red-500 text-center py-8">{error}</p>
+        <p className="text-sm text-error-500 text-center py-8">{error}</p>
       )}
 
       {/* Últimos presupuestos */}
@@ -112,21 +137,20 @@ export default function Dashboard() {
               <p className="text-gray-400 text-sm">Todavía no tenés presupuestos.</p>
             </div>
           ) : (
-            <div className="flex flex-col gap-2 mb-6">
+            <div className="flex flex-col gap-3 mb-6">
               {ultimos.map((p) => (
                 <div
                   key={p.id}
                   onClick={() => navigate(`/vista-previa/${p.id}`)}
-                  className="border rounded-lg p-3 flex items-center justify-between cursor-pointer hover:bg-gray-50"
+                  className={`bg-white border rounded-lg p-3 flex items-center justify-between cursor-pointer hover:bg-gray-50 ${BORDE_ESTADO[p.estado]}`}
                 >
                   <div>
                     <p className="text-sm font-medium">{p.cliente_nombre ?? "Sin cliente"}</p>
-                    <p className="text-xs text-gray-400">{formatDate(p.fecha_creacion)}</p>
+                    <p className="text-xs text-gray-400">
+                      {formatDate(p.fecha_creacion)} — {formatCurrency(p.total)}
+                    </p>
                   </div>
-                  <div className="flex flex-col items-end gap-1">
-                    <p className="text-sm font-semibold">{formatCurrency(p.total)}</p>
-                    <Badge variant={p.estado} />
-                  </div>
+                  <Badge variant={p.estado} />
                 </div>
               ))}
             </div>
@@ -135,27 +159,30 @@ export default function Dashboard() {
       )}
 
       {/* Crear presupuesto */}
-{emprendimientos.length === 0 ? (
-  <div className="border border-dashed rounded-lg p-4 text-center">
-    <p className="text-sm text-gray-500 mb-3">
-      Necesitás crear un emprendimiento antes de armar tu primer presupuesto.
-    </p>
-    <button
-      onClick={() => navigate("/onboarding", { state: { soloNegocio: true } })}
-      className="w-full bg-black text-white rounded-lg py-3 text-sm font-medium"
-    >
-      Crear mi primer emprendimiento
-    </button>
-  </div>
-) : (
-  <button
-    onClick={() => navigate("/nuevo-presupuesto")}
-    className="w-full bg-black text-white rounded-lg py-3 text-sm font-medium"
-  >
-    Crear presupuesto
-  </button>
-)}
-
+      {emprendimientos.length === 0 ? (
+        <div className="border border-dashed border-gray-300 rounded-lg p-4 text-center">
+          <p className="text-sm text-gray-500 mb-3">
+            Necesitás crear un emprendimiento antes de armar tu primer presupuesto.
+          </p>
+          <button
+            onClick={() => navigate("/onboarding", { state: { soloNegocio: true } })}
+            className="w-full bg-primary-500 text-primary-50 rounded-lg py-3 text-sm font-medium"
+          >
+            Crear mi primer emprendimiento
+          </button>
+        </div>
+      ) : (
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-10">
+          <Button
+            size="lg"
+            rounded="full"
+            icon={DocumentPlusIcon}
+            onClick={() => navigate("/nuevo-presupuesto")}
+          >
+            Crear presupuesto
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
