@@ -57,6 +57,7 @@ export interface Presupuesto {
   notas?: string;
   fecha_creacion: string;
   fecha_vencimiento?: string;
+  url_pdf?: string | null;
 }
 
 export interface AuthResponse {
