@@ -1,11 +1,16 @@
 // BottomNav.tsx — Navegación inferior
 
 import { useNavigate, useLocation } from "react-router-dom";
+import {
+  HomeIcon,
+  DocumentMagnifyingGlassIcon,
+  UserCircleIcon,
+} from "@heroicons/react/24/outline";
 
 const items = [
-  { label: "Dashboard", path: "/dashboard", icon: "ti-home" },
-  { label: "Historial",  path: "/historial",  icon: "ti-file-text" },
-  { label: "Perfil",     path: "/perfil",     icon: "ti-user" },
+  { label: "Inicio", path: "/dashboard", icon: HomeIcon },
+  { label: "Historial", path: "/historial", icon: DocumentMagnifyingGlassIcon },
+  { label: "Perfil", path: "/perfil", icon: UserCircleIcon },
 ];
 
 export default function BottomNav() {
@@ -13,15 +18,19 @@ export default function BottomNav() {
   const { pathname } = useLocation();
 
   return (
-<nav className="fixed bottom-0 left-0 right-0 bg-white border-t flex justify-around items-center h-16 max-w-2xl mx-auto">      {items.map((item) => {
+    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t flex justify-around items-center h-16 max-w-2xl mx-auto">
+      {items.map((item) => {
         const active = pathname === item.path;
+        const Icono = item.icon;
         return (
           <button
             key={item.path}
             onClick={() => navigate(item.path)}
-            className={`flex flex-col items-center gap-1 text-xs ${active ? "text-black" : "text-gray-400"}`}
+            className={`flex flex-col items-center gap-1 text-xs ${
+              active ? "text-primary-500" : "text-gray-400"
+            }`}
           >
-            <i className={`ti ${item.icon} text-2xl`} />
+            <Icono className="w-6 h-6" strokeWidth={1.5} />
             <span className={active ? "font-medium" : ""}>{item.label}</span>
           </button>
         );
