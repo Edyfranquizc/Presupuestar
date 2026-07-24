@@ -1,4 +1,4 @@
-import { conexion } from "../data.js"
+import { conexion, ejecutarConsulta } from "../data.js"
 import dayjs from "dayjs"
 import { v4 } from "uuid"
 
