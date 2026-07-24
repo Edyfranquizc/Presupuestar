@@ -1,19 +1,65 @@
 // VistaPrevia.tsx — Vista previa profesional del presupuesto
 
+import { useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { usePresupuesto } from "../hooks/usePresupuesto.ts";
 import { useAuth } from "../hooks/useAuth.ts";
 import { formatCurrency, formatDate, formatCurrencyCorto } from "../utils/formatters.ts";
 import Badge from "../components/ui/Badge.tsx";
-import { PDFDownloadLink } from "@react-pdf/renderer";
+import { PDFDownloadLink, usePDF } from "@react-pdf/renderer";
 import PresupuestoPDF from "../components/pdf/PresupuestoPDF.tsx";
 import Button from "../components/ui/Button.tsx";
+import { compartirPresupuesto } from "../services/presupuestos.service.ts";
+import { LinkIcon, ClipboardIcon } from "@heroicons/react/24/outline";
 
 export default function VistaPrevia() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { emprendimientoActivo } = useAuth();
   const { presupuesto, isLoading, error } = usePresupuesto(id);
+
+  const pdfDocument = useMemo(() => {
+    if (!presupuesto) return undefined;
+    return (
+      <PresupuestoPDF
+        presupuesto={presupuesto}
+        emisorNombre={emprendimientoActivo?.nombre ?? "Emprendedor/a"}
+        emisorRubro={emprendimientoActivo?.rubro}
+        emisorCuit={emprendimientoActivo?.cuit}
+        logoUrl={emprendimientoActivo?.logo_url ?? undefined}
+      />
+    );
+  }, [presupuesto, emprendimientoActivo]);
+
+  const [pdfInstance] = usePDF({ document: pdfDocument });
+
+  const [compartiendo, setCompartiendo] = useState(false);
+  const [linkNuevo, setLinkNuevo] = useState<string | null>(null);
+  const [errorCompartir, setErrorCompartir] = useState<string | null>(null);
+  const [copiado, setCopiado] = useState(false);
+
+  const linkActual = linkNuevo ?? presupuesto?.url_pdf ?? null;
+
+  async function handleCompartir() {
+    if (!pdfInstance.blob || !presupuesto) return;
+    setCompartiendo(true);
+    setErrorCompartir(null);
+    try {
+      const { url_pdf } = await compartirPresupuesto(presupuesto.id, pdfInstance.blob);
+      setLinkNuevo(url_pdf);
+    } catch {
+      setErrorCompartir("No se pudo generar el link. Intentá de nuevo.");
+    } finally {
+      setCompartiendo(false);
+    }
+  }
+
+  async function handleCopiar() {
+    if (!linkActual) return;
+    await navigator.clipboard.writeText(linkActual);
+    setCopiado(true);
+    setTimeout(() => setCopiado(false), 2000);
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-6 max-w-2xl mx-auto">
@@ -131,22 +177,43 @@ export default function VistaPrevia() {
             </div>
           )}
 
+          {/* Compartir por link */}
+          <div className="mt-6 flex flex-col gap-2">
+            {linkActual && (
+              <div className="bg-white border border-gray-200 rounded-lg p-3 flex items-center justify-between gap-2">
+                <p className="text-xs text-gray-500 truncate">{linkActual}</p>
+                <button
+                  onClick={handleCopiar}
+                  className="shrink-0 text-primary-600 flex items-center gap-1 text-xs font-medium"
+                >
+                  <ClipboardIcon className="w-4 h-4" />
+                  {copiado ? "Copiado" : "Copiar"}
+                </button>
+              </div>
+            )}
+
+            <Button
+              size="lg"
+              fullWidth
+              variant={linkActual ? "outline" : "primary"}
+              icon={LinkIcon}
+              isLoading={compartiendo || pdfInstance.loading}
+              onClick={handleCompartir}
+            >
+              {linkActual ? "Volver a generar link" : "Compartir por link"}
+            </Button>
+
+            {errorCompartir && <p className="text-xs text-error-500">{errorCompartir}</p>}
+          </div>
+
           {/* Descargar PDF */}
-          <div className="mt-6">
+          <div className="mt-3">
             <PDFDownloadLink
-              document={
-                <PresupuestoPDF
-                  presupuesto={presupuesto}
-                  emisorNombre={emprendimientoActivo?.nombre ?? "Emprendedor/a"}
-                  emisorRubro={emprendimientoActivo?.rubro}
-                  emisorCuit={emprendimientoActivo?.cuit}
-                  logoUrl={emprendimientoActivo?.logo_url ?? undefined}
-                />
-              }
+              document={pdfDocument!}
               fileName={`presupuesto-${presupuesto.numero}.pdf`}
             >
               {({ loading }) => (
-                <Button size="lg" fullWidth isLoading={loading}>
+                <Button size="lg" variant="outline" fullWidth isLoading={loading}>
                   Descargar PDF
                 </Button>
               )}
