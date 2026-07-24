@@ -7,7 +7,7 @@ import modelos from "./usuarios.modelos.js"
 async function verificarUsuario(email, password) {
     const consulta = "SELECT usuarios.id, usuarios.nombre, usuarios.email, usuarios.password_hash FROM usuarios WHERE email = ?"
     const resultado = await ejecutarConsulta(consulta, [email])
-    
+
     if (resultado[0].length > 0) {
         const hash = resultado[0][0].password_hash
         if (bcrypt.compareSync(password, hash)) {
