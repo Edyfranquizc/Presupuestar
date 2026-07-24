@@ -2,6 +2,7 @@
 // Soporta: label, error, icono izquierdo, toggle de contraseña
 
 import { useState } from "react";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
 interface InputProps {
   name: string;
@@ -36,7 +37,7 @@ export default function Input({
     <div className="flex flex-col gap-1 w-full">
       {/* Label superior */}
       {label && (
-        <label htmlFor={name} className="text-sm font-medium text-gray-700">
+        <label htmlFor={name} className="text-sm font-medium text-gray-900">
           {label}
         </label>
       )}
@@ -45,7 +46,7 @@ export default function Input({
       <div className="relative">
         {/* Icono izquierdo opcional */}
         {leftIcon && (
-          <span className="absolute left-3 top-2.5 text-gray-400 text-sm">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
             {leftIcon}
           </span>
         )}
@@ -59,12 +60,13 @@ export default function Input({
           onChange={onChange}
           disabled={disabled}
           className={`
-            border rounded-lg px-3 py-2 text-sm w-full
-            focus:outline-none focus:ring-2 focus:ring-black
+            border rounded-lg px-4 py-3 text-sm w-full
+            bg-primary-50
+            focus:outline-none focus:ring-2 focus:ring-primary-500
             disabled:opacity-50 disabled:cursor-not-allowed
             ${leftIcon ? "pl-9" : ""}
-            ${showToggle ? "pr-9" : ""}
-            ${error ? "border-red-500" : "border-gray-300"}
+            ${showToggle ? "pr-10" : ""}
+            ${error ? "border-error-500" : "border-primary-400"}
           `}
         />
 
@@ -72,15 +74,15 @@ export default function Input({
         {showToggle && (
           <span
             onClick={() => setVisible(!visible)}
-            className="absolute right-3 top-2.5 cursor-pointer text-gray-400 hover:text-black text-sm"
+            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-700 hover:text-gray-900"
           >
-            {visible ? "🙈" : "👁️"}
+            {visible ? <EyeSlashIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
           </span>
         )}
       </div>
 
       {/* Mensaje de error */}
-      {error && <p className="text-red-500 text-xs">{error}</p>}
+      {error && <p className="text-error-500 text-xs">{error}</p>}
     </div>
   );
 }
