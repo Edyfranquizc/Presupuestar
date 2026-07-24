@@ -1,5 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  XMarkIcon,
+  TrashIcon,
+  ChevronUpIcon,
+  ChevronDownIcon,
+  PlusIcon,
+} from "@heroicons/react/24/outline";
 import { useAuth } from "../hooks/useAuth.ts";
 import {
   calcularResumen,
@@ -8,6 +15,8 @@ import {
 import { formatCurrency } from "../utils/formatters.ts";
 import type { ItemPresupuesto } from "../types/index.ts";
 import { crearPresupuesto } from "../services/presupuestos.service.ts";
+import Input from "../components/ui/Input.tsx";
+import Button from "../components/ui/Button.tsx";
 
 function itemVacio(): ItemPresupuesto {
   return {
@@ -47,6 +56,20 @@ export default function FormPresupuesto() {
           Number(actualizado.precio_unitario),
         );
         return actualizado;
+      }),
+    );
+  }
+
+  function cambiarCantidad(id: string, delta: number) {
+    setItems((prev) =>
+      prev.map((item) => {
+        if (item.id !== id) return item;
+        const nuevaCantidad = Math.max(1, item.cantidad + delta);
+        return {
+          ...item,
+          cantidad: nuevaCantidad,
+          subtotal: calcularSubtotalItem(nuevaCantidad, item.precio_unitario),
+        };
       }),
     );
   }
@@ -117,121 +140,130 @@ export default function FormPresupuesto() {
   }
 
   return (
-    <div className="p-4 max-w-2xl mx-auto">
+    <div className="min-h-screen bg-gray-50 px-4 py-6 max-w-2xl mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-lg font-semibold">Nuevo presupuesto</h1>
-        <button
-          onClick={() => navigate("/dashboard")}
-          className="text-sm text-gray-500"
-        >
-          ← Volver
+        <h1 className="text-xl font-bold">Nuevo presupuesto</h1>
+        <button onClick={() => navigate("/dashboard")}>
+          <XMarkIcon className="w-6 h-6 text-gray-900" />
         </button>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">
         {/* Cliente */}
         <section className="flex flex-col gap-3">
-          <h2 className="text-sm font-medium text-gray-600">Cliente</h2>
-          <input
-            placeholder="Nombre *"
+          <h2 className="text-sm font-semibold text-gray-900">Datos del cliente</h2>
+          <Input
+            name="cliente_nombre"
+            placeholder="Nombre del cliente*"
             value={cliente.nombre}
-            onChange={(e) =>
-              setCliente((p) => ({ ...p, nombre: e.target.value }))
-            }
-            className="border rounded px-3 py-2 text-sm w-full"
+            onChange={(e) => setCliente((p) => ({ ...p, nombre: e.target.value }))}
           />
-          <input
-            placeholder="Email *"
+          <Input
+            name="cliente_email"
             type="email"
+            placeholder="Mail del cliente*"
             value={cliente.email}
-            onChange={(e) =>
-              setCliente((p) => ({ ...p, email: e.target.value }))
-            }
-            className="border rounded px-3 py-2 text-sm w-full"
+            onChange={(e) => setCliente((p) => ({ ...p, email: e.target.value }))}
           />
-          <input
-            placeholder="Teléfono *"
+          <Input
+            name="cliente_telefono"
+            placeholder="Teléfono del cliente*"
             value={cliente.telefono}
-            onChange={(e) =>
-              setCliente((p) => ({ ...p, telefono: e.target.value }))
-            }
-            className="border rounded px-3 py-2 text-sm w-full"
+            onChange={(e) => setCliente((p) => ({ ...p, telefono: e.target.value }))}
           />
         </section>
 
         {/* Items */}
         <section className="flex flex-col gap-3">
-          <h2 className="text-sm font-medium text-gray-600">
-            Productos / servicios
-          </h2>
+          <h2 className="text-sm font-semibold text-gray-900">Productos y servicios</h2>
 
-          {items.map((item) => (
+          {items.map((item, index) => (
             <div
               key={item.id}
-              className="flex flex-col gap-2 border rounded p-3"
+              className="flex flex-col gap-3 border border-primary-200 bg-primary-50 rounded-lg p-4"
             >
-              <input
-                placeholder="Descripción *"
-                value={item.descripcion}
-                onChange={(e) =>
-                  actualizarItem(item.id, "descripcion", e.target.value)
-                }
-                className="border rounded px-3 py-2 text-sm w-full"
-              />
-              <div className="flex gap-2">
-                <input
-                  type="number"
-                  min="1"
-                  placeholder="Cantidad"
-                  value={item.cantidad}
-                  onChange={(e) =>
-                    actualizarItem(item.id, "cantidad", Number(e.target.value))
-                  }
-                  className="border rounded px-3 py-2 text-sm w-full"
-                />
-                <input
-                  type="number"
-                  min="0"
-                  max="10000000"
-                  placeholder="Precio"
-                  value={item.precio_unitario || ""}
-                  onChange={(e) =>
-                    actualizarItem(
-                      item.id,
-                      "precio_unitario",
-                      Number(e.target.value),
-                    )
-                  }
-                  className="border rounded px-3 py-2 text-sm w-full"
-                />
-              </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-500">
-                  Subtotal: {formatCurrency(item.subtotal)}
-                </span>
+                <span className="text-sm font-bold text-primary-600">{index + 1}</span>
                 <button
                   type="button"
                   onClick={() => eliminarItem(item.id)}
                   disabled={items.length === 1}
-                  className="text-red-400 text-sm disabled:opacity-30"
+                  className="text-gray-500 disabled:opacity-30"
                 >
-                  Eliminar
+                  <TrashIcon className="w-5 h-5" />
                 </button>
+              </div>
+
+              <Input
+                name={`descripcion-${item.id}`}
+                placeholder="Descripción del producto*"
+                value={item.descripcion}
+                onChange={(e) => actualizarItem(item.id, "descripcion", e.target.value)}
+              />
+
+              <div className="flex gap-2">
+                {/* Stepper de cantidad */}
+                <div className="flex items-center border border-primary-400 bg-primary-50 rounded-lg px-3 py-2 w-full justify-between">
+                  <span className="text-sm">{item.cantidad}</span>
+                  <div className="flex flex-col">
+                    <button
+                      type="button"
+                      onClick={() => cambiarCantidad(item.id, 1)}
+                      className="text-gray-500 hover:text-gray-900"
+                    >
+                      <ChevronUpIcon className="w-3 h-3" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => cambiarCantidad(item.id, -1)}
+                      className="text-gray-500 hover:text-gray-900"
+                    >
+                      <ChevronDownIcon className="w-3 h-3" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Precio */}
+                <Input
+                  name={`precio-${item.id}`}
+                  type="number"
+                  placeholder="0,00"
+                  leftIcon="$"
+                  value={item.precio_unitario ? String(item.precio_unitario) : ""}
+                  onChange={(e) =>
+                    actualizarItem(item.id, "precio_unitario", Number(e.target.value))
+                  }
+                />
+              </div>
+
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-semibold text-gray-900">Subtotal</span>
+                <span className="text-sm font-semibold text-gray-900">
+                  {formatCurrency(item.subtotal)}
+                </span>
               </div>
             </div>
           ))}
 
-          <button
-            type="button"
-            onClick={agregarItem}
-            className="text-sm text-blue-600"
-          >
-            + Agregar ítem
-          </button>
+          <Button type="button" variant="outline" fullWidth icon={PlusIcon} onClick={agregarItem}>
+            Agregar ítem
+          </Button>
+        </section>
+
+        {/* Observaciones */}
+        <section className="flex flex-col gap-2">
+          <h2 className="text-sm font-semibold text-gray-900">Observaciones</h2>
+          <textarea
+            rows={3}
+            placeholder="Ej. 10% de descuento abonando en efectivo"
+            value={notas}
+            onChange={(e) => setNotas(e.target.value)}
+            className="border border-primary-400 bg-primary-50 rounded-lg px-4 py-3 text-sm w-full focus:outline-none focus:ring-2 focus:ring-primary-500"
+          />
         </section>
 
         {/* Resumen */}
-        <section className="flex flex-col gap-1 text-sm border-t pt-4">
+        <section className="flex flex-col gap-1 text-sm border-t border-gray-200 pt-4">
           <div className="flex justify-between text-gray-500">
             <span>Subtotal</span>
             <span>{formatCurrency(resumen.subtotal)}</span>
@@ -240,39 +272,17 @@ export default function FormPresupuesto() {
             <span>IVA (21%)</span>
             <span>{formatCurrency(resumen.ivaMonto)}</span>
           </div>
-          <div className="flex justify-between font-semibold text-base mt-1">
+          <div className="flex justify-between font-bold text-base mt-1">
             <span>Total</span>
             <span>{formatCurrency(resumen.total)}</span>
           </div>
         </section>
 
-        {/* Notas */}
-        <textarea
-          rows={3}
-          placeholder="Notas (opcional)"
-          value={notas}
-          onChange={(e) => setNotas(e.target.value)}
-          className="border rounded px-3 py-2 text-sm w-full"
-        />
+        {error && <p className="text-error-500 text-sm">{error}</p>}
 
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-
-        <div className="flex gap-3">
-          <button
-            type="button"
-            onClick={() => navigate("/dashboard")}
-            className="border rounded px-4 py-2 text-sm w-full"
-          >
-            Cancelar
-          </button>
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="bg-black text-white rounded px-4 py-2 text-sm w-full disabled:opacity-50"
-          >
-            {isLoading ? "Guardando..." : "Guardar"}
-          </button>
-        </div>
+        <Button type="submit" size="lg" fullWidth isLoading={isLoading}>
+          Guardar
+        </Button>
       </form>
     </div>
   );
