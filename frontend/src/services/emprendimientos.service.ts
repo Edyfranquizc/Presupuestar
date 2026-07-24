@@ -9,8 +9,10 @@ export async function getEmprendimientos(): Promise<Emprendimiento[]> {
 }
 
 export async function crearEmprendimiento(
-  data: Omit<Emprendimiento, "id">
+  data: FormData
 ): Promise<Emprendimiento> {
-  const response = await api.post<Emprendimiento>("/emprendimientos", data);
+  const response = await api.post<Emprendimiento>("/emprendimientos", data, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return response.data;
 }

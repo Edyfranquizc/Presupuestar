@@ -47,7 +47,17 @@ const soloNegocio = Boolean((location.state as { soloNegocio?: boolean } | null)
     facebook: "",
     linkedin: "",
   });
+// Estado para el logo: guardamos el archivo Y su preview visual
+  const [logo, setLogo] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
+  function handleLogoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setLogo(file);
+    setLogoPreview(URL.createObjectURL(file));
+  }
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) {
@@ -284,7 +294,7 @@ const soloNegocio = Boolean((location.state as { soloNegocio?: boolean } | null)
             </div>
           )}
 
-          {/* PASO 3: LA IDENTIDAD DE TU NEGOCIO (LOGO + MULTIMEDIA) */}
+         {/* PASO 3: LA IDENTIDAD DE TU NEGOCIO (LOGO + MULTIMEDIA) */}
           {step === 3 && (
             <div>
               <h1 className="text-xl font-semibold text-center mb-1">
@@ -304,14 +314,28 @@ const soloNegocio = Boolean((location.state as { soloNegocio?: boolean } | null)
                   <br />
                   (mín. 400x400px)
                 </p>
+
+                {logoPreview && (
+                  <img
+                    src={logoPreview}
+                    alt="Preview del logo"
+                    className="w-20 h-20 object-contain mx-auto mb-3 rounded-lg border border-gray-200"
+                  />
+                )}
+
                 <div className="max-w-[150px] mx-auto">
-                  <Button
-                    type="button"
-                    fullWidth
-                    onClick={() => alert("Simulación de carga de archivo")}
-                  >
-                    <span className="text-xs">📸 Elegir imagen</span>
-                  </Button>
+                  <input
+                    id="logoInput"
+                    type="file"
+                    accept="image/png, image/jpeg"
+                    onChange={handleLogoChange}
+                    className="hidden"
+                  />
+                  <label htmlFor="logoInput">
+                    <div className="cursor-pointer bg-black text-white text-xs rounded-lg py-2.5 text-center font-medium">
+                      📸 {logo ? "Cambiar imagen" : "Elegir imagen"}
+                    </div>
+                  </label>
                 </div>
               </div>
 
@@ -355,7 +379,6 @@ const soloNegocio = Boolean((location.state as { soloNegocio?: boolean } | null)
               </button>
             </div>
           )}
-
           {/* PASO 4: REDES SOCIALES */}
           {step === 4 && (
             <div>
