@@ -8,6 +8,6 @@ const upload = multer({storage: storage})
 const rutasEmprendimientos = express.Router()
 
 rutasEmprendimientos.get("/", controladores.listarEmprendimientos)
-rutasEmprendimientos.post("/", upload.single("file"), controladores.crearEmprendimiento)
+rutasEmprendimientos.post("/", upload.single("logo"), controladores.crearEmprendimiento)
 
 export default rutasEmprendimientos

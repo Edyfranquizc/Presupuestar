@@ -20,7 +20,7 @@ async function crearEmprendimiento(req, res) {
     if (resultado) {
         res.status(201).json(resultado)
     } else {
-        res.status(400).json({mensaje: "No se pudo crear el presupuesto."})
+        res.status(400).json({mensaje: "No se pudo crear el emprendimiento."})
     }
 }
 
