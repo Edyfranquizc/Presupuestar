@@ -63,17 +63,19 @@ async function editarVencimiento(req,res){
 async function guardarEnCloudinary(req, res) {
     const buffer = req.file.buffer
     const idPresupuesto = req.params.id
-    console.log("guardarEnCloudinary")
+
     servicios.guardarEnCloudinary(buffer, (error, result) => {
         if (error) {
             console.log(error)
             res.status(400).json({mensaje: "No se pudo guardar el presupuesto en Cloudinary."})
         } else { 
-            console.log("Se ejecutara guardarURL")
             const url = result.secure_url
-            servicios.guardarURL(idPresupuesto, url)
-            console.log("guardarURL se ejecuto")
-            res.status(200).json({url_pdf: url})
+            const resultado = await servicios.guardarURL(idPresupuesto, url)
+            if (resultado) {
+                res.status(200).json({url_pdf: url})
+            } else {
+                res.status(400).json({mensaje: "No se pudo guardar la URL en la base de datos."})
+            }
         }
     })
 }
