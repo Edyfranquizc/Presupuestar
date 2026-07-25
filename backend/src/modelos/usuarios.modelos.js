@@ -1,4 +1,4 @@
-import { conexion, ejecutarConsulta } from "../data.js"
+import { conexion } from "../data.js"
 import bcrypt from "bcrypt"
 import dayjs from "dayjs"
 
@@ -6,7 +6,7 @@ import dayjs from "dayjs"
 async function verificarexistencia(email) {
     try {
         const consulta = "SELECT usuarios.email FROM `usuarios` WHERE `email` = ?"
-        const resultado = await ejecutarConsulta(consulta, [email])
+        const resultado = await conexion.execute(consulta, [email])
 
         if (resultado[0].length > 0) { 
             console.log("ya existe ese email en la db.")
@@ -20,7 +20,7 @@ async function verificarexistencia(email) {
 
 async function traerUsuario(idUsuario) {
     const consulta = "SELECT id, nombre, apellido, email, DATE_FORMAT(fecha_nacimiento, '%d-%m-%Y') AS fecha_nacimiento, DATE_FORMAT(fecha_registro, '%d-%m-%Y') AS fecha_registro, ubicacion FROM usuarios WHERE id = ?"
-    const resultadoUsuario = await ejecutarConsulta(consulta, [idUsuario])
+    const resultadoUsuario = await conexion.execute(consulta, [idUsuario])
 
     if (resultadoUsuario[0]) {
         return resultadoUsuario[0]
@@ -35,7 +35,7 @@ async function actualizarUsuario(idUsuario, datosUsuario) {
         const valor = dato[1]
 
         const consultaActualizar = `UPDATE usuarios SET ${columna} = ? WHERE id = ?`
-        const resultadoConsultaActualizar = await ejecutarConsulta(consultaActualizar, [valor, idUsuario])
+        const resultadoConsultaActualizar = await conexion.execute(consultaActualizar, [valor, idUsuario])
     }
 
     const usuarioActualizado = await traerUsuario(idUsuario)
@@ -47,7 +47,7 @@ async function cambiarPassword(idUsuario, datosPassword) {
     const { passwordActual, passwordNueva } = datosPassword
     
     const consulta = "SELECT usuarios.password_hash FROM usuarios WHERE id = ?"
-    const resultadoConsulta = await ejecutarConsulta(consulta, [idUsuario])
+    const resultadoConsulta = await conexion.execute(consulta, [idUsuario])
 
     if (resultadoConsulta[0].length > 0) {
         const hash = resultadoConsulta[0][0].password_hash
@@ -56,7 +56,7 @@ async function cambiarPassword(idUsuario, datosPassword) {
             try {
                 const passwordNuevaHash = bcrypt.hashSync(passwordNueva, 10)
                 const consultaPasswordNueva = "UPDATE usuarios SET password_hash = ? WHERE id = ?"
-                const resultadoConsultaPasswordNueva = await ejecutarConsulta(consultaPasswordNueva, [passwordNuevaHash, idUsuario])
+                const resultadoConsultaPasswordNueva = await conexion.execute(consultaPasswordNueva, [passwordNuevaHash, idUsuario])
             
                 return true
             } catch (error) {

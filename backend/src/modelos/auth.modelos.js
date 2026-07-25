@@ -1,4 +1,4 @@
-import { conexion, ejecutarConsulta } from "../data.js"
+import { conexion } from "../data.js"
 import bcrypt from "bcrypt"
 import dayjs from "dayjs"
 import { v4 } from "uuid"
@@ -6,14 +6,14 @@ import modelos from "./usuarios.modelos.js"
 
 async function verificarUsuario(email, password) {
     const consulta = "SELECT usuarios.id, usuarios.nombre, usuarios.email, usuarios.password_hash FROM usuarios WHERE email = ?"
-    const resultado = await ejecutarConsulta(consulta, [email])
+    const resultado = await conexion.execute(consulta, [email])
 
     if (resultado[0].length > 0) {
         const hash = resultado[0][0].password_hash
         if (bcrypt.compareSync(password, hash)) {
             const fecha_login = dayjs().format('YYYY-MM-DD HH:mm:ss')
             const act=`UPDATE usuarios SET ultimo_login_fecha= ? WHERE usuarios.email = ?`
-            const fas = await ejecutarConsulta(act, [fecha_login, email])
+            const fas = await conexion.execute(act, [fecha_login, email])
             return resultado[0]
         } else {
             return null
@@ -34,7 +34,7 @@ async function registrarUsuario(datosUsuario) {
         const id = v4()
         const fecha_registro = dayjs().format('YYYY-MM-DD HH:mm:ss')
         const consulta = "INSERT INTO usuarios (id, nombre, apellido, email, password_hash, fecha_registro, fecha_nacimiento, ubicacion) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
-        const resultado = await ejecutarConsulta(consulta, [id, nombre, apellido, email, password_hash, fecha_registro, fecha_nacimiento, ubicacion])
+        const resultado = await conexion.execute(consulta, [id, nombre, apellido, email, password_hash, fecha_registro, fecha_nacimiento, ubicacion])
         return { id, nombre, email }
     } else {
         return null

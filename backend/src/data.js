@@ -11,15 +11,4 @@ const conexion = mysql.createPool({
 }
 ).promise()
 
-async function ejecutarConsulta(consulta, datos) {
-    try {
-        const resultado = await conexion.execute(consulta, datos)
-        return resultado 
-    } catch (error) {
-        return error
-    } finally {
-        conexion.releaseConnection()
-    }
-}
-
-export { conexion, ejecutarConsulta }
+export { conexion }
