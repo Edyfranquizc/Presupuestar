@@ -14,7 +14,8 @@ async function listarEmprendimientos(req, res) {
 async function crearEmprendimiento(req, res) {
     const datosEmprendimiento = req.body
     const idUsuario = req.usuario.id
-    const resultado = await servicios.crearEmprendimiento(datosEmprendimiento, idUsuario)
+    const buffer = req.file.buffer
+    const resultado = await servicios.crearEmprendimiento(datosEmprendimiento, idUsuario, buffer)
 
     if (resultado) {
         res.status(201).json(resultado)
