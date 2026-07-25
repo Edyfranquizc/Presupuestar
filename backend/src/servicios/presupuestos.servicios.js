@@ -44,6 +44,7 @@ function guardarEnCloudinary(buffer, callback) {
 
 async function guardarURL(id_presupuesto, url) {
     const resultado = await modelos.guardarURL(id_presupuesto, url)
+    return resultado
 }
 
 export default { listarPresupuestos, editarEstado, buscarPresupuesto, crearPresupuesto, editarVencimiento, guardarEnCloudinary, guardarURL }

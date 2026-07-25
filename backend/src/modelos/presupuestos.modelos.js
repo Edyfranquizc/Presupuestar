@@ -248,7 +248,12 @@ async function verificarFechaVencimiento() {
 
 async function guardarURL(id_presupuesto, url) {
     const consulta = "UPDATE presupuestos SET url_pdf = ? WHERE id = ?"
-    const resultadoGuardarURL = await conexion.execute(consulta, [url, id_presupuesto])
+    try {
+        const resultadoGuardarURL = await conexion.execute(consulta, [url, id_presupuesto])
+        return {url}
+    } catch (error) {
+        return null
+    }
 }
 
 export default { crearPresupuesto, listarPresupuestos, listarPresupuesto, actualizarPresupuesto, verificarFechaVencimiento, editarVencimiento, guardarURL }
