@@ -15,18 +15,17 @@ async function listarEmprendimientos(id_usuario) {
     }
 }
 
-async function crearEmprendimiento(datosEmprendimiento, id_usuario) {
-    const { nombre, rubro, moneda, cuit, logo_url } = datosEmprendimiento
+async function crearEmprendimiento(datosEmprendimiento, id_usuario, url) {
+    const { nombre, rubro, moneda, cuit } = datosEmprendimiento
 
     const consultaCantidadEmprendimientos = "SELECT COUNT(id) FROM emprendimientos WHERE id_usuario = ?"
     const cantidadEmprendimientos = await conexion.execute(consultaCantidadEmprendimientos, [id_usuario])
-    console.log(cantidadEmprendimientos[0])
 
     if (cantidadEmprendimientos[0][0]['COUNT(id)'] < 3) {
         const id = v4()
         const consultaNuevoEmprendimiento = "INSERT INTO emprendimientos (id, nombre, rubro, moneda, cuit, logo_url, id_usuario) VALUES (?, ?, ?, ?, ?, ?, ?)"
-const nuevoEmprendimiento = await conexion.execute(consultaNuevoEmprendimiento, [id, nombre, rubro, moneda, cuit ?? null, logo_url ?? null, id_usuario])
-        return { id, nombre, rubro, moneda, cuit, logo_url }
+        const nuevoEmprendimiento = await conexion.execute(consultaNuevoEmprendimiento, [id, nombre, rubro, moneda, cuit ?? null, url, id_usuario])
+        return { id, nombre, rubro, moneda, cuit, url }
     } else {
         return false
     }
