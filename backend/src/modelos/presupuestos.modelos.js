@@ -1,4 +1,4 @@
-import { conexion, ejecutarConsulta } from "../data.js"
+import { conexion } from "../data.js"
 import dayjs from "dayjs"
 import { v4 } from "uuid"
 
@@ -16,7 +16,7 @@ async function crearPresupuesto(datosPresupuesto, id_usuario) {
 
     // Guardamos el presupuesto en la base de datos.
     const consultaAgregarNuevoPresupuesto = "INSERT INTO presupuestos (id, fecha_creacion, fecha_vencimiento, estado, subtotal, descuento_valor, total, fecha_ultima_modificacion, numero, cliente_nombre, cliente_email, cliente_telefono, descuento_tipo, descuento_monto, base_imponible, iva_porcentaje, iva_monto, notas, id_emprendimiento) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
-    const resultadoNuevoPresupuesto = await ejecutarConsulta(consultaAgregarNuevoPresupuesto,
+    const resultadoNuevoPresupuesto = await conexion.execute(consultaAgregarNuevoPresupuesto,
         [id_presupuesto, fecha_creacion,
             fecha_vencimiento, estado, subtotal, descuento_valor, total, fecha_ultima_modificacion, numero,
             cliente_nombre, cliente_email, cliente_telefono, descuento_tipo, descuento_monto, base_imponible, iva_porcentaje, iva_monto, notas, id_emprendimiento])
@@ -26,7 +26,7 @@ async function crearPresupuesto(datosPresupuesto, id_usuario) {
         const { descripcion, cantidad, precio_unitario, subtotal } = item
         const id_item = v4()
         const consultaItems = "INSERT INTO items_presupuesto (id_item, id_presupuesto, descripcion, cantidad, precio_unitario, subtotal) VALUES (?, ?, ?, ?, ?, ?)"
-        const resultadoItems = await ejecutarConsulta(consultaItems, [id_item, id_presupuesto, descripcion, cantidad, precio_unitario, subtotal])
+        const resultadoItems = await conexion.execute(consultaItems, [id_item, id_presupuesto, descripcion, cantidad, precio_unitario, subtotal])
     }
 
     // Generamos la consulta para traer los datos del presupuesto y sus respectivos ítems. 
@@ -36,7 +36,7 @@ async function crearPresupuesto(datosPresupuesto, id_usuario) {
     "JOIN items_presupuesto ON presupuestos.id = items_presupuesto.id_presupuesto " + 
     "WHERE presupuestos.id = ?"
     
-    const resultadoDevolverNuevoPresupuesto = await ejecutarConsulta(consultaDevolverNuevoPresupuesto, [id_presupuesto])
+    const resultadoDevolverNuevoPresupuesto = await conexion.execute(consultaDevolverNuevoPresupuesto, [id_presupuesto])
 
     // Generamos la estructura solicitada para retornar al front.
     const objetoADevolver = resultadoDevolverNuevoPresupuesto[0].reduce((acumulador, fila) => {
@@ -94,7 +94,7 @@ async function listarPresupuesto(id) {
     "JOIN items_presupuesto ON presupuestos.id = items_presupuesto.id_presupuesto " + 
     "WHERE presupuestos.id = ?"
     
-    const resultado = await ejecutarConsulta(consulta, [id])
+    const resultado = await conexion.execute(consulta, [id])
     //generamos el presupuesto como se requiere en front.
     const objetoADevolver = resultado[0].reduce((acumulador, fila) => {
         if (!acumulador) {
@@ -148,7 +148,7 @@ async function listarPresupuestos(id_usuario) {
     "JOIN items_presupuesto ON presupuestos.id = items_presupuesto.id_presupuesto " + 
     "WHERE emprendimientos.id_usuario = ?"
     
-    const resultado = await ejecutarConsulta(consulta, [id_usuario])
+    const resultado = await conexion.execute(consulta, [id_usuario])
 
     // Generamos la estructura para devolver al front.
     const presupuestosFormateados = []
@@ -212,7 +212,7 @@ async function actualizarPresupuesto(id, estado) {
     const estat = ["pendiente", "vencido", "rechazado", "aceptado"]
     for (let check = 0, r = estat.length; check < r; check++) {
         if (estado.estado == estat[check]) {
-            const resultado = await ejecutarConsulta(consulta, [estado.estado, fecha_ultima_modificacion, id])
+            const resultado = await conexion.execute(consulta, [estado.estado, fecha_ultima_modificacion, id])
             return resultado
         }
     }
@@ -222,17 +222,17 @@ async function actualizarPresupuesto(id, estado) {
 async function editarVencimiento(id,vencimiento) {
     const fecha_ultima_modificacion = dayjs().format('YYYY-MM-DD HH:mm:ss')
     const consulta2 = "SELECT fecha_vencimiento FROM presupuestos WHERE `id` = ?"
-    const presupuestosPendientes = await ejecutarConsulta(consulta2,[id])
+    const presupuestosPendientes = await conexion.execute(consulta2,[id])
     const fechaVencimiento = dayjs(presupuestosPendientes[0].fecha_vencimiento).format('YYYY-MM-DD')
     const nuevo_vencimiento= dayjs(fechaVencimiento).add(parseInt(vencimiento.vencimiento), "day").format('YYYY-MM-DD')
     const consulta = "UPDATE `presupuestos` SET `fecha_vencimiento` = ?,`fecha_ultima_modificacion`= ? WHERE `id` = ?"
-    const resultado = await ejecutarConsulta(consulta, [nuevo_vencimiento, fecha_ultima_modificacion, id])
+    const resultado = await conexion.execute(consulta, [nuevo_vencimiento, fecha_ultima_modificacion, id])
     return resultado
 }
 
 async function verificarFechaVencimiento() {
     const consulta = "SELECT id, fecha_vencimiento FROM presupuestos WHERE estado = 'pendiente'"
-    const presupuestosPendientes = await ejecutarConsulta(consulta)
+    const presupuestosPendientes = await conexion.execute(consulta)
 
     for (const presupuesto of presupuestosPendientes[0]) {
         const fechaVencimiento = dayjs(presupuesto.fecha_vencimiento).format('YYYY-MM-DD')
@@ -241,14 +241,14 @@ async function verificarFechaVencimiento() {
 
         if (fechaVencimiento === fechaHoy) {
             const consultaActualizacion = "UPDATE presupuestos SET estado = 'vencido' WHERE id = ?"
-            const presupuestoActualizado = await ejecutarConsulta(consultaActualizacion, [id])
+            const presupuestoActualizado = await conexion.execute(consultaActualizacion, [id])
         }
     }
 }
 
 async function guardarURL(id_presupuesto, url) {
     const consulta = "UPDATE presupuestos SET url_pdf = ? WHERE id = ?"
-    const resultadoGuardarURL = await ejecutarConsulta(consulta, [url, id_presupuesto])
+    const resultadoGuardarURL = await conexion.execute(consulta, [url, id_presupuesto])
 }
 
 export default { crearPresupuesto, listarPresupuestos, listarPresupuesto, actualizarPresupuesto, verificarFechaVencimiento, editarVencimiento, guardarURL }
