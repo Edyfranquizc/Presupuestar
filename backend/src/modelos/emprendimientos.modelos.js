@@ -31,7 +31,16 @@ const nuevoEmprendimiento = await conexion.execute(consultaNuevoEmprendimiento, 
         return false
     }
 
-    
+}
+async function editarEmprendimiento(datosEmprendimiento,id){
+    for (const dato of Object.entries(datosEmprendimiento)) {
+        const columna = dato[0]
+        const valor = dato[1]
+        const consultaActualizar = `UPDATE emprendimientos SET ${columna} = ? WHERE id = ?`
+        const resultadoConsultaActualizar = await conexion.execute(consultaActualizar, [valor, id])
+    }
+    const editadoEmprendimiento = await conexion.execute("SELECT * FROM emprendimientos WHERE id = ?",[id])
+return editadoEmprendimiento[0]
 }
 
-export default { listarEmprendimientos, crearEmprendimiento }
+export default { listarEmprendimientos, crearEmprendimiento,editarEmprendimiento }
