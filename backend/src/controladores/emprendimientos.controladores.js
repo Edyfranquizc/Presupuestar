@@ -23,5 +23,15 @@ async function crearEmprendimiento(req, res) {
         res.status(400).json({mensaje: "No se pudo crear el emprendimiento."})
     }
 }
+async function editarEmprendimiento(req, res) {
+    const datosEmprendimiento = req.body
+    const id = req.id
+    const resultado = await servicios.editarEmprendimiento(datosEmprendimiento, req.params.id)
 
-export default { listarEmprendimientos, crearEmprendimiento }
+    if (resultado) {
+        res.status(201).json(resultado)
+    } else {
+        res.status(400).json({mensaje: "No se pudo editar el presupuesto."})
+    }
+}
+export default { listarEmprendimientos, crearEmprendimiento,editarEmprendimiento }

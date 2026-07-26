@@ -29,7 +29,12 @@ async function crearEmprendimiento(datosEmprendimiento, idUsuario, buffer) {
         return false 
     }
 }
-
-
-
-export default { listarEmprendimientos, crearEmprendimiento }
+async function editarEmprendimiento(datosEmprendimiento, id) {
+    const editEmprendimiento = await modelos.editarEmprendimiento(datosEmprendimiento, id)
+    if (editEmprendimiento != null) {
+        return editEmprendimiento[0]
+    } else {
+        return false 
+    }
+}
+export default { listarEmprendimientos, crearEmprendimiento,editarEmprendimiento }
