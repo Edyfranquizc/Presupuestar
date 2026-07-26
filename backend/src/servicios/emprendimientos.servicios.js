@@ -12,23 +12,24 @@ async function listarEmprendimientos(id_usuario) {
     }
 }
 
-async function crearEmprendimiento(datosEmprendimiento, idUsuario, buffer) {
+async function crearEmprendimiento(datosEmprendimiento, idUsuario, buffer, callback) {
     const stream = cloudinary.uploader.upload_stream({resource_type: "image"}, async (error, result) => {
         if (!error) {
-            return error
+            const url = result.secure_url
+            const nuevoEmprendimiento = await modelos.crearEmprendimiento(datosEmprendimiento, idUsuario, url)
+            
+            if (nuevoEmprendimiento != null) {
+                callback(null, nuevoEmprendimiento)
+            } else {
+                callback(new Error("No se pudo crear el presupuesto en la base de datos."), null)
+            }
+        } else {
+            callback(error, null)
         }
     })
-
     helpers.bufferAStream(buffer).pipe(stream)
-    const url = result.secure_url
-    const nuevoEmprendimiento = await modelos.crearEmprendimiento(datosEmprendimiento, idUsuario, url)
-
-    if (nuevoEmprendimiento != null) {
-        return nuevoEmprendimiento
-    } else {
-        return false 
-    }
 }
+
 async function editarEmprendimiento(datosEmprendimiento, id) {
     const editEmprendimiento = await modelos.editarEmprendimiento(datosEmprendimiento, id)
     if (editEmprendimiento != null) {
@@ -37,4 +38,5 @@ async function editarEmprendimiento(datosEmprendimiento, id) {
         return false 
     }
 }
+
 export default { listarEmprendimientos, crearEmprendimiento,editarEmprendimiento }
