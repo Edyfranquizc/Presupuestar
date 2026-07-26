@@ -1,9 +1,14 @@
 import express from "express"
 import controladores from "../controladores/emprendimientos.controladores.js"
+import multer from "multer"
+
+const storage = multer.memoryStorage()
+const upload = multer({storage: storage})
 
 const rutasEmprendimientos = express.Router()
 
 rutasEmprendimientos.get("/", controladores.listarEmprendimientos)
-rutasEmprendimientos.post("/", controladores.crearEmprendimiento)
 rutasEmprendimientos.put("/:id",controladores.editarEmprendimiento)
+rutasEmprendimientos.post("/", upload.single("logo"), controladores.crearEmprendimiento)
+
 export default rutasEmprendimientos
