@@ -37,7 +37,7 @@ const soloNegocio = Boolean((location.state as { soloNegocio?: boolean } | null)
     nombreNegocio: "",
     rubro: "Diseño Gráfico",
     cuit: "",
-    moneda: "SARS",
+    moneda: "ARS",
 
     emailComercial: "",
     whatsapp: "",
@@ -79,13 +79,17 @@ const soloNegocio = Boolean((location.state as { soloNegocio?: boolean } | null)
   e.preventDefault();
   if (form.nombreNegocio.trim()) {
     try {
-      const emprendimiento = await crearEmprendimiento({
-        nombre: form.nombreNegocio,
-        rubro: form.rubro,
-        cuit: form.cuit,
-        moneda: form.moneda,
-        logo_url: null,
-      });
+      // FormData permite mandar texto Y archivos juntos en una sola petición
+      const datosEmprendimiento = new FormData();
+      datosEmprendimiento.append("nombre", form.nombreNegocio);
+      datosEmprendimiento.append("rubro", form.rubro);
+      datosEmprendimiento.append("cuit", form.cuit);
+      datosEmprendimiento.append("moneda", form.moneda);
+      if (logo) {
+        datosEmprendimiento.append("logo", logo); // el archivo real
+      }
+
+      const emprendimiento = await crearEmprendimiento(datosEmprendimiento);
       setEmprendimientoActivo(emprendimiento);
     } catch {
       // si falla, igualmente avanzamos
