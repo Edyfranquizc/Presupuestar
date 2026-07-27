@@ -117,6 +117,7 @@ async function listarPresupuesto(id) {
                 iva_porcentaje: fila.iva_porcentaje,
                 iva_monto: fila.iva_monto,
                 notas: fila.notas,
+                url_pdf: fila.url_pdf,
                 items: [{
                     id: fila.id_item,
                     id_presupuesto: fila.id_presupuesto,
@@ -174,6 +175,7 @@ async function listarPresupuestos(id_usuario) {
                 iva_monto: fila.iva_monto,
                 notas: fila.notas,
                 id_emprendimiento: fila.id_emprendimiento,
+                url_pdf: fila.url_pdf,
                 items: [
                     {
                         id: fila.id_item,
