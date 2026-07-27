@@ -11,8 +11,9 @@ export async function getEmprendimientos(): Promise<Emprendimiento[]> {
 export async function crearEmprendimiento(
   data: FormData
 ): Promise<Emprendimiento> {
-  const response = await api.post<Emprendimiento>("/emprendimientos", data, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
+  // No seteamos el header a mano: cuando el body es FormData,
+  // el navegador agrega automáticamente el Content-Type correcto
+  // CON el "boundary" necesario para separar el archivo del resto.
+  const response = await api.post<Emprendimiento>("/emprendimientos", data);
   return response.data;
 }
