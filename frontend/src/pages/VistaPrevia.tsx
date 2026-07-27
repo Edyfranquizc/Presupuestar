@@ -13,6 +13,14 @@ import { compartirPresupuesto } from "../services/presupuestos.service.ts";
 import { LinkIcon, ClipboardIcon } from "@heroicons/react/24/outline";
 import type { Presupuesto, Emprendimiento } from "../types/index.ts";
 
+// Devuelve una clase de tamaño de fuente más chica cuanto más largo es el monto,
+// para que nunca se desborde ni corte a la mitad en la tabla.
+function claseMonto(texto: string): string {
+  if (texto.length > 12) return "text-[9px]";
+  if (texto.length > 9) return "text-[10px]";
+  return "text-xs";
+}
+
 export default function VistaPrevia() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -152,10 +160,18 @@ function ContenidoVistaPrevia({
                   {item.descripcion}
                 </td>
                 <td className="py-3 px-1 text-center text-gray-500 text-xs">{item.cantidad}</td>
-                <td className="py-3 px-1 text-right text-gray-500 text-xs">
+                <td
+                  className={`py-3 px-1 text-right text-gray-500 whitespace-nowrap ${claseMonto(
+                    formatCurrencyCorto(item.precio_unitario)
+                  )}`}
+                >
                   {formatCurrencyCorto(item.precio_unitario)}
                 </td>
-                <td className="py-3 px-1 text-right font-semibold text-gray-900 text-xs">
+                <td
+                  className={`py-3 px-1 text-right font-semibold text-gray-900 whitespace-nowrap ${claseMonto(
+                    formatCurrencyCorto(item.subtotal)
+                  )}`}
+                >
                   {formatCurrencyCorto(item.subtotal)}
                 </td>
               </tr>
