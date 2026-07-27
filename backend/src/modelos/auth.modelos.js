@@ -13,7 +13,7 @@ async function verificarUsuario(email, password) {
         if (bcrypt.compareSync(password, hash)) {
             const fecha_login = dayjs().format('YYYY-MM-DD HH:mm:ss')
             const act=`UPDATE usuarios SET ultimo_login_fecha= ? WHERE usuarios.email = ?`
-            const fas = await conexion.execute(act, [fecha_login,email])
+            const fas = await conexion.execute(act, [fecha_login, email])
             return resultado[0]
         } else {
             return null

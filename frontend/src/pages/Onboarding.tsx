@@ -37,7 +37,7 @@ const soloNegocio = Boolean((location.state as { soloNegocio?: boolean } | null)
     nombreNegocio: "",
     rubro: "Diseño Gráfico",
     cuit: "",
-    moneda: "SARS",
+    moneda: "ARS",
 
     emailComercial: "",
     whatsapp: "",
@@ -47,7 +47,17 @@ const soloNegocio = Boolean((location.state as { soloNegocio?: boolean } | null)
     facebook: "",
     linkedin: "",
   });
+// Estado para el logo: guardamos el archivo Y su preview visual
+  const [logo, setLogo] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
+  function handleLogoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setLogo(file);
+    setLogoPreview(URL.createObjectURL(file));
+  }
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) {
@@ -69,13 +79,17 @@ const soloNegocio = Boolean((location.state as { soloNegocio?: boolean } | null)
   e.preventDefault();
   if (form.nombreNegocio.trim()) {
     try {
-      const emprendimiento = await crearEmprendimiento({
-        nombre: form.nombreNegocio,
-        rubro: form.rubro,
-        cuit: form.cuit,
-        moneda: form.moneda,
-        logo_url: null,
-      });
+      // FormData permite mandar texto Y archivos juntos en una sola petición
+      const datosEmprendimiento = new FormData();
+      datosEmprendimiento.append("nombre", form.nombreNegocio);
+      datosEmprendimiento.append("rubro", form.rubro);
+      datosEmprendimiento.append("cuit", form.cuit);
+      datosEmprendimiento.append("moneda", form.moneda);
+      if (logo) {
+        datosEmprendimiento.append("logo", logo); // el archivo real
+      }
+
+      const emprendimiento = await crearEmprendimiento(datosEmprendimiento);
       setEmprendimientoActivo(emprendimiento);
     } catch {
       // si falla, igualmente avanzamos
@@ -284,7 +298,7 @@ const soloNegocio = Boolean((location.state as { soloNegocio?: boolean } | null)
             </div>
           )}
 
-          {/* PASO 3: LA IDENTIDAD DE TU NEGOCIO (LOGO + MULTIMEDIA) */}
+         {/* PASO 3: LA IDENTIDAD DE TU NEGOCIO (LOGO + MULTIMEDIA) */}
           {step === 3 && (
             <div>
               <h1 className="text-xl font-semibold text-center mb-1">
@@ -304,14 +318,28 @@ const soloNegocio = Boolean((location.state as { soloNegocio?: boolean } | null)
                   <br />
                   (mín. 400x400px)
                 </p>
+
+                {logoPreview && (
+                  <img
+                    src={logoPreview}
+                    alt="Preview del logo"
+                    className="w-20 h-20 object-contain mx-auto mb-3 rounded-lg border border-gray-200"
+                  />
+                )}
+
                 <div className="max-w-[150px] mx-auto">
-                  <Button
-                    type="button"
-                    fullWidth
-                    onClick={() => alert("Simulación de carga de archivo")}
-                  >
-                    <span className="text-xs">📸 Elegir imagen</span>
-                  </Button>
+                  <input
+                    id="logoInput"
+                    type="file"
+                    accept="image/png, image/jpeg"
+                    onChange={handleLogoChange}
+                    className="hidden"
+                  />
+                  <label htmlFor="logoInput">
+                    <div className="cursor-pointer bg-black text-white text-xs rounded-lg py-2.5 text-center font-medium">
+                      📸 {logo ? "Cambiar imagen" : "Elegir imagen"}
+                    </div>
+                  </label>
                 </div>
               </div>
 
@@ -355,7 +383,6 @@ const soloNegocio = Boolean((location.state as { soloNegocio?: boolean } | null)
               </button>
             </div>
           )}
-
           {/* PASO 4: REDES SOCIALES */}
           {step === 4 && (
             <div>

@@ -9,8 +9,11 @@ export async function getEmprendimientos(): Promise<Emprendimiento[]> {
 }
 
 export async function crearEmprendimiento(
-  data: Omit<Emprendimiento, "id">
+  data: FormData
 ): Promise<Emprendimiento> {
+  // No seteamos el header a mano: cuando el body es FormData,
+  // el navegador agrega automáticamente el Content-Type correcto
+  // CON el "boundary" necesario para separar el archivo del resto.
   const response = await api.post<Emprendimiento>("/emprendimientos", data);
   return response.data;
 }
