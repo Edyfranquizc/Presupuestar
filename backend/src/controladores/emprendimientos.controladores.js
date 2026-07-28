@@ -15,15 +15,19 @@ async function listarEmprendimientos(req, res) {
 async function crearEmprendimiento(req, res) {
     const datosEmprendimiento = req.body
     const idUsuario = req.usuario.id
-    const buffer = req.file.buffer
-    const resultado = await servicios.crearEmprendimiento(datosEmprendimiento, idUsuario, buffer)
+    const buffer = req.file ? req.file.buffer : null
 
-    if (resultado) {
-        res.status(201).json(resultado)
-    } else {
-        res.status(400).json({mensaje: "No se pudo crear el emprendimiento."})
+    const callback = (error, resultado) => {
+        if (resultado) {
+            res.status(201).json(resultado)
+        } else {
+            res.status(400).json({mensaje: "No se pudo crear el emprendimiento."})
+        }
     }
+
+    const resultado = await servicios.crearEmprendimiento(datosEmprendimiento, idUsuario, buffer, callback)
 }
+
 async function editarEmprendimiento(req, res) {
     console.log(req)
     const datosEmprendimiento = req.body
@@ -37,4 +41,5 @@ async function editarEmprendimiento(req, res) {
         }}
         const resultado = await servicios.editarEmprendimiento(datosEmprendimiento, id,buffer, callback)
     }
+
 export default { listarEmprendimientos, crearEmprendimiento,editarEmprendimiento }
