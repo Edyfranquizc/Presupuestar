@@ -1,23 +1,57 @@
-// Pantalla onboarding para configurar datos personales, del negocio y redes sociales
+// Onboarding.tsx — Configuración de datos personales, del negocio y redes sociales
+
 import { useState } from "react";
-import { useNavigate,useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth.ts";
 import { crearEmprendimiento } from "../services/emprendimientos.service.ts";
+import {
+  InformationCircleIcon,
+  CheckCircleIcon,
+  ChevronDownIcon,
+  ArrowUpTrayIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
+import Input from "../components/ui/Input.tsx";
+import Button from "../components/ui/Button.tsx";
 
-import Input from "../components/ui/Input";
-import Button from "../components/ui/Button";
-
-function Dots({ active, total = 4 }: { active: number; total?: number }) {
+function ProgressBar({ paso, total = 4 }: { paso: number; total?: number }) {
   return (
-    <div className="flex justify-center gap-1.5 mt-6">
-      {Array.from({ length: total }, (_, i) => i + 1).map((dot) => (
+    <div className="mb-6">
+      <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
         <div
-          key={dot}
-          className={`w-2 h-2 rounded-full transition-colors duration-200 ${
-            active === dot ? "bg-black" : "bg-gray-300"
-          }`}
+          className="h-full bg-primary-500 rounded-full transition-all duration-300"
+          style={{ width: `${(paso / total) * 100}%` }}
         />
-      ))}
+      </div>
+      <p className="text-xs text-gray-400 text-center mt-2">
+        Paso {paso} de {total}
+      </p>
+    </div>
+  );
+}
+
+function Select({
+  name,
+  value,
+  onChange,
+  children,
+}: {
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="relative">
+      <select
+        name={name}
+        value={value}
+        onChange={onChange}
+        className="w-full h-11 pl-4 pr-9 bg-primary-50 border border-primary-400 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 appearance-none"
+      >
+        {children}
+      </select>
+      <ChevronDownIcon className="w-4 h-4 text-gray-500 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
     </div>
   );
 }
@@ -25,9 +59,12 @@ function Dots({ active, total = 4 }: { active: number; total?: number }) {
 export default function Onboarding() {
   const navigate = useNavigate();
   const location = useLocation();
-const soloNegocio = Boolean((location.state as { soloNegocio?: boolean } | null)?.soloNegocio);
+  const soloNegocio = Boolean((location.state as { soloNegocio?: boolean } | null)?.soloNegocio);
   const { setEmprendimientoActivo } = useAuth();
-  const [step, setStep] = useState(soloNegocio ? 2 : 0);
+
+  const [step, setStep] = useState(0);
+  const [mostrarPopup, setMostrarPopup] = useState(false);
+
   const [form, setForm] = useState({
     fechaNacimiento: "",
     dni: "",
@@ -37,7 +74,7 @@ const soloNegocio = Boolean((location.state as { soloNegocio?: boolean } | null)
     nombreNegocio: "",
     rubro: "Diseño Gráfico",
     cuit: "",
-    moneda: "SARS",
+    moneda: "ARS",
 
     emailComercial: "",
     whatsapp: "",
@@ -45,26 +82,25 @@ const soloNegocio = Boolean((location.state as { soloNegocio?: boolean } | null)
     web: "",
     instagram: "",
     facebook: "",
-    linkedin: "",
   });
-// Estado para el logo: guardamos el archivo Y su preview visual
+
   const [logo, setLogo] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
   function handleLogoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-
     setLogo(file);
     setLogoPreview(URL.createObjectURL(file));
   }
-  function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) {
-    setForm((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+
+  function handleQuitarLogo() {
+    setLogo(null);
+    setLogoPreview(null);
+  }
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   }
 
   function nextStep() {
@@ -75,421 +111,339 @@ const soloNegocio = Boolean((location.state as { soloNegocio?: boolean } | null)
     setStep((prev) => prev - 1);
   }
 
-  async function handleSubmit(e: React.FormEvent) {
-  e.preventDefault();
-  if (form.nombreNegocio.trim()) {
-    try {
-      const emprendimiento = await crearEmprendimiento({
-        nombre: form.nombreNegocio,
-        rubro: form.rubro,
-        cuit: form.cuit,
-        moneda: form.moneda,
-        logo_url: null,
-      });
-      setEmprendimientoActivo(emprendimiento);
-    } catch {
-      // si falla, igualmente avanzamos
-    }
+  function handleEmpezar() {
+    setMostrarPopup(true);
   }
-  nextStep();
-}
+
+  function handleContinuarPopup() {
+    setMostrarPopup(false);
+    setStep(soloNegocio ? 2 : 1);
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (form.nombreNegocio.trim()) {
+      try {
+        const datosEmprendimiento = new FormData();
+        datosEmprendimiento.append("nombre", form.nombreNegocio);
+        datosEmprendimiento.append("rubro", form.rubro);
+        datosEmprendimiento.append("cuit", form.cuit);
+        datosEmprendimiento.append("moneda", form.moneda);
+        if (logo) {
+          datosEmprendimiento.append("logo", logo);
+        }
+
+        const emprendimiento = await crearEmprendimiento(datosEmprendimiento);
+        setEmprendimientoActivo(emprendimiento);
+      } catch {
+        // si falla, igualmente avanzamos
+      }
+    }
+    nextStep();
+  }
 
   function handleFinish() {
     navigate("/dashboard");
   }
 
+  const paso1Valido = form.nombreNegocio.trim() !== "" && form.cuit.trim() !== "";
+  const paso2Valido = form.emailComercial.trim() !== "" && form.whatsapp.trim() !== "";
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-      <div className="w-full max-w-sm bg-white border border-gray-300 rounded-[24px] px-6 py-8 shadow-sm transition-all duration-300">
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col h-full justify-between"
-        >
-          {/* PASO 0: INTRODUCCIÓN */}
-          {step === 0 && (
-            <div className="flex flex-col justify-center items-center text-center py-4">
-              <div className="text-3xl font-bold mb-8">Logo®</div>
-              <h1 className="text-xl font-semibold mb-3">Introducción</h1>
-              <p className="text-sm text-gray-500 mb-4 max-w-[250px]">
-                Te guiaremos en 4 pasos rápidos para configurar tus datos y los
-                de tu negocio.
-              </p>
-              <p className="text-xs text-gray-400 mb-8">
-                Tené a mano tus datos de contacto y redes sociales.
-              </p>
-              <Button type="button" fullWidth onClick={nextStep}>
-                Comenzar →
+      <div className="w-full max-w-sm bg-white border border-gray-200 rounded-3xl px-6 py-8 shadow-sm">
+        {/* PASO 0: BIENVENIDA */}
+        {step === 0 && (
+          <div className="flex flex-col items-center text-center py-4">
+            <h1 className="text-xl font-bold mb-3">Te damos la bienvenida</h1>
+            <p className="text-sm text-gray-500 mb-8 max-w-[260px]">
+              Antes de empezar, cargá los datos de tu emprendimiento así tus presupuestos
+              salen con tu marca.
+            </p>
+            <Button fullWidth onClick={handleEmpezar}>
+              Empezar
+            </Button>
+            <button
+              type="button"
+              onClick={handleFinish}
+              className="text-xs text-gray-400 underline mt-4 hover:text-gray-700"
+            >
+              Omitir por ahora
+            </button>
+          </div>
+        )}
+
+        {/* PASO 1: TUS DATOS PERSONALES (solo primera vez, sin numerar) */}
+        {step === 1 && (
+          <form onSubmit={(e) => { e.preventDefault(); nextStep(); }}>
+            <h1 className="text-xl font-bold text-center mb-1">Tus datos personales</h1>
+            <p className="text-xs text-gray-400 text-center mb-6">
+              Estos datos son obligatorios
+            </p>
+
+            <div className="flex flex-col gap-4">
+              <Input
+                name="fechaNacimiento"
+                label="Fecha de nacimiento"
+                placeholder="01/01/2000"
+                value={form.fechaNacimiento}
+                onChange={handleChange}
+              />
+              <Input
+                name="dni"
+                label="DNI"
+                placeholder="23456789"
+                value={form.dni}
+                onChange={handleChange}
+              />
+              <Input
+                name="celular"
+                label="Celular"
+                placeholder="1234567890"
+                value={form.celular}
+                onChange={handleChange}
+              />
+              <div>
+                <label className="text-sm font-medium text-gray-900 mb-1 block">
+                  ¿Dónde vivís?
+                </label>
+                <Select name="ciudad" value={form.ciudad} onChange={handleChange}>
+                  <option value="Buenos Aires">Buenos Aires</option>
+                  <option value="Córdoba">Córdoba</option>
+                  <option value="Santa Fe">Santa Fe</option>
+                </Select>
+              </div>
+            </div>
+
+            <div className="mt-8">
+              <Button type="submit" fullWidth>
+                Siguiente
               </Button>
             </div>
-          )}
+          </form>
+        )}
 
-          {/* PASO 1: TUS DATOS PERSONALES */}
-          {step === 1 && (
-            <div>
-              <h1 className="text-xl font-semibold text-center mb-1">
-                Tus datos personales
-              </h1>
-              <p className="text-xs text-gray-400 text-center mb-6">
-                Estos datos son obligatorios
-              </p>
+        {/* PASO 2 (Paso 1 de 4): NOMBRE / RUBRO / CUIT / MONEDA */}
+        {step === 2 && (
+          <form onSubmit={(e) => { e.preventDefault(); if (paso1Valido) nextStep(); }}>
+            <h1 className="text-xl font-bold text-center mb-1">Nuevo emprendimiento</h1>
+            <ProgressBar paso={1} />
+            <p className="text-sm font-semibold text-center mb-5">
+              Los datos de tu emprendimiento
+            </p>
 
-              <div className="flex flex-col gap-4">
-                <div>
-                  <label className="text-xs text-gray-700 flex items-center gap-1 mb-1">
-                    🎂 Fecha de nacimiento
-                  </label>
-                  <Input
-                    name="fechaNacimiento"
-                    placeholder="01/01/2000"
-                    value={form.fechaNacimiento}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-gray-700 flex items-center gap-1 mb-1">
-                    🪪 DNI
-                  </label>
-                  <Input
-                    name="dni"
-                    placeholder="23456789"
-                    value={form.dni}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-gray-700 flex items-center gap-1 mb-1">
-                    📱 Celular
-                  </label>
-                  <Input
-                    name="celular"
-                    placeholder="1234567890"
-                    value={form.celular}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-gray-700 flex items-center gap-1 mb-1">
-                    📍 ¿Dónde vivís?
-                  </label>
-                  <select
-                    name="ciudad"
-                    value={form.ciudad}
-                    onChange={handleChange}
-                    className="w-full h-10 px-3 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-black appearance-none"
-                    style={{
-                      backgroundImage:
-                        "url(\"data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e\")",
-                      backgroundRepeat: "no-repeat",
-                      backgroundPosition: "right 12px center",
-                      backgroundSize: "16px",
-                    }}
-                  >
-                    <option value="Buenos Aires">Buenos Aires</option>
-                    <option value="Córdoba">Córdoba</option>
-                    <option value="Santa Fe">Santa Fe</option>
-                  </select>
-                </div>
+            <div className="flex flex-col gap-4">
+              <Input
+                name="nombreNegocio"
+                label="Nombre"
+                placeholder="Ej. Mágica"
+                value={form.nombreNegocio}
+                onChange={handleChange}
+              />
+              <div>
+                <label className="text-sm font-medium text-gray-900 mb-1 block">Rubro</label>
+                <Select name="rubro" value={form.rubro} onChange={handleChange}>
+                  <option value="Diseño Gráfico">Diseño Gráfico</option>
+                  <option value="Indumentaria">Indumentaria</option>
+                  <option value="Gastronomía">Gastronomía</option>
+                </Select>
               </div>
-
-              <div className="mt-8">
-                <Button type="button" fullWidth onClick={nextStep}>
-                  Siguiente →
-                </Button>
+              <Input
+                name="cuit"
+                label="CUIT"
+                placeholder="11-23456789-0"
+                value={form.cuit}
+                onChange={handleChange}
+              />
+              <div>
+                <label className="text-sm font-medium text-gray-900 mb-1 block">Moneda</label>
+                <Select name="moneda" value={form.moneda} onChange={handleChange}>
+                  <option value="ARS">$ARS</option>
+                  <option value="USD">$USD</option>
+                </Select>
               </div>
-              <Dots active={1} />
             </div>
-          )}
 
-          {/* PASO 2: LA IDENTIDAD DE TU NEGOCIO (CAMPOS BÁSICOS) */}
-          {step === 2 && (
-            <div>
-              <h1 className="text-xl font-semibold text-center mb-1">
-                La identidad de tu negocio
-              </h1>
-              <p className="text-xs text-gray-400 text-center mb-6">
-                Los datos se pueden modificar después
-              </p>
-
-              <div className="flex flex-col gap-4">
-                <div>
-                  <label className="text-xs text-gray-700 flex items-center gap-1 mb-1">
-                    🏪 Nombre
-                  </label>
-                  <Input
-                    name="nombreNegocio"
-                    placeholder="¿Cómo se llama tu emprendimiento?"
-                    value={form.nombreNegocio}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-gray-700 flex items-center gap-1 mb-1">
-                    🧺 Rubro / Sector
-                  </label>
-                  <select
-                    name="rubro"
-                    value={form.rubro}
-                    onChange={handleChange}
-                    className="w-full h-10 px-3 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-black appearance-none"
-                    style={{
-                      backgroundImage:
-                        "url(\"data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e\")",
-                      backgroundRepeat: "no-repeat",
-                      backgroundPosition: "right 12px center",
-                      backgroundSize: "16px",
-                    }}
-                  >
-                    <option value="Diseño Gráfico">Diseño Gráfico</option>
-                    <option value="Indumentaria">Indumentaria</option>
-                    <option value="Gastronomía">Gastronomía</option>
-                  </select>
-                </div>
-                <div>
-                  <label className="text-xs text-gray-700 flex items-center gap-1 mb-1">
-                    🧾 CUIT
-                  </label>
-                  <Input
-                    name="cuit"
-                    placeholder="12-34567890-11"
-                    value={form.cuit}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-gray-700 flex items-center gap-1 mb-1">
-                    💵 Moneda
-                  </label>
-                  <select
-                    name="moneda"
-                    value={form.moneda}
-                    onChange={handleChange}
-                    className="w-full h-10 px-3 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-black appearance-none"
-                    style={{
-                      backgroundImage:
-                        "url(\"data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e\")",
-                      backgroundRepeat: "no-repeat",
-                      backgroundPosition: "right 12px center",
-                      backgroundSize: "16px",
-                    }}
-                  >
-                    <option value="ARS">$ARS</option>
-                    <option value="USD">$USD</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="mt-8">
-                <Button type="button" fullWidth onClick={nextStep}>
-                  Siguiente →
-                </Button>
-              </div>
-              <Dots active={2} />
-              <button
-                type="button"
-                onClick={() => setStep(4)}
-                className="block mx-auto text-xs text-gray-400 underline mt-4 hover:text-black"
-              >
-                Omitir
-              </button>
+            <div className="mt-8">
+              <Button type="submit" fullWidth disabled={!paso1Valido}>
+                Siguiente
+              </Button>
             </div>
-          )}
-
-         {/* PASO 3: LA IDENTIDAD DE TU NEGOCIO (LOGO + MULTIMEDIA) */}
-          {step === 3 && (
-            <div>
-              <h1 className="text-xl font-semibold text-center mb-1">
-                La identidad de tu negocio
-              </h1>
-              <p className="text-xs text-gray-400 text-center mb-5">
-                Los datos se pueden modificar después
-              </p>
-
-              <p className="text-xs font-medium text-center text-gray-800 mb-2">
-                Subí el logo de tu emprendimiento
-              </p>
-
-              <div className="border border-dashed border-gray-300 rounded-xl p-4 text-center bg-gray-50 mb-5">
-                <p className="text-[10px] text-gray-400 leading-normal mb-3">
-                  Formatos aceptados: PNG, JPG
-                  <br />
-                  (mín. 400x400px)
-                </p>
-
-                {logoPreview && (
-                  <img
-                    src={logoPreview}
-                    alt="Preview del logo"
-                    className="w-20 h-20 object-contain mx-auto mb-3 rounded-lg border border-gray-200"
-                  />
-                )}
-
-                <div className="max-w-[150px] mx-auto">
-                  <input
-                    id="logoInput"
-                    type="file"
-                    accept="image/png, image/jpeg"
-                    onChange={handleLogoChange}
-                    className="hidden"
-                  />
-                  <label htmlFor="logoInput">
-                    <div className="cursor-pointer bg-black text-white text-xs rounded-lg py-2.5 text-center font-medium">
-                      📸 {logo ? "Cambiar imagen" : "Elegir imagen"}
-                    </div>
-                  </label>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-4">
-                <div>
-                  <label className="text-xs text-gray-700 flex items-center gap-1 mb-1">
-                    ✉️ Email comercial
-                  </label>
-                  <Input
-                    name="emailComercial"
-                    placeholder="emprendimientoA@mail.com"
-                    value={form.emailComercial}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-gray-700 flex items-center gap-1 mb-1">
-                    📞 Celular / Whatsapp
-                  </label>
-                  <Input
-                    name="whatsapp"
-                    placeholder="1122334455"
-                    value={form.whatsapp}
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
-
-              <div className="mt-8">
-                <Button type="button" fullWidth onClick={nextStep}>
-                  Siguiente →
-                </Button>
-              </div>
-              <Dots active={3} />
-              <button
-                type="button"
-                onClick={prevStep}
-                className="block mx-auto text-xs text-gray-400 underline mt-4 hover:text-black"
-              >
-                Volver al paso anterior
-              </button>
-            </div>
-          )}
-          {/* PASO 4: REDES SOCIALES */}
-          {step === 4 && (
-            <div>
-              <h1 className="text-xl font-semibold text-center mb-1">
-                La identidad de tu negocio
-              </h1>
-              <p className="text-xs text-gray-400 text-center mb-2">
-                Los datos se pueden modificar después
-              </p>
-              <h2 className="text-xs font-semibold text-center text-gray-700 mb-5">
-                Redes Sociales
-              </h2>
-
-              <div className="flex flex-col gap-4">
-                <div>
-                  <label className="text-xs text-gray-700 flex items-center gap-1 mb-1">
-                    🔗 Web
-                  </label>
-                  <Input
-                    name="web"
-                    placeholder="http://"
-                    value={form.web}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-gray-700 flex items-center gap-1 mb-1">
-                    📸 Instagram
-                  </label>
-                  <Input
-                    name="instagram"
-                    placeholder="@emprendimientoA"
-                    value={form.instagram}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-gray-700 flex items-center gap-1 mb-1">
-                    👤 Facebook
-                  </label>
-                  <Input
-                    name="facebook"
-                    placeholder="@emprendimientoA"
-                    value={form.facebook}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div>
-                  <label className="text-xs text-gray-700 flex items-center gap-1 mb-1">
-                    💼 Linkedin
-                  </label>
-                  <Input
-                    name="linkedin"
-                    placeholder="@emprendimientoA"
-                    value={form.linkedin}
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
-
-              <div className="mt-8">
-                <Button type="submit" fullWidth>
-                  Completar
-                </Button>
-              </div>
-              <Dots active={4} />
-              <button
-                type="button"
-                onClick={prevStep}
-                className="block mx-auto text-xs text-gray-400 underline mt-4 hover:text-black"
-              >
-                Volver al paso anterior
-              </button>
-            </div>
-          )}
-        </form>
-
-        {/* MODAL / ÉXITO (Misma tarjeta contenedora limpia) */}
-        {step === 5 && (
-          <div className="py-4 w-full relative">
-            {/* Botón de cierre en la esquina superior derecha del recuadro interno del Figma */}
-            <span
-              className="absolute top-0 right-0 cursor-pointer text-gray-400 hover:text-black font-medium text-sm transition-colors"
-              onClick={handleFinish}
+            <button
+              type="button"
+              onClick={() => setStep(5)}
+              className="block mx-auto text-xs text-gray-400 underline mt-4 hover:text-gray-700"
             >
-              ✕
-            </span>
+              Omitir por ahora
+            </button>
+          </form>
+        )}
 
-            <div className="text-center pt-2">
-              <span className="text-2xl block mb-2">✔️</span>
-              <h2 className="text-xl font-semibold mb-2">¡Listo!</h2>
-              <p className="text-xs text-gray-500 mb-8 max-w-[210px] mx-auto leading-relaxed">
-                Podés agregar o modificar tu emprendimiento desde perfil.
+        {/* PASO 3 (Paso 2 de 4): LOGO / MAIL / CELULAR */}
+        {step === 3 && (
+          <form onSubmit={(e) => { e.preventDefault(); if (paso2Valido) nextStep(); }}>
+            <h1 className="text-xl font-bold text-center mb-1">Nuevo emprendimiento</h1>
+            <ProgressBar paso={2} />
+            <p className="text-sm font-semibold text-center mb-5">
+              Los datos de tu emprendimiento
+            </p>
+
+            <p className="text-sm font-medium text-gray-900 mb-2">Logo</p>
+            <div className="border border-dashed border-gray-300 rounded-xl p-4 text-center bg-gray-50 mb-5">
+              <p className="text-xs text-gray-400 mb-3">
+                Formatos aceptados: PNG, JPG
+                <br />
+                (mínimo 400x400px)
               </p>
 
-              <div className="flex flex-col gap-3">
-                <Button type="button" fullWidth onClick={handleFinish}>
-                  Dashboard
-                </Button>
-                <button
-                  type="button"
-                  onClick={() => navigate("/perfil")}
-                  className="text-xs text-gray-500 font-medium hover:underline block mx-auto transition-all"
-                >
-                  Perfil
-                </button>
+              {logoPreview && (
+                <img
+                  src={logoPreview}
+                  alt="Preview del logo"
+                  className="w-16 h-16 object-contain mx-auto mb-3 rounded-full border border-gray-200"
+                />
+              )}
+
+              <input
+                id="logoInput"
+                type="file"
+                accept="image/png, image/jpeg"
+                onChange={handleLogoChange}
+                className="hidden"
+              />
+              <div className="flex gap-2 justify-center">
+                <label htmlFor="logoInput">
+                  <span className="inline-flex items-center gap-1.5 border border-primary-500 text-primary-500 text-xs font-semibold rounded-lg px-4 py-2 cursor-pointer">
+                    <ArrowUpTrayIcon className="w-4 h-4" />
+                    Subir logo
+                  </span>
+                </label>
+                {logo && (
+                  <button
+                    type="button"
+                    onClick={handleQuitarLogo}
+                    className="inline-flex items-center gap-1.5 border border-gray-300 text-gray-600 text-xs font-semibold rounded-lg px-4 py-2"
+                  >
+                    <TrashIcon className="w-4 h-4" />
+                    Eliminar
+                  </button>
+                )}
               </div>
             </div>
+
+            <div className="flex flex-col gap-4">
+              <Input
+                name="emailComercial"
+                label="Mail"
+                placeholder="emprendimientoA@mail.com"
+                value={form.emailComercial}
+                onChange={handleChange}
+              />
+              <Input
+                name="whatsapp"
+                label="Celular"
+                placeholder="1122334455"
+                value={form.whatsapp}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="mt-8">
+              <Button type="submit" fullWidth disabled={!paso2Valido}>
+                Siguiente
+              </Button>
+            </div>
+            <button
+              type="button"
+              onClick={prevStep}
+              className="block mx-auto text-xs text-gray-400 underline mt-4 hover:text-gray-700"
+            >
+              Volver al paso anterior
+            </button>
+          </form>
+        )}
+
+        {/* PASO 4 (Paso 3 de 4): REDES SOCIALES — opcionales */}
+        {step === 4 && (
+          <form onSubmit={handleSubmit}>
+            <h1 className="text-xl font-bold text-center mb-1">Nuevo emprendimiento</h1>
+            <ProgressBar paso={3} />
+            <p className="text-sm font-semibold text-center mb-5">
+              Los datos de tu emprendimiento
+            </p>
+
+            <div className="flex flex-col gap-4">
+              <Input
+                name="web"
+                label="Página web"
+                placeholder="Ej. juanperez@gmail.com"
+                value={form.web}
+                onChange={handleChange}
+              />
+              <Input
+                name="instagram"
+                label="Instagram"
+                placeholder="Ej. @emprendimiento"
+                value={form.instagram}
+                onChange={handleChange}
+              />
+              <Input
+                name="facebook"
+                label="Facebook"
+                placeholder="Ej. @emprendimiento"
+                value={form.facebook}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="mt-8">
+              <Button type="submit" fullWidth>
+                Finalizar
+              </Button>
+            </div>
+            <button
+              type="button"
+              onClick={prevStep}
+              className="block mx-auto text-xs text-gray-400 underline mt-4 hover:text-gray-700"
+            >
+              Volver al paso anterior
+            </button>
+          </form>
+        )}
+
+        {/* PASO 5: ÉXITO */}
+        {step === 5 && (
+          <div className="text-center py-4">
+            <div className="w-14 h-14 rounded-full bg-success-100 flex items-center justify-center mx-auto mb-4">
+              <CheckCircleIcon className="w-8 h-8 text-success-500" />
+            </div>
+            <h2 className="text-xl font-bold mb-2">Todo listo para empezar</h2>
+            <p className="text-sm text-gray-500 mb-8 max-w-[240px] mx-auto">
+              Ya podés crear presupuestos profesionales para tus clientes.
+            </p>
+            <Button fullWidth onClick={handleFinish}>
+              Ir al Inicio
+            </Button>
           </div>
         )}
       </div>
+
+      {/* POPUP INFORMATIVO */}
+      {mostrarPopup && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl p-6 max-w-xs w-full text-center">
+            <div className="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center mx-auto mb-3">
+              <InformationCircleIcon className="w-6 h-6 text-primary-500" />
+            </div>
+            <p className="text-sm text-gray-700 mb-5">
+              Tené a mano tu CUIT, tu logo y redes sociales
+            </p>
+            <Button fullWidth onClick={handleContinuarPopup}>
+              Continuar
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

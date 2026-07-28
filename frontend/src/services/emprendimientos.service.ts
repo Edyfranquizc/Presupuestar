@@ -11,8 +11,12 @@ export async function getEmprendimientos(): Promise<Emprendimiento[]> {
 export async function crearEmprendimiento(
   data: FormData
 ): Promise<Emprendimiento> {
+  // Sobreescribimos el Content-Type por defecto (application/json) que trae
+  // la instancia de Axios. Con "undefined", dejamos que el navegador arme el
+  // multipart/form-data con el boundary correcto, necesario para que Multer
+  // pueda leer el archivo del lado del backend.
   const response = await api.post<Emprendimiento>("/emprendimientos", data, {
-    headers: { "Content-Type": "multipart/form-data" },
+    headers: { "Content-Type": undefined },
   });
   return response.data;
 }
