@@ -14,30 +14,43 @@ async function listarEmprendimientos(id_usuario) {
 
 async function crearEmprendimiento(datosEmprendimiento, idUsuario, buffer, callback) {
     if (!buffer) {
-        const nuevoEmprendimiento = await modelos.crearEmprendimiento(datosEmprendimiento, id_usuario, null)
+        try {
+            const nuevoEmprendimiento = await modelos.crearEmprendimiento(datosEmprendimiento, id_usuario, null)
 
-        if (nuevoEmprendimiento) {
-            callback(null, nuevoEmprendimiento)
-        } else {
-            callback(new Error("No se pudo crear el emprendimeinto en la base de datos."), null)
+            if (nuevoEmprendimiento) {
+                callback(null, nuevoEmprendimiento)
+            } else {
+                callback(new Error("No se pudo crear el emprendimeinto en la base de datos."), null)
+            }
+
+        } catch (error) {
+            callback(error, null)
         }
     } else {
-        const stream = cloudinary.uploader.upload_stream({resource_type: "image"}, async (error, result) => {
+        try {
+            const stream = cloudinary.uploader.upload_stream({resource_type: "image"}, async (error, result) => {
             if (error) {
                 callback(error, null)
             } else {
                 const url = result.secure_url
-                const nuevoEmprendimiento = await modelos.crearEmprendimiento(datosEmprendimiento, idUsuario, url)
+                try {
+                    const nuevoEmprendimiento = await modelos.crearEmprendimiento(datosEmprendimiento, idUsuario, url)
 
-                if (nuevoEmprendimiento != null) {
-                    callback(null, nuevoEmprendimiento)
-                } else {
-                    callback(new Error("No se pudo crear el emprendimiento en la base de datos."), null)
+                    if (nuevoEmprendimiento != null) {
+                        callback(null, nuevoEmprendimiento)
+                    } else {
+                        callback(new Error("No se pudo crear el emprendimiento en la base de datos."), null)
+                    }
+                } catch (error) {
+                    callback(error, null)
                 }
             }
         })
 
         helpers.bufferAStream(buffer).pipe(stream)
+        } catch (error) {
+            callback(error, null)
+        }    
     }
 }
 

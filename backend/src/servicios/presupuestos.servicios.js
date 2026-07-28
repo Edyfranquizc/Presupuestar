@@ -31,13 +31,21 @@ async function editarVencimiento(id, vencimiento) {
 }
 
 function guardarEnCloudinary(buffer, callback) {
-    const stream = cloudinary.uploader.upload_stream({resource_type: "image"}, callback)
-    helpers.bufferAStream(buffer).pipe(stream)
+    try {
+        const stream = cloudinary.uploader.upload_stream({resource_type: "image"}, callback)
+        helpers.bufferAStream(buffer).pipe(stream)
+    } catch (error) {
+        callback(error, null)
+    }
 }
 
 async function guardarURL(id_presupuesto, url) {
-    const resultado = await modelos.guardarURL(id_presupuesto, url)
-    return resultado
+    try {
+        const resultado = await modelos.guardarURL(id_presupuesto, url)
+        return resultado
+    } catch (error) {
+        return error
+    }
 }
 
 export default { listarPresupuestos, editarEstado, buscarPresupuesto, crearPresupuesto, editarVencimiento, guardarEnCloudinary, guardarURL }
