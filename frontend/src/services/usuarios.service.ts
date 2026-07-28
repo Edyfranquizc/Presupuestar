@@ -12,8 +12,9 @@ export async function getUsuarioMe(): Promise<Usuario | null> {
 export async function actualizarUsuarioMe(
   datos: { fecha_nacimiento?: string; ubicacion?: string }
 ): Promise<Usuario | null> {
-  const response = await api.put<Usuario>("/usuarios/me", datos);
-  return response.data ?? null;
+  const response = await api.put<Usuario | Usuario[]>("/usuarios/me", datos);
+  const dato = Array.isArray(response.data) ? response.data[0] : response.data;
+  return dato ?? null;
 }
 
 export async function cambiarPasswordMe(datos: {
