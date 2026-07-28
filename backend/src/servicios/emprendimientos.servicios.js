@@ -8,29 +8,42 @@ async function listarEmprendimientos(id_usuario) {
     if (emprendimientos != null) {
         return emprendimientos
     } else {
+        return false
+    }
+}
+
+async function crearEmprendimiento(datosEmprendimiento, idUsuario, buffer) {
+    const stream = cloudinary.uploader.upload_stream({resource_type: "image"}, async (error, result) => {
+        if (!error) {
+            return error
+        }
+    })
+
+    helpers.bufferAStream(buffer).pipe(stream)
+    const url = result.secure_url
+    const nuevoEmprendimiento = await modelos.crearEmprendimiento(datosEmprendimiento, idUsuario, url)
+
+    if (nuevoEmprendimiento != null) {
+        return nuevoEmprendimiento
+    } else {
         return false 
     }
 }
 
-async function crearEmprendimiento(datosEmprendimiento, idUsuario, buffer, callback) {
-    const stream = cloudinary.uploader.upload_stream({resource_type: "image"}, async (error, result) => {
-        if (!error) {
-            const url = result.secure_url
-            const nuevoEmprendimiento = await modelos.crearEmprendimiento(datosEmprendimiento, idUsuario, url)
-            
-            if (nuevoEmprendimiento != null) {
-                callback(null, nuevoEmprendimiento)
-            } else {
-                callback(new Error("No se pudo crear el presupuesto en la base de datos."), null)
-            }
-        } else {
-            callback(error, null)
-        }
-    })
+async function editarEmprendimiento(datosEmprendimiento, id, buffer, callback) {
+    if (buffer != undefined) {
+        const resurl = await modelos.traerEmprendimiento(id)
+        const publicId = extractPublicId(`${Object.values(resurl[0][0])[0]}`)
+        const stream = cloudinary.uploader.upload_stream({ resource_type: "image", public_id: publicId, invalidate: true }, async (error, result) => {
+            if (error) { callback(error, null) }
+        })
+    }
+    const editaEmprendimiento = await modelos.editarEmprendimiento(datosEmprendimiento, id)
+    if (editaEmprendimiento != null) { callback(null, editaEmprendimiento) }
+    else { callback(new Error("No se pudo editar el presupuesto en la base de datos."), null) }
     helpers.bufferAStream(buffer).pipe(stream)
 }
-
-async function editarEmprendimiento(datosEmprendimiento, id) {
+/*async function editarEmprendimiento(datosEmprendimiento, id) {
     const editEmprendimiento = await modelos.editarEmprendimiento(datosEmprendimiento, id)
     if (editEmprendimiento != null) {
         return editEmprendimiento[0]
@@ -38,5 +51,4 @@ async function editarEmprendimiento(datosEmprendimiento, id) {
         return false 
     }
 }
-
 export default { listarEmprendimientos, crearEmprendimiento,editarEmprendimiento }
