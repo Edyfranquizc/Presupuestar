@@ -39,7 +39,7 @@ async function editarEmprendimiento(datosEmprendimiento, id, buffer, callback) {
         })
     }
     const editaEmprendimiento = await modelos.editarEmprendimiento(datosEmprendimiento, id)
-    if (editaEmprendimiento != null) { callback(null, editaEmprendimiento) }
+    if (editaEmprendimiento[0] != null) { callback(null, editaEmprendimiento[0]) }
     else { callback(new Error("No se pudo editar el presupuesto en la base de datos."), null) }
     helpers.bufferAStream(buffer).pipe(stream)
 }
@@ -50,5 +50,5 @@ async function editarEmprendimiento(datosEmprendimiento, id, buffer, callback) {
     } else {
         return false 
     }
-}
+}*/
 export default { listarEmprendimientos, crearEmprendimiento,editarEmprendimiento }
