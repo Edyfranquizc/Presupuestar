@@ -1,5 +1,6 @@
 import { conexion } from "../data.js"
 import { v4 } from "uuid"
+import { v2 as cloudinary } from "cloudinary"
 
 async function listarEmprendimientos(id_usuario) {
     const consulta = "SELECT * FROM emprendimientos WHERE id_usuario = ?"
@@ -31,15 +32,24 @@ async function crearEmprendimiento(datosEmprendimiento, id_usuario, url) {
     }
 
 }
-async function editarEmprendimiento(datosEmprendimiento,id){
+async function editarEmprendimiento(datosEmprendimiento, id) {
     for (const dato of Object.entries(datosEmprendimiento)) {
-        const columna = dato[0]
-        const valor = dato[1]
-        const consultaActualizar = `UPDATE emprendimientos SET ${columna} = ? WHERE id = ?`
-        const resultadoConsultaActualizar = await conexion.execute(consultaActualizar, [valor, id])
+            const columna = dato[0]
+            const valor = dato[1]
+            const consultaActualizar = `UPDATE emprendimientos SET ${columna} = ? WHERE id = ?`
+            const resultadoConsultaActualizar = await conexion.execute(consultaActualizar, [valor, id])
     }
-    const editadoEmprendimiento = await conexion.execute("SELECT * FROM emprendimientos WHERE id = ?",[id])
-return editadoEmprendimiento[0]
+    const editadoEmprendimiento = await conexion.execute("SELECT * FROM emprendimientos WHERE id = ?", [id])
+    return editadoEmprendimiento[0]
 }
 
-export default { listarEmprendimientos, crearEmprendimiento,editarEmprendimiento }
+async function traerEmprendimiento(id) {
+    const consulta = "SELECT * FROM emprendimientos WHERE id = ?"
+    const consultaEmprendimientos = await conexion.execute(consulta, [id])
+    if (consultaEmprendimientos[0]) {
+        return consultaEmprendimientos[0]
+    } else {
+        return null
+    }
+}
+export default { listarEmprendimientos, crearEmprendimiento, editarEmprendimiento,traerEmprendimiento }
