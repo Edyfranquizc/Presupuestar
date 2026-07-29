@@ -56,7 +56,7 @@ async function editarEmprendimiento(datosEmprendimiento, id, buffer, callback) {
             const resurl = await modelos.traerEmprendimiento(id)
             const emprendimiento = resurl[0]
             let publicId = id
-            if (Object.values(emprendimiento)[6] != null) { publicId = extractPublicId(`${Object.values(emprendimiento)[6]}`) }
+            if (emprendimiento.logo_url!= null) { publicId = extractPublicId(emprendimiento.logo_url) }
             const stream = cloudinary.uploader.upload_stream({ resource_type: "image", public_id: publicId, invalidate: true, overwrite: true }, async (error, result) => {
                 if (error) {
                     callback(error, null)
@@ -69,7 +69,7 @@ async function editarEmprendimiento(datosEmprendimiento, id, buffer, callback) {
         } catch (error) {
             callback(error, null)
         }
-    } else if (datosEmprendimiento[0] != undefined) {
+    } else {
         const editaEmprendimiento = await modelos.editarEmprendimiento(datosEmprendimiento, id)
         if (editaEmprendimiento[0] != null) { callback(null, editaEmprendimiento[0]) }
         else {
