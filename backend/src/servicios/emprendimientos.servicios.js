@@ -52,23 +52,29 @@ async function crearEmprendimiento(datosEmprendimiento, idUsuario, buffer, callb
 
 async function editarEmprendimiento(datosEmprendimiento, id, buffer, callback) {
     if (buffer != null) {
-        const resurl = await modelos.traerEmprendimiento(id)
-        const emprendimiento = resurl[0]
-        const publicId = extractPublicId(`${Object.values(emprendimiento)[0]}`)
-        const stream = cloudinary.uploader.upload_stream({ resource_type: "image", public_id: publicId, invalidate: true,overwrite:true }, async (error, result) => {
-            if (error) {
-                callback(error, null)
-            } else {
-                const editaEmprendimiento = await modelos.editarEmprendimiento({ "logo_url": result.secure_url }, id)
-                return (null, editaEmprendimiento[0])
-            }
-        })
-        helpers.bufferAStream(buffer).pipe(stream)
-    }
-    if (datosEmprendimiento!= undefined) {
+        try {
+            const resurl = await modelos.traerEmprendimiento(id)
+            const emprendimiento = resurl[0]
+            let publicId = id
+            if (Object.values(emprendimiento)[6] != null) { publicId = extractPublicId(`${Object.values(emprendimiento)[6]}`) }
+            const stream = cloudinary.uploader.upload_stream({ resource_type: "image", public_id: publicId, invalidate: true, overwrite: true }, async (error, result) => {
+                if (error) {
+                    callback(error, null)
+                } else {
+                    const editaEmprendimiento = await modelos.editarEmprendimiento({ "logo_url": result.secure_url }, id)
+                    callback(null, editaEmprendimiento[0])
+                }
+            })
+            helpers.bufferAStream(buffer).pipe(stream)
+        } catch (error) {
+            callback(error, null)
+        }
+    } else if (datosEmprendimiento[0] != undefined) {
         const editaEmprendimiento = await modelos.editarEmprendimiento(datosEmprendimiento, id)
         if (editaEmprendimiento[0] != null) { callback(null, editaEmprendimiento[0]) }
-        else { callback(new Error("No se pudo editar el presupuesto en la base de datos."), null) }
+        else {
+            callback(new Error("No se pudo editar el presupuesto en la base de datos."), null)
+        }
     }
 }
 
