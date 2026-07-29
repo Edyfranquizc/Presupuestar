@@ -20,3 +20,13 @@ export async function crearEmprendimiento(
   });
   return response.data;
 }
+
+export async function actualizarEmprendimiento(
+  id: string,
+  data: FormData
+): Promise<Emprendimiento> {
+  const response = await api.put<Emprendimiento>(`/emprendimientos/${id}`, data, {
+    headers: { "Content-Type": undefined },
+  });
+  return response.data;
+}

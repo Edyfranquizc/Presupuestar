@@ -10,6 +10,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   emprendimientoActivo: Emprendimiento | null;
   guardarSesion: (token: string, usuario: Usuario) => void;
+  actualizarUsuario: (usuario: Usuario) => void;
   cerrarSesion: () => void;
   setEmprendimientoActivo: (e: Emprendimiento) => void;
 }
@@ -57,6 +58,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUsuario(null);
     setEmprendimientoActivoState(null);
   }
+  function actualizarUsuario(nuevoUsuario: Usuario) {
+  localStorage.setItem("usuario", JSON.stringify(nuevoUsuario));
+  setUsuario(nuevoUsuario);
+}
 
   function setEmprendimientoActivo(emp: Emprendimiento) {
     localStorage.setItem("emprendimiento", JSON.stringify(emp));
@@ -71,6 +76,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isAuthenticated: !!token,
         emprendimientoActivo,
         guardarSesion,
+        actualizarUsuario,
         cerrarSesion,
         setEmprendimientoActivo,
       }}
