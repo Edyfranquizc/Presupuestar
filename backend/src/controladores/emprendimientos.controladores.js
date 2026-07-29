@@ -29,11 +29,11 @@ async function crearEmprendimiento(req, res) {
 }
 
 async function editarEmprendimiento(req, res) {
-    console.log(req)
     const datosEmprendimiento = req.body
-    const id = req.id
-    const buffer = req.file.buffer
+    const id = req.params.id
+    const buffer = req.file ? req.file.buffer : null
     const callback = (error, resultado) => {
+        console.log("resultado:", resultado)
         if (resultado) {
             res.status(201).json(resultado)
         } else {
