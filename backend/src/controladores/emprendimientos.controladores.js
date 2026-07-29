@@ -1,7 +1,6 @@
 import servicios from "../servicios/emprendimientos.servicios.js"
 
 async function listarEmprendimientos(req, res) {
-    console.log(req)
     const id_usuario = req.usuario.id
     const resultado = await servicios.listarEmprendimientos(id_usuario)
 
@@ -33,7 +32,6 @@ async function editarEmprendimiento(req, res) {
     const id = req.params.id
     const buffer = req.file ? req.file.buffer : null
     const callback = (error, resultado) => {
-        console.log("resultado:", resultado)
         if (resultado) {
             res.status(201).json(resultado)
         } else {

@@ -13,10 +13,8 @@ async function listarEmprendimientos(id_usuario) {
 }
 
 async function crearEmprendimiento(datosEmprendimiento, idUsuario, buffer, callback) {
-    console.log("SERVICIOS")
     if (!buffer) {
         try {
-            console.log("buffer")
             const nuevoEmprendimiento = await modelos.crearEmprendimiento(datosEmprendimiento, id_usuario, null)
             if (nuevoEmprendimiento) {
                 callback(null, nuevoEmprendimiento)
@@ -53,14 +51,12 @@ async function crearEmprendimiento(datosEmprendimiento, idUsuario, buffer, callb
 }
 
 async function editarEmprendimiento(datosEmprendimiento, id, buffer, callback) {
-    
     if (buffer != null) {
         const resurl = await modelos.traerEmprendimiento(id)
         const emprendimiento = resurl[0]
         const publicId = extractPublicId(`${Object.values(emprendimiento)[0]}`)
         const stream = cloudinary.uploader.upload_stream({ resource_type: "image", public_id: publicId, invalidate: true }, async (error, result) => {
             if (error) {
-                console.log(error)
                 callback(error, null)
             } else {
                 const editaEmprendimiento = await modelos.editarEmprendimiento({ "logo_url": result.secure_url }, id)
