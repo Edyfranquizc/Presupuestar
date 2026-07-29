@@ -33,7 +33,6 @@ async function editarEmprendimiento(req, res) {
     const id = req.params.id
     const buffer = req.file ? req.file.buffer : null
     const callback = (error, resultado) => {
-        console.log("resultado:", resultado)
         if (resultado) {
             res.status(201).json(resultado)
         } else {
