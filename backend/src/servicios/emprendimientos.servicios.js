@@ -15,7 +15,7 @@ async function listarEmprendimientos(id_usuario) {
 async function crearEmprendimiento(datosEmprendimiento, idUsuario, buffer, callback) {
     if (!buffer) {
         try {
-            const nuevoEmprendimiento = await modelos.crearEmprendimiento(datosEmprendimiento, id_usuario, null)
+            const nuevoEmprendimiento = await modelos.crearEmprendimiento(datosEmprendimiento, idUsuario, null)
             if (nuevoEmprendimiento) {
                 callback(null, nuevoEmprendimiento)
             } else {
