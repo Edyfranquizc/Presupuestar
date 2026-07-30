@@ -80,6 +80,7 @@ function ContenidoVistaPrevia({
         emisorNombre={emprendimientoActivo?.nombre ?? "Emprendedor/a"}
         emisorRubro={emprendimientoActivo?.rubro}
         emisorCuit={emprendimientoActivo?.cuit}
+        emisorMoneda={emprendimientoActivo?.moneda}
         logoUrl={emprendimientoActivo?.logo_url ?? undefined}
       />
     ),
@@ -174,17 +175,17 @@ function ContenidoVistaPrevia({
                 <td className="py-3 px-1 text-center text-gray-500 text-xs">{item.cantidad}</td>
                 <td
                   className={`py-3 px-1 text-right text-gray-500 whitespace-nowrap ${claseMonto(
-                    formatCurrencyCorto(item.precio_unitario)
+                    formatCurrencyCorto(item.precio_unitario, emprendimientoActivo?.moneda)
                   )}`}
                 >
-                  {formatCurrencyCorto(item.precio_unitario)}
+                  {formatCurrencyCorto(item.precio_unitario, emprendimientoActivo?.moneda)}
                 </td>
                 <td
                   className={`py-3 px-1 text-right font-semibold text-gray-900 whitespace-nowrap ${claseMonto(
-                    formatCurrencyCorto(item.subtotal)
+                    formatCurrencyCorto(item.subtotal, emprendimientoActivo?.moneda)
                   )}`}
                 >
-                  {formatCurrencyCorto(item.subtotal)}
+                  {formatCurrencyCorto(item.subtotal, emprendimientoActivo?.moneda)}
                 </td>
               </tr>
             ))}
@@ -195,22 +196,22 @@ function ContenidoVistaPrevia({
         <div className="flex flex-col gap-1 text-sm">
           <div className="flex justify-between text-gray-500">
             <span>Subtotal:</span>
-            <span>{formatCurrency(presupuesto.subtotal)}</span>
+            <span>{formatCurrency(presupuesto.subtotal, emprendimientoActivo?.moneda)}</span>
           </div>
           {presupuesto.descuento_monto > 0 && (
             <div className="flex justify-between text-gray-500">
               <span>Descuento:</span>
-              <span>- {formatCurrency(presupuesto.descuento_monto)}</span>
+              <span>- {formatCurrency(presupuesto.descuento_monto, emprendimientoActivo?.moneda)}</span>
             </div>
           )}
           <div className="flex justify-between text-gray-500">
             <span>IVA ({presupuesto.iva_porcentaje}%)</span>
-            <span>{formatCurrency(presupuesto.iva_monto)}</span>
+            <span>{formatCurrency(presupuesto.iva_monto, emprendimientoActivo?.moneda)}</span>
           </div>
         </div>
         <div className="bg-primary-700 text-primary-50 rounded-lg px-4 py-3 flex justify-between items-center font-bold text-lg -mx-2">
           <span>Total:</span>
-          <span>{formatCurrency(presupuesto.total)}</span>
+          <span>{formatCurrency(presupuesto.total, emprendimientoActivo?.moneda)}</span>
         </div>
       </div>
 

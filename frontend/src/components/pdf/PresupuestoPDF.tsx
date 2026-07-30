@@ -73,6 +73,7 @@ interface PresupuestoPDFProps {
   emisorNombre: string;
   emisorRubro?: string;
   emisorCuit?: string;
+  emisorMoneda?: string;
   logoUrl?: string;
 }
 
@@ -81,6 +82,7 @@ export default function PresupuestoPDF({
   emisorNombre,
   emisorRubro,
   emisorCuit,
+  emisorMoneda,
   logoUrl,
 }: PresupuestoPDFProps) {
   return (
@@ -120,8 +122,8 @@ export default function PresupuestoPDF({
             <View style={styles.fila} key={item.id}>
               <Text style={[styles.itemNombre, styles.colDescripcion]}>{item.descripcion}</Text>
               <Text style={[styles.itemValor, styles.colCantidad]}>{item.cantidad}</Text>
-              <Text style={[styles.itemValor, styles.colPrecio]}>{formatCurrency(item.precio_unitario)}</Text>
-              <Text style={[styles.itemValor, styles.colTotal]}>{formatCurrency(item.subtotal)}</Text>
+              <Text style={[styles.itemValor, styles.colPrecio]}>{formatCurrency(item.precio_unitario, emisorMoneda)}</Text>
+              <Text style={[styles.itemValor, styles.colTotal]}>{formatCurrency(item.subtotal, emisorMoneda)}</Text>
             </View>
           ))}
         </View>
@@ -129,21 +131,21 @@ export default function PresupuestoPDF({
         <View style={styles.totales}>
           <View style={styles.totalFila}>
             <Text style={styles.totalLabel}>Subtotal:</Text>
-            <Text style={styles.totalValor}>{formatCurrency(presupuesto.subtotal)}</Text>
+            <Text style={styles.totalValor}>{formatCurrency(presupuesto.subtotal, emisorMoneda)}</Text>
           </View>
           {Number(presupuesto.descuento_monto) > 0 && (
             <View style={styles.totalFila}>
               <Text style={styles.totalLabel}>Descuento:</Text>
-              <Text style={styles.totalValor}>- {formatCurrency(presupuesto.descuento_monto)}</Text>
+              <Text style={styles.totalValor}>- {formatCurrency(presupuesto.descuento_monto, emisorMoneda)}</Text>
             </View>
           )}
           <View style={styles.totalFila}>
             <Text style={styles.totalLabel}>IVA ({presupuesto.iva_porcentaje}%)</Text>
-            <Text style={styles.totalValor}>{formatCurrency(presupuesto.iva_monto)}</Text>
+            <Text style={styles.totalValor}>{formatCurrency(presupuesto.iva_monto, emisorMoneda)}</Text>
           </View>
           <View style={styles.totalFinalBox}>
             <Text style={styles.totalFinalLabel}>Total:</Text>
-            <Text style={styles.totalFinalValor}>{formatCurrency(presupuesto.total)}</Text>
+            <Text style={styles.totalFinalValor}>{formatCurrency(presupuesto.total, emisorMoneda)}</Text>
           </View>
         </View>
 
