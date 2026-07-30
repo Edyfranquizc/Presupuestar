@@ -47,7 +47,9 @@ const styles = StyleSheet.create({
   colTotal: { flex: 1.5, textAlign: "right" },
   colHeaderText: { fontSize: 8, color: "#81818E" },
   itemNombre: { fontSize: 10, fontWeight: "bold" },
+  itemDescripcion: { fontSize: 8, color: "#81818E", marginTop: 2 },
   itemValor: { fontSize: 9 },
+  itemsBody: { minHeight: 140 },
   totales: { marginTop: 12 },
   totalFila: { flexDirection: "row", justifyContent: "space-between", marginBottom: 3 },
   totalLabel: { fontSize: 9, color: "#81818E" },
@@ -118,14 +120,21 @@ export default function PresupuestoPDF({
             <Text style={[styles.colHeaderText, styles.colPrecio]}>Precio unitario</Text>
             <Text style={[styles.colHeaderText, styles.colTotal]}>Total</Text>
           </View>
-          {presupuesto.items.map((item) => (
-            <View style={styles.fila} key={item.id}>
-              <Text style={[styles.itemNombre, styles.colDescripcion]}>{item.descripcion}</Text>
-              <Text style={[styles.itemValor, styles.colCantidad]}>{item.cantidad}</Text>
-              <Text style={[styles.itemValor, styles.colPrecio]}>{formatCurrency(item.precio_unitario, emisorMoneda)}</Text>
-              <Text style={[styles.itemValor, styles.colTotal]}>{formatCurrency(item.subtotal, emisorMoneda)}</Text>
-            </View>
-          ))}
+          <View style={styles.itemsBody}>
+            {presupuesto.items.map((item) => (
+              <View style={styles.fila} key={item.id}>
+                <View style={styles.colDescripcion}>
+                  <Text style={styles.itemNombre}>{item.nombre}</Text>
+                  {item.descripcion && (
+                    <Text style={styles.itemDescripcion}>{item.descripcion}</Text>
+                  )}
+                </View>
+                <Text style={[styles.itemValor, styles.colCantidad]}>{item.cantidad}</Text>
+                <Text style={[styles.itemValor, styles.colPrecio]}>{formatCurrency(item.precio_unitario, emisorMoneda)}</Text>
+                <Text style={[styles.itemValor, styles.colTotal]}>{formatCurrency(item.subtotal, emisorMoneda)}</Text>
+              </View>
+            ))}
+          </View>
         </View>
 
         <View style={styles.totales}>

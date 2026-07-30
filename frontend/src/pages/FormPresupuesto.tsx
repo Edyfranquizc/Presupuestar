@@ -114,18 +114,11 @@ export default function FormPresupuesto() {
     }
     try {
       setIsLoading(true);
-      // Bridge temporal: el backend todavía no tiene una columna separada para
-      // "nombre" del ítem, así que lo combinamos con la descripción en un solo
-      // campo hasta que exista esa columna (ver mensaje a Gala).
-      const itemsParaEnviar = items.map((item) => ({
-        ...item,
-        descripcion: `${item.nombre} — ${item.descripcion}`,
-      }));
       const payload = {
         cliente_nombre: cliente.nombre,
         cliente_email: cliente.email,
         cliente_telefono: cliente.telefono,
-        items: itemsParaEnviar,
+        items,
         notas,
         estado: "pendiente" as const,
         subtotal: resumen.subtotal,
