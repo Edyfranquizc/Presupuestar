@@ -239,7 +239,7 @@ export default function FormPresupuesto() {
               <div className="flex items-center justify-between">
                 <span className="text-sm font-semibold text-gray-900">Subtotal</span>
                 <span className="text-sm font-semibold text-gray-900">
-                  {formatCurrency(item.subtotal)}
+                  {formatCurrency(item.subtotal, emprendimientoActivo?.moneda)}
                 </span>
               </div>
             </div>
@@ -266,15 +266,15 @@ export default function FormPresupuesto() {
         <section className="flex flex-col gap-1 text-sm border-t border-gray-200 pt-4">
           <div className="flex justify-between text-gray-500">
             <span>Subtotal</span>
-            <span>{formatCurrency(resumen.subtotal)}</span>
+            <span>{formatCurrency(resumen.subtotal, emprendimientoActivo?.moneda)}</span>
           </div>
           <div className="flex justify-between text-gray-500">
             <span>IVA (21%)</span>
-            <span>{formatCurrency(resumen.ivaMonto)}</span>
+            <span>{formatCurrency(resumen.ivaMonto, emprendimientoActivo?.moneda)}</span>
           </div>
           <div className="flex justify-between font-bold text-base mt-1">
             <span>Total</span>
-            <span>{formatCurrency(resumen.total)}</span>
+            <span>{formatCurrency(resumen.total, emprendimientoActivo?.moneda)}</span>
           </div>
         </section>
 

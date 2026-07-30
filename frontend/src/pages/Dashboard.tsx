@@ -147,7 +147,11 @@ export default function Dashboard() {
                   <div>
                     <p className="text-sm font-medium">{p.cliente_nombre ?? "Sin cliente"}</p>
                     <p className="text-xs text-gray-400">
-                      {formatDate(p.fecha_creacion)} — {formatCurrency(p.total)}
+                      {formatDate(p.fecha_creacion)} —{" "}
+                      {formatCurrency(
+                        p.total,
+                        emprendimientos.find((e) => e.id === p.id_emprendimiento)?.moneda,
+                      )}
                     </p>
                   </div>
                   <Badge variant={p.estado} />

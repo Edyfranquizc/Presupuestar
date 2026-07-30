@@ -1,11 +1,16 @@
 // Formateo de moneda y fechas
 
-export function formatCurrency(value: number): string {
+const SIMBOLOS_MONEDA: Record<string, string> = {
+  ARS: "AR$",
+  USD: "US$",
+};
+
+export function formatCurrency(value: number, moneda: string = "ARS"): string {
   const formateado = new Intl.NumberFormat("es-AR", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(value);
-  return `AR$${formateado}`;
+  return `${SIMBOLOS_MONEDA[moneda] ?? SIMBOLOS_MONEDA.ARS}${formateado}`;
 }
 
 export function formatDate(dateString: string): string {
@@ -15,12 +20,13 @@ export function formatDate(dateString: string): string {
     year: "numeric",
   }).format(new Date(dateString));
 }
-export function formatCurrencyCorto(value: number): string {
+export function formatCurrencyCorto(value: number, moneda: string = "ARS"): string {
   const formateado = new Intl.NumberFormat("es-AR", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(value);
-  return `$${formateado}`;
+  const simbolo = moneda === "USD" ? "US$" : "$";
+  return `${simbolo}${formateado}`;
 }
 
 export function formatDateRelativo(dateString: string): string {

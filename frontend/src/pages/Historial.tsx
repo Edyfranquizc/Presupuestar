@@ -197,7 +197,11 @@ export default function Historial() {
                       {p.cliente_nombre ?? "Sin cliente"}
                     </p>
                     <p className="text-xs text-gray-400">
-                      {formatDateRelativo(p.fecha_creacion)} — {formatCurrency(p.total)}
+                      {formatDateRelativo(p.fecha_creacion)} —{" "}
+                      {formatCurrency(
+                        p.total,
+                        emprendimientos.find((e) => e.id === p.id_emprendimiento)?.moneda,
+                      )}
                     </p>
                   </div>
 
