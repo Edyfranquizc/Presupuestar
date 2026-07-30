@@ -1,9 +1,10 @@
 // VistaPrevia.tsx — Vista previa profesional del presupuesto
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { usePresupuesto } from "../hooks/usePresupuesto.ts";
 import { useAuth } from "../hooks/useAuth.ts";
+import { getEmprendimientos } from "../services/emprendimientos.service.ts";
 import { formatCurrency, formatDate, formatCurrencyCorto } from "../utils/formatters.ts";
 import Badge from "../components/ui/Badge.tsx";
 import { usePDF } from "@react-pdf/renderer";
@@ -26,6 +27,17 @@ export default function VistaPrevia() {
   const navigate = useNavigate();
   const { emprendimientoActivo } = useAuth();
   const { presupuesto, isLoading, error } = usePresupuesto(id);
+  const [emprendimientos, setEmprendimientos] = useState<Emprendimiento[]>([]);
+
+  useEffect(() => {
+    getEmprendimientos()
+      .then(setEmprendimientos)
+      .catch(() => {});
+  }, []);
+
+  const emprendimientoDelPresupuesto =
+    emprendimientos.find((e) => e.id === presupuesto?.id_emprendimiento) ??
+    emprendimientoActivo;
 
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-6 max-w-2xl mx-auto">
@@ -46,7 +58,7 @@ export default function VistaPrevia() {
       )}
 
       {!isLoading && !error && presupuesto && (
-        <ContenidoVistaPrevia presupuesto={presupuesto} emprendimientoActivo={emprendimientoActivo} />
+        <ContenidoVistaPrevia presupuesto={presupuesto} emprendimientoActivo={emprendimientoDelPresupuesto} />
       )}
     </div>
   );
