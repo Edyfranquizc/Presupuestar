@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth.ts";
 import { crearEmprendimiento } from "../services/emprendimientos.service.ts";
+import { actualizarUsuarioMe } from "../services/usuarios.service.ts";
 import {
   InformationCircleIcon,
   CheckCircleIcon,
@@ -64,6 +65,7 @@ export default function Onboarding() {
 
   const [step, setStep] = useState(0);
   const [mostrarPopup, setMostrarPopup] = useState(false);
+  const [avisoError, setAvisoError] = useState<string | null>(null);
 
   const [form, setForm] = useState({
     fechaNacimiento: "",
@@ -120,6 +122,22 @@ export default function Onboarding() {
     setStep(soloNegocio ? 2 : 1);
   }
 
+  async function handlePersonalSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    try {
+      await actualizarUsuarioMe({
+        fecha_nacimiento: form.fechaNacimiento,
+        ubicacion: form.ciudad,
+      });
+      setAvisoError(null);
+    } catch {
+      setAvisoError(
+        "No pudimos guardar tus datos personales. Podés completarlos más tarde desde tu perfil."
+      );
+    }
+    nextStep();
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (form.nombreNegocio.trim()) {
@@ -152,6 +170,19 @@ export default function Onboarding() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <div className="w-full max-w-sm bg-white border border-gray-200 rounded-3xl px-6 py-8 shadow-sm">
+        {avisoError && (
+          <div className="flex items-start justify-between gap-2 bg-error-50 border border-error-200 text-error-600 text-xs rounded-lg px-3 py-2 mb-4">
+            <span>{avisoError}</span>
+            <button
+              type="button"
+              onClick={() => setAvisoError(null)}
+              className="font-bold leading-none"
+              aria-label="Cerrar aviso"
+            >
+              ×
+            </button>
+          </div>
+        )}
         {/* PASO 0: BIENVENIDA */}
         {step === 0 && (
           <div className="flex flex-col items-center text-center py-4">
@@ -175,7 +206,7 @@ export default function Onboarding() {
 
         {/* PASO 1: TUS DATOS PERSONALES (solo primera vez, sin numerar) */}
         {step === 1 && (
-          <form onSubmit={(e) => { e.preventDefault(); nextStep(); }}>
+          <form onSubmit={handlePersonalSubmit}>
             <h1 className="text-xl font-bold text-center mb-1">Tus datos personales</h1>
             <p className="text-xs text-gray-400 text-center mb-6">
               Estos datos son obligatorios
@@ -184,8 +215,8 @@ export default function Onboarding() {
             <div className="flex flex-col gap-4">
               <Input
                 name="fechaNacimiento"
+                type="date"
                 label="Fecha de nacimiento"
-                placeholder="01/01/2000"
                 value={form.fechaNacimiento}
                 onChange={handleChange}
               />
