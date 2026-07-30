@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth.ts";
 import { register } from "../services/auth.service.ts";
 import Input from "../components/ui/Input.tsx";
 import Button from "../components/ui/Button.tsx";
 
 export default function Register() {
   const navigate = useNavigate();
-
+  const { guardarSesion } = useAuth();
   const [form, setForm] = useState({
     nombre: "",
     apellido: "",
@@ -61,12 +62,13 @@ export default function Register() {
     }
     try {
       setIsLoading(true);
-      await register({
+      const data = await register({
         nombre: form.nombre,
         apellido: form.apellido,
         email: form.email,
         password: form.password,
       });
+      guardarSesion(data.token, data.usuario);
       navigate("/onboarding");
     } catch {
       setError("No se pudo crear la cuenta. Intentá de nuevo.");
