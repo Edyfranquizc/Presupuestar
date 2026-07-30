@@ -24,11 +24,14 @@ export default function Sidebar() {
             <button
               key={item.path}
               onClick={() => navigate(item.path)}
-              className={`flex flex-col items-center gap-1 text-xs ${
-                active ? "text-primary-500" : "text-gray-400"
+              className={`rounded-lg p-2 flex items-center justify-center ${
+                active ? "bg-primary-500" : ""
               }`}
             >
-              <Icono className="w-6 h-6" strokeWidth={1.5} />
+              <Icono
+                className={`w-6 h-6 ${active ? "text-primary-50" : "text-gray-400"}`}
+                strokeWidth={1.5}
+              />
             </button>
           );
         })}
