@@ -5,7 +5,7 @@ async function login(email, password) {
     const resultado = await modelos.verificarUsuario(email, password)
 
     if (resultado !== null) {
-        const token = generarToken({email: email, password: password, id: resultado[0].id})
+        const token = generarToken({email: email, id: resultado[0].id})
         return {token, usuario: {id: resultado[0].id, nombre: resultado[0].nombre, email: resultado[0].email}}
     } else {
         return null
@@ -16,7 +16,7 @@ async function registro(datosUsuario) {
     const resultado = await modelos.registrarUsuario(datosUsuario)
 
     if (resultado !== null) {
-        const token = generarToken({email: datosUsuario.email, password: datosUsuario.password, id: resultado.id})
+        const token = generarToken({email: datosUsuario.email, id: resultado.id})
         return {token, usuario: {id: resultado.id, nombre: resultado.nombre, email: resultado.email}}
     } else {
         return resultado

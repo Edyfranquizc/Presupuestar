@@ -89,6 +89,12 @@ async function crearPresupuesto(datosPresupuesto, id_usuario) {
     return objetoADevolver
 }
 
+async function emprendimientoPerteneceAlUsuario(id_emprendimiento, id_usuario) {
+    const consulta = "SELECT id FROM emprendimientos WHERE id = ? AND id_usuario = ?"
+    const resultado = await conexion.execute(consulta, [id_emprendimiento, id_usuario])
+    return resultado[0].length > 0
+}
+
 async function listarPresupuesto(id) {
     const consulta = 
     "SELECT presupuestos.*, items_presupuesto.id_item, items_presupuesto.nombre, items_presupuesto.descripcion, items_presupuesto.cantidad, items_presupuesto.precio_unitario, items_presupuesto.subtotal AS item_subtotal " + 
@@ -265,4 +271,4 @@ async function guardarURL(id_presupuesto, url) {
     }
 }
 
-export default { crearPresupuesto, listarPresupuestos, listarPresupuesto, actualizarPresupuesto, verificarFechaVencimiento, editarVencimiento, guardarURL }
+export default { crearPresupuesto, listarPresupuestos, listarPresupuesto, actualizarPresupuesto, verificarFechaVencimiento, editarVencimiento, guardarURL, emprendimientoPerteneceAlUsuario }

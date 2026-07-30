@@ -16,6 +16,10 @@ async function buscarPresupuesto(req, res) { const resultado = await modelos.lis
     else { return null } };
 
 async function crearPresupuesto(datosPresupuesto, id_usuario) {
+    const perteneceAlUsuario = await modelos.emprendimientoPerteneceAlUsuario(datosPresupuesto.id_emprendimiento, id_usuario)
+    if (!perteneceAlUsuario) {
+        return null
+    }
     const resultado = await modelos.crearPresupuesto(datosPresupuesto, id_usuario)
     return resultado
 }
