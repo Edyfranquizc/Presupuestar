@@ -22,7 +22,7 @@ async function crearEmprendimiento(datosEmprendimiento, id_usuario, url) {
         const id = v4()
         const consultaNuevoEmprendimiento = "INSERT INTO emprendimientos (id, nombre, rubro, moneda, cuit, logo_url, id_usuario, email_comercial, whatsapp, web, instagram, facebook) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
         try {
-            const nuevoEmprendimiento = await conexion.execute(consultaNuevoEmprendimiento, [id, nombre, rubro, moneda, cuit ?? null, url ?? null, id_usuario, email_comercial, whatsapp ?? null, web ?? null, instagram ?? null, facebook ?? null])
+            const nuevoEmprendimiento = await conexion.execute(consultaNuevoEmprendimiento, [id, nombre, rubro, moneda, cuit ?? null, url ?? null, id_usuario, email_comercial, whatsapp ?? null, web || null, instagram || null, facebook || null])
             return nuevoEmprendimiento[0]
         } catch(error) {
             console.log(error)
