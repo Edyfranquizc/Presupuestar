@@ -1,25 +1,15 @@
 // BottomNav.tsx — Navegación inferior
 
 import { useNavigate, useLocation } from "react-router-dom";
-import {
-  HomeIcon,
-  DocumentMagnifyingGlassIcon,
-  UserCircleIcon,
-} from "@heroicons/react/24/outline";
-
-const items = [
-  { label: "Inicio", path: "/dashboard", icon: HomeIcon },
-  { label: "Historial", path: "/historial", icon: DocumentMagnifyingGlassIcon },
-  { label: "Perfil", path: "/perfil", icon: UserCircleIcon },
-];
+import { NAV_ITEMS } from "./navItems.ts";
 
 export default function BottomNav() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t flex justify-around items-center h-16 max-w-2xl mx-auto">
-      {items.map((item) => {
+    <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t flex justify-around items-center h-16 max-w-2xl mx-auto">
+      {NAV_ITEMS.map((item) => {
         const active = pathname === item.path;
         const Icono = item.icon;
         return (
