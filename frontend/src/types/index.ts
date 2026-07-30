@@ -29,6 +29,7 @@ export interface Cliente {
 
 export interface ItemPresupuesto {
   id: string;
+  nombre: string;
   descripcion: string;
   cantidad: number;
   precio_unitario: number;
