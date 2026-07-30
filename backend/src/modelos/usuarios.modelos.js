@@ -19,7 +19,7 @@ async function verificarexistencia(email) {
 };
 
 async function traerUsuario(idUsuario) {
-    const consulta = "SELECT id, nombre, apellido, email, DATE_FORMAT(fecha_nacimiento, '%d-%m-%Y') AS fecha_nacimiento, DATE_FORMAT(fecha_registro, '%d-%m-%Y') AS fecha_registro, ubicacion FROM usuarios WHERE id = ?"
+    const consulta = "SELECT id, nombre, apellido, email, dni, celular, DATE_FORMAT(fecha_nacimiento, '%d-%m-%Y') AS fecha_nacimiento, DATE_FORMAT(fecha_registro, '%d-%m-%Y') AS fecha_registro, ubicacion FROM usuarios WHERE id = ?"
     const resultadoUsuario = await conexion.execute(consulta, [idUsuario])
 
     if (resultadoUsuario[0]) {
