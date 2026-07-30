@@ -89,7 +89,7 @@ export default function Historial() {
   const grupos = agruparPorMes(filtrados);
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-6 max-w-2xl mx-auto">
+    <div className="min-h-screen bg-gray-50 lg:bg-primary-50 px-4 lg:px-10 py-6 lg:py-8 max-w-2xl mx-auto lg:max-w-5xl lg:mx-0">
       {/* Header */}
       <h1 className="text-2xl font-bold">Historial</h1>
       <p className="text-sm text-gray-500 mb-4">
@@ -185,12 +185,12 @@ export default function Historial() {
         grupos.map((grupo) => (
           <div key={grupo.mes} className="mb-6">
             <p className="text-sm font-semibold text-gray-900 mb-2">{grupo.mes}</p>
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3 lg:grid lg:grid-cols-3 lg:gap-4">
               {grupo.items.map((p) => (
                 <div
                   key={p.id}
                   onClick={() => navigate(`/vista-previa/${p.id}`)}
-                  className="bg-white border border-gray-200 rounded-lg p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50 active:bg-gray-100"
+                  className="bg-white lg:bg-gray-50 border border-gray-200 rounded-lg p-4 flex items-center justify-between cursor-pointer hover:bg-gray-50 lg:hover:bg-gray-100 active:bg-gray-100"
                 >
                   <div className="flex flex-col gap-1">
                     <p className="text-sm font-medium text-gray-900">
