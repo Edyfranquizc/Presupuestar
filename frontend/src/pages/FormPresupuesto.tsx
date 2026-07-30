@@ -21,6 +21,7 @@ import Button from "../components/ui/Button.tsx";
 function itemVacio(): ItemPresupuesto {
   return {
     id: crypto.randomUUID(),
+    nombre: "",
     descripcion: "",
     cantidad: 1,
     precio_unitario: 0,
@@ -99,8 +100,8 @@ export default function FormPresupuesto() {
       setError("El teléfono del cliente es obligatorio.");
       return;
     }
-    if (items.some((i) => !i.descripcion.trim() || i.precio_unitario <= 0)) {
-      setError("Completá descripción y precio de cada ítem.");
+    if (items.some((i) => !i.nombre.trim() || !i.descripcion.trim() || i.precio_unitario <= 0)) {
+      setError("Completá nombre, descripción y precio de cada ítem.");
       return;
     }
     if (items.some((i) => i.precio_unitario > 10000000)) {
@@ -113,11 +114,18 @@ export default function FormPresupuesto() {
     }
     try {
       setIsLoading(true);
+      // Bridge temporal: el backend todavía no tiene una columna separada para
+      // "nombre" del ítem, así que lo combinamos con la descripción en un solo
+      // campo hasta que exista esa columna (ver mensaje a Gala).
+      const itemsParaEnviar = items.map((item) => ({
+        ...item,
+        descripcion: `${item.nombre} — ${item.descripcion}`,
+      }));
       const payload = {
         cliente_nombre: cliente.nombre,
         cliente_email: cliente.email,
         cliente_telefono: cliente.telefono,
-        items,
+        items: itemsParaEnviar,
         notas,
         estado: "pendiente" as const,
         subtotal: resumen.subtotal,
@@ -193,6 +201,13 @@ export default function FormPresupuesto() {
                   <TrashIcon className="w-5 h-5" />
                 </button>
               </div>
+
+              <Input
+                name={`nombre-${item.id}`}
+                placeholder="Nombre del producto*"
+                value={item.nombre}
+                onChange={(e) => actualizarItem(item.id, "nombre", e.target.value)}
+              />
 
               <Input
                 name={`descripcion-${item.id}`}
