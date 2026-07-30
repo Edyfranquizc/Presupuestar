@@ -4,12 +4,13 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { useAuth } from "../hooks/useAuth.ts";
 import { login } from "../services/auth.service.ts";
+import { getEmprendimientos } from "../services/emprendimientos.service.ts";
 import Input from "../components/ui/Input.tsx";
 import Button from "../components/ui/Button.tsx";
 
 export default function Login() {
   const navigate = useNavigate();
-  const { guardarSesion } = useAuth();
+  const { guardarSesion, setEmprendimientoActivo } = useAuth();
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState<string | null>(null);
@@ -30,6 +31,14 @@ export default function Login() {
       setIsLoading(true);
       const data = await login(form);
       guardarSesion(data.token, data.usuario);
+      try {
+        const emprendimientos = await getEmprendimientos();
+        if (emprendimientos.length > 0) {
+          setEmprendimientoActivo(emprendimientos[0]);
+        }
+      } catch {
+        // si falla, el usuario igual puede elegir uno manualmente desde el Dashboard
+      }
       navigate("/dashboard");
     } catch {
       setError("Email o contraseña incorrectos.");
