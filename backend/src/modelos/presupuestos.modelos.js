@@ -101,6 +101,7 @@ async function listarPresupuesto(id) {
             return {
                 id: fila.id,
                 id_usuario: fila.id_usuario,
+                id_emprendimiento: fila.id_emprendimiento,
                 fecha_creacion: fila.fecha_creacion,
                 fecha_vencimiento: fila.fecha_vencimiento,
                 cliente_nombre: fila.cliente_nombre,
