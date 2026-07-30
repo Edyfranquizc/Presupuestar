@@ -6,6 +6,7 @@ import { useAuth } from "../hooks/useAuth.ts";
 import { register } from "../services/auth.service.ts";
 import Input from "../components/ui/Input.tsx";
 import Button from "../components/ui/Button.tsx";
+import ilustracion from "../assets/logo-presupuestar-grande.svg";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -78,11 +79,18 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col gap-4 w-full max-w-sm"
-      >
+    <div className="min-h-screen lg:flex">
+      {/* Panel de ilustración (solo desktop) */}
+      <div className="hidden lg:block lg:w-1/2 lg:h-screen">
+        <img src={ilustracion} alt="" className="w-full h-full object-cover" />
+      </div>
+
+      {/* Panel del formulario */}
+      <div className="flex items-center justify-center px-4 py-8 lg:w-1/2 lg:py-0">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-4 w-full max-w-sm"
+        >
         <h1 className="text-xl font-semibold text-center">Logo®</h1>
         <h2 className="text-lg font-semibold text-center">Crear cuenta</h2>
 
@@ -190,7 +198,8 @@ export default function Register() {
             Iniciá sesión
           </span>
         </p>
-      </form>
+        </form>
+      </div>
     </div>
   );
 }
