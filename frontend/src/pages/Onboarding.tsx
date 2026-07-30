@@ -15,7 +15,7 @@ import {
 import Input from "../components/ui/Input.tsx";
 import Button from "../components/ui/Button.tsx";
 
-function ProgressBar({ paso, total = 4 }: { paso: number; total?: number }) {
+function ProgressBar({ paso, total = 3 }: { paso: number; total?: number }) {
   return (
     <div className="mb-6">
       <div className="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden">
@@ -153,8 +153,11 @@ export default function Onboarding() {
 
         const emprendimiento = await crearEmprendimiento(datosEmprendimiento);
         setEmprendimientoActivo(emprendimiento);
+        setAvisoError(null);
       } catch {
-        // si falla, igualmente avanzamos
+        setAvisoError(
+          "No pudimos crear tu emprendimiento. Podés intentarlo de nuevo desde el panel principal."
+        );
       }
     }
     nextStep();
@@ -302,7 +305,7 @@ export default function Onboarding() {
             </div>
             <button
               type="button"
-              onClick={() => setStep(5)}
+              onClick={handleFinish}
               className="block mx-auto text-xs text-gray-400 underline mt-4 hover:text-gray-700"
             >
               Omitir por ahora
