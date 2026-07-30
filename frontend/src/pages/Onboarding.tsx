@@ -128,6 +128,8 @@ export default function Onboarding() {
       await actualizarUsuarioMe({
         fecha_nacimiento: form.fechaNacimiento,
         ubicacion: form.ciudad,
+        dni: form.dni,
+        celular: form.celular,
       });
       setAvisoError(null);
     } catch {
@@ -137,7 +139,6 @@ export default function Onboarding() {
     }
     nextStep();
   }
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (form.nombreNegocio.trim()) {

@@ -9,7 +9,7 @@ export async function getUsuarioMe(): Promise<Usuario | null> {
 }
 
 export async function actualizarUsuarioMe(
-  datos: { fecha_nacimiento?: string; ubicacion?: string }
+  datos: { fecha_nacimiento?: string; ubicacion?: string; dni?: string; celular?: string }
 ): Promise<Usuario | null> {
   const response = await api.put<Usuario>("/usuarios/me", datos);
   return response.data ?? null;
