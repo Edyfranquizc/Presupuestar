@@ -147,6 +147,11 @@ export default function Onboarding() {
         datosEmprendimiento.append("rubro", form.rubro);
         datosEmprendimiento.append("cuit", form.cuit);
         datosEmprendimiento.append("moneda", form.moneda);
+        datosEmprendimiento.append("email_comercial", form.emailComercial);
+        datosEmprendimiento.append("whatsapp", form.whatsapp);
+        datosEmprendimiento.append("web", form.web);
+        datosEmprendimiento.append("instagram", form.instagram);
+        datosEmprendimiento.append("facebook", form.facebook);
         if (logo) {
           datosEmprendimiento.append("logo", logo);
         }
