@@ -42,6 +42,7 @@ export default function FormPresupuesto() {
   const [notas, setNotas] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [ivaPorcentaje, setIvaPorcentaje] = useState(21);
 
   function actualizarItem(
     id: string,
@@ -84,7 +85,7 @@ export default function FormPresupuesto() {
     setItems((prev) => prev.filter((i) => i.id !== id));
   }
 
-  const resumen = calcularResumen(items, "porcentaje", 0, 21);
+  const resumen = calcularResumen(items, "porcentaje", 0, ivaPorcentaje);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -133,7 +134,7 @@ export default function FormPresupuesto() {
         descuento_valor: 0,
         descuento_monto: resumen.descuentoMonto,
         base_imponible: resumen.baseImponible,
-        iva_porcentaje: 21,
+        iva_porcentaje: ivaPorcentaje,
         iva_monto: resumen.ivaMonto,
         total: resumen.total,
         id_emprendimiento: emprendimientoActivo.id,
@@ -276,6 +277,22 @@ export default function FormPresupuesto() {
             className="border border-primary-400 bg-primary-50 rounded-lg px-4 py-3 text-sm w-full focus:outline-none focus:ring-2 focus:ring-primary-500"
           />
         </section>
+        {/* IVA */}
+        <section className="flex flex-col gap-2">
+          <h2 className="text-sm font-semibold text-gray-900">IVA</h2>
+          <div className="relative">
+            <select
+              value={ivaPorcentaje}
+              onChange={(e) => setIvaPorcentaje(Number(e.target.value))}
+              className="w-full h-11 px-4 pr-10 bg-primary-50 border border-primary-400 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 appearance-none"
+            >
+              <option value={0}>Sin IVA</option>
+              <option value={10.5}>10,5%</option>
+              <option value={21}>21%</option>
+            </select>
+            <ChevronDownIcon className="w-4 h-4 text-gray-500 absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+          </div>
+        </section>
 
         {/* Resumen */}
         <section className="flex flex-col gap-1 text-sm border-t border-gray-200 pt-4">
@@ -283,10 +300,12 @@ export default function FormPresupuesto() {
             <span>Subtotal</span>
             <span>{formatCurrency(resumen.subtotal, emprendimientoActivo?.moneda)}</span>
           </div>
-          <div className="flex justify-between text-gray-500">
-            <span>IVA (21%)</span>
-            <span>{formatCurrency(resumen.ivaMonto, emprendimientoActivo?.moneda)}</span>
-          </div>
+          {ivaPorcentaje > 0 && (
+            <div className="flex justify-between text-gray-500">
+              <span>IVA ({ivaPorcentaje}%)</span>
+              <span>{formatCurrency(resumen.ivaMonto, emprendimientoActivo?.moneda)}</span>
+            </div>
+          )}
           <div className="flex justify-between font-bold text-base mt-1">
             <span>Total</span>
             <span>{formatCurrency(resumen.total, emprendimientoActivo?.moneda)}</span>
