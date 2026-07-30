@@ -23,15 +23,15 @@ async function crearPresupuesto(datosPresupuesto, id_usuario) {
 
     // Guardamos los ítems en la tabla correspondiente.
     for (const item of datosPresupuesto.items) {
-        const { descripcion, cantidad, precio_unitario, subtotal } = item
+        const { nombre, descripcion, cantidad, precio_unitario, subtotal } = item
         const id_item = v4()
-        const consultaItems = "INSERT INTO items_presupuesto (id_item, id_presupuesto, descripcion, cantidad, precio_unitario, subtotal) VALUES (?, ?, ?, ?, ?, ?)"
-        const resultadoItems = await conexion.execute(consultaItems, [id_item, id_presupuesto, descripcion, cantidad, precio_unitario, subtotal])
+        const consultaItems = "INSERT INTO items_presupuesto (id_item, id_presupuesto, nombre, descripcion, cantidad, precio_unitario, subtotal) VALUES (?, ?, ?, ?, ?, ?, ?)"
+        const resultadoItems = await conexion.execute(consultaItems, [id_item, id_presupuesto, nombre, descripcion, cantidad, precio_unitario, subtotal])
     }
 
     // Generamos la consulta para traer los datos del presupuesto y sus respectivos ítems. 
     const consultaDevolverNuevoPresupuesto = 
-    "SELECT presupuestos.*, items_presupuesto.id_item, items_presupuesto.descripcion, items_presupuesto.cantidad, items_presupuesto.precio_unitario, items_presupuesto.subtotal AS item_subtotal " + 
+    "SELECT presupuestos.*, items_presupuesto.id_item, items_presupuesto.nombre, items_presupuesto.descripcion, items_presupuesto.cantidad, items_presupuesto.precio_unitario, items_presupuesto.subtotal AS item_subtotal " + 
     "FROM presupuestos " + 
     "JOIN items_presupuesto ON presupuestos.id = items_presupuesto.id_presupuesto " + 
     "WHERE presupuestos.id = ?"
@@ -64,6 +64,7 @@ async function crearPresupuesto(datosPresupuesto, id_usuario) {
                     {
                         id: fila.id_item,
                         id_presupuesto: fila.id_presupuesto,
+                        nombre: fila.nombre,
                         descripcion: fila.descripcion,
                         cantidad: fila.cantidad,
                         precio_unitario: fila.precio_unitario,
@@ -75,6 +76,7 @@ async function crearPresupuesto(datosPresupuesto, id_usuario) {
             acumulador.items.push({
                 id: fila.id_item,
                 id_presupuesto: fila.id_presupuesto,
+                nombre: fila.nombre,
                 descripcion: fila.descripcion,
                 cantidad: fila.cantidad,
                 precio_unitario: fila.precio_unitario,
@@ -89,7 +91,7 @@ async function crearPresupuesto(datosPresupuesto, id_usuario) {
 
 async function listarPresupuesto(id) {
     const consulta = 
-    "SELECT presupuestos.*, items_presupuesto.id_item, items_presupuesto.descripcion, items_presupuesto.cantidad, items_presupuesto.precio_unitario, items_presupuesto.subtotal AS item_subtotal " + 
+    "SELECT presupuestos.*, items_presupuesto.id_item, items_presupuesto.nombre, items_presupuesto.descripcion, items_presupuesto.cantidad, items_presupuesto.precio_unitario, items_presupuesto.subtotal AS item_subtotal " + 
     "FROM presupuestos " + 
     "JOIN items_presupuesto ON presupuestos.id = items_presupuesto.id_presupuesto " + 
     "WHERE presupuestos.id = ?"
@@ -122,6 +124,7 @@ async function listarPresupuesto(id) {
                 items: [{
                     id: fila.id_item,
                     id_presupuesto: fila.id_presupuesto,
+                    nombre: fila.nombre,
                     descripcion: fila.descripcion,
                     cantidad: fila.cantidad,
                     precio_unitario: fila.precio_unitario,
@@ -132,6 +135,7 @@ async function listarPresupuesto(id) {
             acumulador.items.push({
                 id: fila.id_item,
                 id_presupuesto: fila.id_presupuesto,
+                nombre: fila.nombre,
                 descripcion: fila.descripcion,
                 cantidad: fila.cantidad,
                 precio_unitario: fila.precio_unitario,
@@ -144,7 +148,7 @@ async function listarPresupuesto(id) {
 }
 
 async function listarPresupuestos(id_usuario) {
-    const consulta = "SELECT presupuestos.*, items_presupuesto.id_item, items_presupuesto.descripcion, items_presupuesto.cantidad, items_presupuesto.precio_unitario, items_presupuesto.subtotal AS item_subtotal " + 
+    const consulta = "SELECT presupuestos.*, items_presupuesto.id_item, items_presupuesto.nombre, items_presupuesto.descripcion, items_presupuesto.cantidad, items_presupuesto.precio_unitario, items_presupuesto.subtotal AS item_subtotal " + 
     "FROM presupuestos " + 
     "JOIN emprendimientos ON presupuestos.id_emprendimiento = emprendimientos.id " + 
     "JOIN items_presupuesto ON presupuestos.id = items_presupuesto.id_presupuesto " + 
@@ -181,6 +185,7 @@ async function listarPresupuestos(id_usuario) {
                     {
                         id: fila.id_item,
                         id_presupuesto: fila.id_presupuesto,
+                        nombre: fila.nombre,
                         descripcion: fila.descripcion,
                         cantidad: fila.cantidad,
                         precio_unitario: fila.precio_unitario,
@@ -193,6 +198,7 @@ async function listarPresupuestos(id_usuario) {
             presupuestoEncontrado.items.push({
                 id: fila.id_item,
                 id_presupuesto: fila.id_presupuesto,
+                nombre: fila.nombre,
                 descripcion: fila.descripcion,
                 cantidad: fila.cantidad,
                 precio_unitario: fila.precio_unitario,
