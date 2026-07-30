@@ -166,11 +166,14 @@ function ContenidoVistaPrevia({
               <th className="text-right py-2 px-1 font-medium w-[26%]">Total</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="min-h-[140px]">
             {presupuesto.items.map((item) => (
               <tr key={item.id} className="border-b border-gray-100 last:border-0">
-                <td className="py-3 px-1 font-medium text-gray-900 text-xs break-words">
-                  {item.descripcion}
+                <td className="py-3 px-1 text-xs break-words">
+                  <p className="font-medium text-gray-900">{item.nombre}</p>
+                  {item.descripcion && (
+                    <p className="text-gray-400 mt-0.5">{item.descripcion}</p>
+                  )}
                 </td>
                 <td className="py-3 px-1 text-center text-gray-500 text-xs">{item.cantidad}</td>
                 <td
