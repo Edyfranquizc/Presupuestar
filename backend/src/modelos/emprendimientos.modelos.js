@@ -22,8 +22,23 @@ async function crearEmprendimiento(datosEmprendimiento, id_usuario, url) {
         const id = v4()
         const consultaNuevoEmprendimiento = "INSERT INTO emprendimientos (id, nombre, rubro, moneda, cuit, logo_url, id_usuario, email_comercial, whatsapp, web, instagram, facebook) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
         try {
-            const nuevoEmprendimiento = await conexion.execute(consultaNuevoEmprendimiento, [id, nombre, rubro, moneda, cuit ?? null, url ?? null, id_usuario, email_comercial, whatsapp ?? null, web || null, instagram || null, facebook || null])
-            return nuevoEmprendimiento[0]
+            await conexion.execute(consultaNuevoEmprendimiento, [id, nombre, rubro, moneda, cuit ?? null, url ?? null, id_usuario, email_comercial, whatsapp ?? null, web || null, instagram || null, facebook || null])
+            // Un INSERT no devuelve la fila insertada (solo metadata tipo affectedRows),
+            // así que armamos el objeto a mano con los datos que ya conocemos.
+            return {
+                id,
+                nombre,
+                rubro,
+                moneda,
+                cuit: cuit ?? null,
+                logo_url: url ?? null,
+                id_usuario,
+                email_comercial,
+                whatsapp: whatsapp ?? null,
+                web: web || null,
+                instagram: instagram || null,
+                facebook: facebook || null,
+            }
         } catch(error) {
             console.log(error)
             return false 

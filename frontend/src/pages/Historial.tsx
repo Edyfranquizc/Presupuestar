@@ -259,7 +259,7 @@ export default function Historial() {
                         <option value="" disabled>
                           Pendiente ▾
                         </option>
-                        <option value="aceptado">Aceptado</option>
+                        <option value="aceptado">Aprobado</option>
                         <option value="rechazado">Rechazado</option>
                       </select>
                     ) : (
@@ -410,7 +410,27 @@ export default function Historial() {
               </div>
 
               <div className="bg-primary-50 rounded-lg px-4 py-2 flex items-center justify-between">
-                <Badge variant={presupuestoSeleccionado.estado} />
+                {presupuestoSeleccionado.estado === "pendiente" ? (
+                  <select
+                    disabled={actualizando === presupuestoSeleccionado.id}
+                    defaultValue=""
+                    onChange={(e) =>
+                      handleCambiarEstado(
+                        presupuestoSeleccionado.id,
+                        e.target.value as "aceptado" | "rechazado",
+                      )
+                    }
+                    className="text-xs border border-primary-400 bg-white rounded-lg px-2 py-1 disabled:opacity-50"
+                  >
+                    <option value="" disabled>
+                      Pendiente ▾
+                    </option>
+                    <option value="aceptado">Aprobado</option>
+                    <option value="rechazado">Rechazado</option>
+                  </select>
+                ) : (
+                  <Badge variant={presupuestoSeleccionado.estado} />
+                )}
                 <span className="text-sm font-semibold">
                   {formatDate(presupuestoSeleccionado.fecha_creacion)}
                 </span>
