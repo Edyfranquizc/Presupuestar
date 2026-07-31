@@ -77,4 +77,9 @@ export interface Emprendimiento {
   moneda: string;
   cuit?: string;
   logo_url?: string | null;
+  email_comercial?: string;
+  whatsapp?: string;
+  web?: string;
+  instagram?: string;
+  facebook?: string;
 }
