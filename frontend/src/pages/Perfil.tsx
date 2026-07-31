@@ -156,8 +156,8 @@ export default function Perfil() {
     setEmpEditando(emp);
     setFormEmp({
       nombre: emp.nombre,
-      mail: "",
-      celular: "",
+      mail: emp.email_comercial ?? "",
+      celular: emp.whatsapp ?? "",
       rubro: emp.rubro,
       cuit: emp.cuit ?? "",
       moneda: emp.moneda,
@@ -213,6 +213,8 @@ export default function Perfil() {
       data.append("rubro", formEmp.rubro);
       data.append("cuit", formEmp.cuit);
       data.append("moneda", formEmp.moneda);
+      data.append("email_comercial", formEmp.mail);
+      data.append("whatsapp", formEmp.celular);
       if (logoNuevo) {
         data.append("logo", logoNuevo);
       }
@@ -982,6 +984,16 @@ export default function Perfil() {
                   <div className="flex justify-between items-center px-4 py-3">
                     <span className="text-gray-500">Rubro</span>
                     <span className="text-gray-900 font-medium">{empEditando.rubro || "—"}</span>
+                  </div>
+                  <div className="flex justify-between items-center px-4 py-3">
+                    <span className="text-gray-500">Mail</span>
+                    <span className="text-gray-900 font-medium">
+                      {empEditando.email_comercial || "—"}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center px-4 py-3">
+                    <span className="text-gray-500">Celular</span>
+                    <span className="text-gray-900 font-medium">{empEditando.whatsapp || "—"}</span>
                   </div>
                   <div className="flex justify-between items-center px-4 py-3">
                     <span className="text-gray-500">CUIT</span>

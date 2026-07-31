@@ -81,7 +81,8 @@ export default function Historial() {
   const [filtroEmprendimiento, setFiltroEmprendimiento] = useState<string>("todos");
   const [dropdownAbierto, setDropdownAbierto] = useState(false);
   const [seleccionadoId, setSeleccionadoId] = useState<string | null>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const dropdownRefMobile = useRef<HTMLDivElement>(null);
+  const dropdownRefDesktop = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     getEmprendimientos()
@@ -91,7 +92,10 @@ export default function Historial() {
 
   useEffect(() => {
     function cerrarSiClickeaAfuera(e: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+      const target = e.target as Node;
+      const dentroDeMobile = dropdownRefMobile.current?.contains(target) ?? false;
+      const dentroDeDesktop = dropdownRefDesktop.current?.contains(target) ?? false;
+      if (!dentroDeMobile && !dentroDeDesktop) {
         setDropdownAbierto(false);
       }
     }
@@ -154,7 +158,7 @@ export default function Historial() {
         </div>
 
         {emprendimientos.length > 1 && (
-          <div ref={dropdownRef} className="relative mb-4 inline-block">
+          <div ref={dropdownRefMobile} className="relative mb-4 inline-block">
             <button
               type="button"
               onClick={() => setDropdownAbierto((v) => !v)}
@@ -296,7 +300,7 @@ export default function Historial() {
           </div>
 
           {emprendimientos.length > 1 && (
-            <div ref={dropdownRef} className="relative inline-block">
+            <div ref={dropdownRefDesktop} className="relative inline-block">
               <button
                 type="button"
                 onClick={() => setDropdownAbierto((v) => !v)}

@@ -397,7 +397,7 @@ export default function Onboarding() {
               <Input
                 name="emailComercial"
                 label="Mail"
-                placeholder="emprendimientoA@mail.com"
+                placeholder="emprendimiento@mail.com"
                 value={form.emailComercial}
                 onChange={handleChange}
               />
@@ -438,7 +438,7 @@ export default function Onboarding() {
               <Input
                 name="web"
                 label="Página web"
-                placeholder="Ej. juanperez@gmail.com"
+                placeholder="Ej. www.miemprendimiento.com"
                 value={form.web}
                 onChange={handleChange}
               />
