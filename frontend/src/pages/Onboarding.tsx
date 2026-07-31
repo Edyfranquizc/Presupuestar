@@ -74,7 +74,7 @@ export default function Onboarding() {
     ciudad: "Buenos Aires",
 
     nombreNegocio: "",
-    rubro: "Diseño Gráfico",
+    rubro: "",
     cuit: "",
     moneda: "ARS",
 
@@ -139,6 +139,7 @@ export default function Onboarding() {
     }
     nextStep();
   }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (form.nombreNegocio.trim()) {
@@ -173,7 +174,8 @@ export default function Onboarding() {
     navigate("/dashboard");
   }
 
-  const paso1Valido = form.nombreNegocio.trim() !== "" && form.cuit.trim() !== "";
+  const paso1Valido =
+    form.nombreNegocio.trim() !== "" && form.rubro.trim() !== "" && form.cuit.trim() !== "";
   const paso2Valido = form.emailComercial.trim() !== "" && form.whatsapp.trim() !== "";
 
   return (
@@ -301,14 +303,13 @@ export default function Onboarding() {
                 value={form.nombreNegocio}
                 onChange={handleChange}
               />
-              <div>
-                <label className="text-sm font-medium text-gray-900 mb-1 block">Rubro</label>
-                <Select name="rubro" value={form.rubro} onChange={handleChange}>
-                  <option value="Diseño Gráfico">Diseño Gráfico</option>
-                  <option value="Indumentaria">Indumentaria</option>
-                  <option value="Gastronomía">Gastronomía</option>
-                </Select>
-              </div>
+              <Input
+                name="rubro"
+                label="Rubro"
+                placeholder="Ej. Diseño Gráfico"
+                value={form.rubro}
+                onChange={handleChange}
+              />
               <Input
                 name="cuit"
                 label="CUIT"
