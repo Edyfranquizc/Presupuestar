@@ -6,7 +6,7 @@ import { useAuth } from "../hooks/useAuth.ts";
 import { register } from "../services/auth.service.ts";
 import Input from "../components/ui/Input.tsx";
 import Button from "../components/ui/Button.tsx";
-import ilustracion from "../assets/logo-presupuestar-grande.svg";
+import logoMarca from "../assets/logo-marca.svg";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -81,8 +81,13 @@ export default function Register() {
   return (
     <div className="min-h-screen lg:flex">
       {/* Panel de ilustración (solo desktop) */}
-      <div className="hidden lg:block lg:w-1/2 lg:h-screen">
-        <img src={ilustracion} alt="" className="w-full h-full object-cover" />
+      <div className="hidden lg:flex lg:w-1/2 lg:h-screen bg-primary-100 items-center justify-center">
+        <button onClick={() => navigate("/")} className="flex flex-col items-center">
+          <img src={logoMarca} alt="" className="w-2/3 max-w-md" />
+          <p className="w-2/3 max-w-md text-center text-3xl font-extrabold text-primary-600 mt-4">
+            Presupuestar
+          </p>
+        </button>
       </div>
 
       {/* Panel del formulario */}
@@ -91,7 +96,9 @@ export default function Register() {
           onSubmit={handleSubmit}
           className="flex flex-col gap-4 w-full max-w-sm"
         >
-        <h1 className="text-xl font-semibold text-center">Logo®</h1>
+        <button type="button" onClick={() => navigate("/")} className="mx-auto block">
+          <img src={logoMarca} alt="Presupuestar" className="h-8" />
+        </button>
         <h2 className="text-lg font-semibold text-center">Crear cuenta</h2>
 
         {/* Nombre y Apellido */}

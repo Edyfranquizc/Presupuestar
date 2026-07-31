@@ -7,7 +7,7 @@ import { login } from "../services/auth.service.ts";
 import { getEmprendimientos } from "../services/emprendimientos.service.ts";
 import Input from "../components/ui/Input.tsx";
 import Button from "../components/ui/Button.tsx";
-import ilustracion from "../assets/logo-presupuestar-grande.svg";
+import logoMarca from "../assets/logo-marca.svg";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -51,8 +51,13 @@ export default function Login() {
   return (
     <div className="min-h-screen lg:flex">
       {/* Panel de ilustración (solo desktop) */}
-      <div className="hidden lg:block lg:w-1/2 lg:h-screen">
-        <img src={ilustracion} alt="" className="w-full h-full object-cover" />
+      <div className="hidden lg:flex lg:w-1/2 lg:h-screen bg-primary-100 items-center justify-center">
+        <button onClick={() => navigate("/")} className="flex flex-col items-center">
+          <img src={logoMarca} alt="" className="w-2/3 max-w-md" />
+          <p className="w-2/3 max-w-md text-center text-3xl font-extrabold text-primary-600 mt-4">
+            Presupuestar
+          </p>
+        </button>
       </div>
 
       {/* Panel del formulario */}
