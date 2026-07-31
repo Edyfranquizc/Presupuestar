@@ -40,7 +40,14 @@ export default function Dashboard() {
 
   useEffect(() => {
     getEmprendimientos()
-      .then(setEmprendimientos)
+      .then((lista) => {
+        setEmprendimientos(lista);
+        const activoValido =
+          emprendimientoActivo && lista.some((e) => e.id === emprendimientoActivo.id);
+        if (!activoValido && lista.length > 0) {
+          setEmprendimientoActivo(lista[0]);
+        }
+      })
       .catch(() => {});
   }, []);
 
