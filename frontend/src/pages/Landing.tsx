@@ -5,6 +5,9 @@ import { CalculatorIcon, BoltIcon, PaintBrushIcon } from "@heroicons/react/24/ou
 import Button from "../components/ui/Button.tsx";
 import logoMarca from "../assets/logo-marca.svg";
 import { useAuth } from "../hooks/useAuth.ts";
+import capturaDashboard from "../assets/landing-dashboard.png";
+import capturaHistorial from "../assets/landing-historial.png";
+import capturaPerfil from "../assets/landing-perfil.png";
 
 const BENEFICIOS = [
   {
@@ -106,17 +109,17 @@ export default function Landing() {
             Tu espacio de trabajo
           </h2>
           <div className="flex flex-col gap-4">
-            <img src="https://placehold.co/328x164" alt="" className="w-full h-[164px] rounded-lg object-cover" />
-            <img src="https://placehold.co/328x164" alt="" className="w-full h-[164px] rounded-lg object-cover" />
-            <img src="https://placehold.co/328x164" alt="" className="w-full h-[164px] rounded-lg object-cover" />
+            <img src={capturaDashboard} alt="Dashboard de Presupuestar" className="w-full h-[164px] rounded-lg object-cover border border-gray-200 shadow-lg" />
+            <img src={capturaHistorial} alt="Historial de presupuestos" className="w-full h-[164px] rounded-lg object-cover border border-gray-200 shadow-lg" />
+            <img src={capturaPerfil} alt="Perfil y datos del emprendimiento" className="w-full h-[164px] rounded-lg object-cover border border-gray-200 shadow-lg" />
           </div>
         </div>
 
         {/* Imágenes desktop (fila de 3) */}
         <div className="hidden lg:grid lg:grid-cols-3 lg:gap-6 lg:items-center">
-          <img src="https://placehold.co/486x304" alt="" className="w-full h-64 rounded-lg object-cover" />
-          <img src="https://placehold.co/792x536" alt="" className="w-full h-80 rounded-lg object-cover" />
-          <img src="https://placehold.co/486x304" alt="" className="w-full h-64 rounded-lg object-cover" />
+          <img src={capturaHistorial} alt="Historial de presupuestos" className="w-full h-64 rounded-lg object-cover border border-gray-200 shadow-lg" />
+          <img src={capturaDashboard} alt="Dashboard de Presupuestar" className="w-full h-80 rounded-lg object-cover border border-gray-200 shadow-lg" />
+          <img src={capturaPerfil} alt="Perfil y datos del emprendimiento" className="w-full h-64 rounded-lg object-cover border border-gray-200 shadow-lg" />
         </div>
 
         {/* Beneficios */}
