@@ -2,6 +2,7 @@
 
 import { useNavigate, useLocation } from "react-router-dom";
 import { NAV_ITEMS } from "./navItems.ts";
+import logoMarca from "../../assets/logo-marca.svg";
 
 export default function Sidebar() {
   const navigate = useNavigate();
@@ -10,10 +11,10 @@ export default function Sidebar() {
   return (
     <nav className="hidden lg:flex lg:flex-col lg:fixed lg:left-0 lg:top-0 lg:h-screen lg:w-20 bg-white border-r border-gray-100 items-center py-6 gap-8">
       <button
-        onClick={() => navigate("/dashboard")}
-        className="w-9 h-9 rounded-lg bg-primary-500 text-primary-50 flex items-center justify-center font-bold"
+        onClick={() => navigate("/")}
+        className="w-9 h-9 rounded-lg bg-primary-500 flex items-center justify-center"
       >
-        P
+        <img src={logoMarca} alt="Presupuestar" className="w-6 h-5" />
       </button>
 
       <div className="flex flex-col gap-6">

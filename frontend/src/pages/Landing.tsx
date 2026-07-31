@@ -3,6 +3,8 @@
 import { useNavigate } from "react-router-dom";
 import { CalculatorIcon, BoltIcon, PaintBrushIcon } from "@heroicons/react/24/outline";
 import Button from "../components/ui/Button.tsx";
+import logoMarca from "../assets/logo-marca.svg";
+import { useAuth } from "../hooks/useAuth.ts";
 
 const BENEFICIOS = [
   {
@@ -24,6 +26,8 @@ const BENEFICIOS = [
 
 export default function Landing() {
   const navigate = useNavigate();
+  const { token } = useAuth();
+  const estaLogueado = Boolean(token);
 
   return (
     <div className="min-h-screen bg-gray-50 lg:bg-primary-50">
@@ -32,12 +36,19 @@ export default function Landing() {
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <p className="text-center lg:text-left font-extrabold text-primary-600">Presupuestar</p>
           <div className="hidden lg:block">
-            <Button variant="outline" onClick={() => navigate("/login")}>
-              Iniciá sesión
-            </Button>
+            {estaLogueado ? (
+              <Button variant="outline" onClick={() => navigate("/dashboard")}>
+                Ir a mi panel
+              </Button>
+            ) : (
+              <Button variant="outline" onClick={() => navigate("/login")}>
+                Iniciá sesión
+              </Button>
+            )}
           </div>
 
           <div className="flex flex-col gap-2 lg:hidden">
+            <img src={logoMarca} alt="Presupuestar" className="w-32 h-32 mx-auto mb-2" />
             <h1 className="text-center text-2xl font-bold leading-8 text-[#121013]">
               Presupuestá rápido
               <br />
@@ -52,6 +63,7 @@ export default function Landing() {
         </div>
 
         {/* Título desktop (grande, centrado) */}
+        <img src={logoMarca} alt="Presupuestar" className="hidden lg:block w-72 h-72 mx-auto" />
         <h1 className="hidden lg:block text-center text-6xl leading-tight text-gray-950 max-w-4xl mx-auto">
           Presupuestá rápido
           <br />
@@ -66,20 +78,26 @@ export default function Landing() {
             nosotros hacemos el resto
           </p>
           <div className="lg:w-[180px]">
-            <Button fullWidth size="lg" onClick={() => navigate("/register")}>
-              Registrate
-            </Button>
-          </div>
-          <div className="lg:hidden">
             <Button
               fullWidth
               size="lg"
-              variant="outline"
-              onClick={() => navigate("/login")}
+              onClick={() => navigate(estaLogueado ? "/dashboard" : "/register")}
             >
-              Iniciá sesión
+              {estaLogueado ? "Ir a mi panel" : "Registrate"}
             </Button>
           </div>
+          {!estaLogueado && (
+            <div className="lg:hidden">
+              <Button
+                fullWidth
+                size="lg"
+                variant="outline"
+                onClick={() => navigate("/login")}
+              >
+                Iniciá sesión
+              </Button>
+            </div>
+          )}
         </div>
 
         {/* Tu espacio de trabajo (solo mobile, el diseño desktop no lo incluye) */}

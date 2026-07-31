@@ -167,28 +167,28 @@ export default function Dashboard() {
                 <div className="w-12 h-12 rounded-full bg-success-100 flex items-center justify-center absolute top-4 right-4">
                   <CheckCircleIcon className="w-6 h-6 text-success-500" strokeWidth={1.5} />
                 </div>
-                <p className="text-4xl font-semibold text-success-500">{aprobados}</p>
+                <p className="text-4xl font-semibold text-success-500 mt-12">{aprobados}</p>
                 <p className="text-sm text-gray-900 mt-2">Aprobados</p>
               </div>
               <div className="bg-gray-50 rounded-lg p-6 relative">
                 <div className="w-12 h-12 rounded-full bg-warning-100 flex items-center justify-center absolute top-4 right-4">
                   <ClockIcon className="w-6 h-6 text-warning-500" strokeWidth={1.5} />
                 </div>
-                <p className="text-4xl font-semibold text-warning-500">{enEspera}</p>
+                <p className="text-4xl font-semibold text-warning-500 mt-12">{enEspera}</p>
                 <p className="text-sm text-gray-900 mt-2">En espera</p>
               </div>
               <div className="bg-gray-50 rounded-lg p-6 relative">
                 <div className="w-12 h-12 rounded-full bg-error-100 flex items-center justify-center absolute top-4 right-4">
                   <XCircleIcon className="w-6 h-6 text-error-500" strokeWidth={1.5} />
                 </div>
-                <p className="text-4xl font-semibold text-error-500">{rechazados}</p>
+                <p className="text-4xl font-semibold text-error-500 mt-12">{rechazados}</p>
                 <p className="text-sm text-gray-900 mt-2">Rechazados</p>
               </div>
               <div className="bg-gray-50 rounded-lg p-6 relative">
                 <div className="w-12 h-12 rounded-full bg-info-100 flex items-center justify-center absolute top-4 right-4">
                   <PaperAirplaneIcon className="w-6 h-6 text-info-500" strokeWidth={1.5} />
                 </div>
-                <p className="text-4xl font-semibold text-info-500">{enviados}</p>
+                <p className="text-4xl font-semibold text-info-500 mt-12">{enviados}</p>
                 <p className="text-sm text-gray-900 mt-2">Enviados</p>
               </div>
             </div>
